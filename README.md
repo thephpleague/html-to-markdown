@@ -1,15 +1,14 @@
 html2markdown for PHP
 =====================
 
-An HTML-to-markdown conversion tool for PHP by Nick Cernis 
+An HTML-to-markdown conversion tool for PHP by Nick Cernis  
 [@nickcernis](http://twitter.com/nickcernis)  
 http://modnerd.com
 
 Version 1.0  
-Licensed under The MIT license  
-http://www.opensource.org/licenses/mit-license.php
-
 Requires PHP 5
+Licensed under The MIT license: http://www.opensource.org/licenses/mit-license.php
+
 
 ###Live demo
 A live demo is available at http://modnerd.com/html2markdown/
@@ -30,7 +29,7 @@ The included `demo.php` file contains an HTML->markdown conversion form for test
 
 ###Limitations
 
-- Chokes on malformed HTML. i.e. unclosed tags. Am considering a cleanup function to check for simple errors with an off switch for projects that perform their own reformatting, like WordPress. You must nest <code> blocks inside <p> or <pre>, for example.
+- Chokes on malformed HTML. i.e. unclosed tags. Am considering a cleanup function to check for simple errors with an off switch for projects that perform their own reformatting, like WordPress. You must nest `<code>` blocks inside `<p>` or `<pre>`, for example.
 - Deeply nested tags (more than three levels) aren't currently converted.
 - Markdown Extra, MultiMarkdown and  other variants aren't supported; just Markdown.
 
