@@ -2,11 +2,10 @@ html2markdown for PHP
 =====================
 
 An HTML-to-markdown conversion tool for PHP by Nick Cernis  
-[@nickcernis](http://twitter.com/nickcernis)  
-http://modnerd.com
+[@nickcernis](http://twitter.com/nickcernis)  |  http://modnerd.com
 
 Version 1.0  
-Requires PHP 5
+Requires PHP 5  
 Licensed under The MIT license: http://www.opensource.org/licenses/mit-license.php
 
 
