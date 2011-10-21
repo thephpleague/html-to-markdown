@@ -212,7 +212,7 @@ class HTML_Parser
 	# Converts h1 and h2 headers to markdown-style headers in setex style, 
 	# matching the number of underscores with the length of the title.
 	#
-	#	e.g.	Header 1	Header Two 
+	#	e.g.	Header 1	Header Two
 	#			========	----------
 	#
 	#	Returns atx headers instead if HTML2MD_HEADER_STYLE is "ATX"
@@ -378,22 +378,11 @@ class HTML_Parser
 		$quote_content = trim($node->nodeValue);
 		
 		$lines = preg_split( '/\r\n|\r|\n/', $quote_content );
-		$lines = array_filter($lines); //strips empty lines
-		$total = count($lines);
+		$lines = array_filter($lines); //strips empty lines		
 		
-		# If there's more than one line of quote, prepend each line with a > sign.
-		if ($total > 1){
-																
-			foreach($lines as $line){	
-				$markdown .= "> ".$line."\r\n\r\n";
-			}		
-
-
-		} else { # It's a one-line code span, not a multiline code block, so wrap it with backticks.
-			
-			$markdown =  "> ".$lines[0]."\r\n\r\n";
-
-		}			
+		foreach($lines as $line){	
+			$markdown .= "> ".$line."\r\n\r\n";
+		}
 		
 		return $markdown;	
 	}
