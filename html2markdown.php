@@ -15,12 +15,10 @@
 
 # Change to "ATX" to output H1 and H2 headers as #Header1 and ##Header2
 # See http://daringfireball.net/projects/markdown/syntax#header
-@define( 'HTML2MD_HEADER_STYLE', "SETEX");
+if (!defined('HTML2MD_HEADER_STYLE')) define('HTML2MD_HEADER_STYLE', 'SETEX');
 
 # Change to false to show warnings when loading malformed HTML/unsupported tags
-@define( 'HTML2MD_SUPPRESS_ERRORS', true);
-
-
+if (!defined('HTML2MD_SUPPRESS_ERRORS')) define('HTML2MD_SUPPRESS_ERRORS', true);
 
 function html2markdown($html)
 {
