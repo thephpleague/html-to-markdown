@@ -20,13 +20,12 @@ if (!defined('HTML2MD_HEADER_STYLE')) define('HTML2MD_HEADER_STYLE', 'SETEX');
 # Change to false to show warnings when loading malformed HTML/unsupported tags
 if (!defined('HTML2MD_SUPPRESS_ERRORS')) define('HTML2MD_SUPPRESS_ERRORS', true);
 
-function html2markdown($html)
-{
-	$parser = new HTML_Parser($html);
-	return $parser->get_markdown();
+if (!function_exists('html2markdown')) {
+	function html2markdown($html) {
+		$parser = new HTML_Parser($html);
+		return $parser->get_markdown();
+	}
 }
-
-
 
 class HTML_Parser
 {
