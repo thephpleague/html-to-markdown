@@ -92,6 +92,10 @@ class HTML_Parser
 		$markdown = str_replace(array('<html>','</html>','<body>','</body>'), array('','','',''), $markdown);
 		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
 		$markdown = str_replace("<?xml encoding=\"UTF-8\">", "", $markdown);
+		
+		// Remove carriage-return character
+		$markdow = str_replace('&#xD;', '', $markdown);
+		
 		return $markdown;
 	
 	}
