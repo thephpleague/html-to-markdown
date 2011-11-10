@@ -188,7 +188,7 @@ class HTML_Parser
 				break;
 			default:
 				# Preserve tags that don't have markdown equivalents, such as <span>
-				# and #text nodes on their own, like WordPressÔ [short_tags].
+				# and #text nodes on their own, like WordPressï¿½ [short_tags].
 				# C14N() is the XML canonicalization function (undocumented).
 				# It returns the full content of the node, including surrounding tags.
 				$markdown = $node->C14N();
@@ -222,7 +222,7 @@ class HTML_Parser
 	
 		if (HTML2MD_HEADER_STYLE == "SETEX")
 		{
-			$length = strlen($content);			
+			$length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
 			$underline = ($level == "h1") ? "=" : "-";
 			$markdown = $content."\r\n".str_repeat($underline, $length)."\r\n\r\n"; #Setex style
 			
