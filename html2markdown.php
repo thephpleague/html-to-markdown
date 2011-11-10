@@ -55,6 +55,16 @@ class HTML_Parser
 	}
 
 
+	
+	private function convert_childs($node) {
+		if ($node->hasChildNodes()) {
+			for ($length = $node->childNodes->length, $i = 0; $i < $length; $i++) {
+				$child = $node->childNodes->item($i);
+				$this->convert_childs($child);
+			}
+		}
+		if ($node->nodeName != 'code') $this->convert_to_markdown($node);
+	}
 
 	public function get_markdown()
 	{
@@ -67,42 +77,7 @@ class HTML_Parser
 		# with the innermost element ($grandchild_node) and working
 		# towards the outermost element ($node).
 				
-		$nodes = $body->childNodes;
-		$total = $nodes->length;
-		
-		for ($i = 0; $i < $total; $i++)
-		{
-			
-			$node 			= $nodes->item($i);
-			$child_nodes 	= $node->childNodes;
-			$total_children = $child_nodes->length;
-			
-			
-			for ($j = 0; $j < $total_children; $j++)
-			{
-				
-				$child_node			= $child_nodes->item($j);
-				$grandchild_nodes	= $child_node->childNodes;
-				$grandchild_total	= $grandchild_nodes->length;
-				
-				if ($child_node->nodeName != "code"){ #don't convert tags inside code blocks
-					
-					for ($k = 0; $k < $grandchild_total; $k++)
-					{
-						$grandchild_node = $grandchild_nodes->item($k);
-						$this->convert_to_markdown($grandchild_node);
-					}
-				
-				}
-				
-				$this->convert_to_markdown($child_node);
-	
-			}
-	
-			$this->convert_to_markdown($node);
-	
-		}
-	
+		$this->convert_childs($body);
 	
 		# The DOMDocument represented by $doc now consists of #text nodes, each containing a markdown
 		# version of the original DOM node created by convert_to_markdown().
