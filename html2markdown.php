@@ -55,15 +55,23 @@ class HTML_Parser
 	}
 
 
+	private static function has_parent_code($node) {
+		for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
+			if (is_null($p)) return false;
+			if ($p->nodeName == 'code') return true;
+		}
+		return false;
+	}
 	
 	private function convert_childs($node) {
+		if (self::has_parent_code($node)) return;
 		if ($node->hasChildNodes()) {
 			for ($length = $node->childNodes->length, $i = 0; $i < $length; $i++) {
 				$child = $node->childNodes->item($i);
 				$this->convert_childs($child);
 			}
 		}
-		if ($node->nodeName != 'code') $this->convert_to_markdown($node);
+		$this->convert_to_markdown($node);
 	}
 
 	public function get_markdown()
