@@ -322,17 +322,13 @@ class HTML_Parser
 				array_pop($lines);
 			
 			$count = 1;
-			foreach($lines as $line){
-	
-				if ($count == $total){
-					$markdown .= "    ".$line.HTML2MD_NEWLINE;
-				} else {
-					$markdown .= "    ".$line; #final line of the code block; don't add newlines.
-				}
-				
-				$count++;				
+			foreach ($lines as $line) {
+				$line = trim($line, '&#xD;');
+				$markdown .= "    ".$line;
+				// Add newlines, except final line of the code
+				if ($count != $total) $markdown .= HTML2MD_NEWLINE;
+				$count++;
 			}
-
 
 		} else { # There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
 
