@@ -323,6 +323,8 @@ class HTML_Parser
 	
 		# Store the content of the code block in an array, one entry for each line
 		
+		$markdown = '';
+		
 		$code_content = $node->C14N();
 		$code_content = str_replace(array("<code>","</code>"), array("",""), $code_content);
 		
@@ -374,6 +376,8 @@ class HTML_Parser
 		
 		# Contents should have already been converted to markdown by this point,
 		# so we just need to add ">" symbols to each line.
+		
+		$markdown = '';
 		
 		$quote_content = trim($node->nodeValue);
 		
