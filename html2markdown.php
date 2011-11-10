@@ -89,15 +89,10 @@ class HTML_Parser
 		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
 		// Double decode. http://www.php.net/manual/en/function.htmlentities.php#99984
 		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-		$markdown = str_replace(array('<html>','</html>','<body>','</body>'), array('','','',''), $markdown);
+		$remove = array('<html>','</html>','<body>','</body>', '<?xml encoding="UTF-8">', '&#xD;');
 		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
-		$markdown = str_replace("<?xml encoding=\"UTF-8\">", "", $markdown);
-		
-		// Remove carriage-return character
-		$markdow = str_replace('&#xD;', '', $markdown);
-		
+		$markdown = str_replace($remove, '', $markdown);
 		return $markdown;
-	
 	}
 	
 	
