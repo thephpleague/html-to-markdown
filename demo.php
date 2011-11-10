@@ -31,7 +31,7 @@ body{font-family:helvetica, arial, sans;}
 		<form method="post" action="">
 			
 			<?php if ( !is_null($html) ): ?>
-				<textarea rows="30"  style="width:95%" name="html" id="html"><?= $html ?></textarea><br />
+				<textarea rows="30"  style="width:95%" name="html" id="html"><?php echo $html ?></textarea><br />
 			<?php else: ?>
 				<textarea rows="30"  style="width:95%" name="html" id="html">
 <h1>A level one header</h1>
@@ -154,7 +154,8 @@ body{font-family:helvetica, arial, sans;}
 		
 	<div style="width:50%;float:right;">
 		<h3>Markdown</h3>
-		<textarea rows="30" style="width:95%; font-family:monospace;" name="markdown"  id="markdown" style="font-family:monospace"><?= $markdown ?></textarea><br />
+		<textarea rows="30" style="width:95%; font-family:monospace;" name="markdown"  id="markdown" style="font-family:monospace"><?php 
+			echo htmlspecialchars($markdown); ?></textarea><br />
 	</div>
 	
 <div style="clear:both;"></div>	
