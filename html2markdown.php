@@ -55,6 +55,24 @@ class HTML_Parser
 	}
 
 
+	private static function has_parent_code($node) {
+		for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
+			if (is_null($p)) return false;
+			if ($p->nodeName == 'code') return true;
+		}
+		return false;
+	}
+	
+	private function convert_childs($node) {
+		if (self::has_parent_code($node)) return;
+		if ($node->hasChildNodes()) {
+			for ($length = $node->childNodes->length, $i = 0; $i < $length; $i++) {
+				$child = $node->childNodes->item($i);
+				$this->convert_childs($child);
+			}
+		}
+		$this->convert_to_markdown($node);
+	}
 
 	public function get_markdown()
 	{
@@ -67,42 +85,7 @@ class HTML_Parser
 		# with the innermost element ($grandchild_node) and working
 		# towards the outermost element ($node).
 				
-		$nodes = $body->childNodes;
-		$total = $nodes->length;
-		
-		for ($i = 0; $i < $total; $i++)
-		{
-			
-			$node 			= $nodes->item($i);
-			$child_nodes 	= $node->childNodes;
-			$total_children = $child_nodes->length;
-			
-			
-			for ($j = 0; $j < $total_children; $j++)
-			{
-				
-				$child_node			= $child_nodes->item($j);
-				$grandchild_nodes	= $child_node->childNodes;
-				$grandchild_total	= $grandchild_nodes->length;
-				
-				if ($child_node->nodeName != "code"){ #don't convert tags inside code blocks
-					
-					for ($k = 0; $k < $grandchild_total; $k++)
-					{
-						$grandchild_node = $grandchild_nodes->item($k);
-						$this->convert_to_markdown($grandchild_node);
-					}
-				
-				}
-				
-				$this->convert_to_markdown($child_node);
-	
-			}
-	
-			$this->convert_to_markdown($node);
-	
-		}
-	
+		$this->convert_childs($body);
 	
 		# The DOMDocument represented by $doc now consists of #text nodes, each containing a markdown
 		# version of the original DOM node created by convert_to_markdown().
@@ -111,13 +94,13 @@ class HTML_Parser
 		# and XML encoding lines, then converting entities such as &amp; back to &.
 	
 		$markdown = $this->doc->saveHTML();
-		$markdown = str_replace(array('<html>','</html>','<body>','</body>'), array('','','',''), $markdown);
-		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
-		$markdown = str_replace("<?xml encoding=\"UTF-8\">", "", $markdown);
 		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-	
+		// Double decode. http://www.php.net/manual/en/function.htmlentities.php#99984
+		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
+		$remove = array('<html>','</html>','<body>','</body>', '<?xml encoding="UTF-8">', '&#xD;');
+		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
+		$markdown = str_replace($remove, '', $markdown);
 		return $markdown;
-	
 	}
 	
 	
@@ -323,6 +306,8 @@ class HTML_Parser
 	
 		# Store the content of the code block in an array, one entry for each line
 		
+		$markdown = '';
+		
 		$code_content = $node->C14N();
 		$code_content = str_replace(array("<code>","</code>"), array("",""), $code_content);
 		
@@ -345,17 +330,14 @@ class HTML_Parser
 				array_pop($lines);
 			
 			$count = 1;
-			foreach($lines as $line){
-	
-				if ($count == $total){
-					$markdown .= "    ".$line.HTML2MD_NEWLINE;
-				} else {
-					$markdown .= "    ".$line; #final line of the code block; don't add newlines.
-				}
-				
-				$count++;				
+			foreach ($lines as $line) {
+				$line = trim($line, '&#xD;');
+				$markdown .= "    ".$line;
+				// Add newlines, except final line of the code
+				if ($count != $total) $markdown .= HTML2MD_NEWLINE;
+				$count++;
 			}
-
+			$markdown .= HTML2MD_NEWLINE;
 
 		} else { # There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
 
@@ -374,6 +356,8 @@ class HTML_Parser
 		
 		# Contents should have already been converted to markdown by this point,
 		# so we just need to add ">" symbols to each line.
+		
+		$markdown = '';
 		
 		$quote_content = trim($node->nodeValue);
 		
