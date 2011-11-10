@@ -191,7 +191,7 @@ class HTML_Parser
 				break;
 			default:
 				# Preserve tags that don't have markdown equivalents, such as <span>
-				# and #text nodes on their own, like WordPress� [short_tags].
+				# and #text nodes on their own, like WordPress [short_tags].
 				# C14N() is the XML canonicalization function (undocumented).
 				# It returns the full content of the node, including surrounding tags.
 				$markdown = $node->C14N();
