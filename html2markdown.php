@@ -20,6 +20,9 @@ if (!defined('HTML2MD_HEADER_STYLE')) define('HTML2MD_HEADER_STYLE', 'SETEX');
 # Change to false to show warnings when loading malformed HTML/unsupported tags
 if (!defined('HTML2MD_SUPPRESS_ERRORS')) define('HTML2MD_SUPPRESS_ERRORS', true);
 
+# New line in converted markdown result text
+if (!defined('HTML2MD_NEWLINE')) define('HTML2MD_NEWLINE', "\r\n");
+
 if (!function_exists('html2markdown')) {
 	function html2markdown($html) {
 		$parser = new HTML_Parser($html);
@@ -133,7 +136,7 @@ class HTML_Parser
 		{
 			case "p":
 			case "pre":			
-				$markdown = $value."\r\n\r\n";
+				$markdown = $value.HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "h1":
 				$markdown = $this->convert_header("h1", $value);
@@ -142,16 +145,16 @@ class HTML_Parser
 				$markdown = $this->convert_header("h2", $value);
 				break;
 			case "h3":
-				$markdown = "### ".$value."\r\n\r\n";
+				$markdown = "### ".$value.HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "h4":
-				$markdown = "#### ".$value."\r\n\r\n";
+				$markdown = "#### ".$value.HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "h5":
-				$markdown = "##### ".$value."\r\n\r\n";
+				$markdown = "##### ".$value.HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "h6":
-				$markdown = "###### ".$value."\r\n\r\n";
+				$markdown = "###### ".$value.HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "em":
 			case "i":
@@ -162,10 +165,10 @@ class HTML_Parser
 				$markdown = "**".$value."**";
 				break;
 			case "hr":
-				$markdown = "- - - - - -\r\n\r\n";
+				$markdown = "- - - - - -".HTML2MD_NEWLINE.HTML2MD_NEWLINE;
 				break;
 			case "br":
-				$markdown = "  \r\n";
+				$markdown = "  " . HTML2MD_NEWLINE;
 				break;
 			case "blockquote":
 				$markdown =  $this->convert_blockquote($node);
@@ -175,7 +178,7 @@ class HTML_Parser
 				break;
 			case "ol":
 			case "ul":
-				$markdown = $value."\r\n";
+				$markdown = $value . HTML2MD_NEWLINE;
 				break;
 			case "li":				
 				$markdown = $this->convert_list($node);
@@ -224,12 +227,12 @@ class HTML_Parser
 		{
 			$length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
 			$underline = ($level == "h1") ? "=" : "-";
-			$markdown = $content."\r\n".str_repeat($underline, $length)."\r\n\r\n"; #Setex style
+			$markdown = $content. HTML2MD_NEWLINE .str_repeat($underline, $length). HTML2MD_NEWLINE . HTML2MD_NEWLINE; #Setex style
 			
 		} else {
 		
 			$prefix = ($level == "h1") ? "# " : "## ";
-			$markdown = $prefix.$content."\r\n\r\n"; #atx style
+			$markdown = $prefix.$content. HTML2MD_NEWLINE . HTML2MD_NEWLINE; #atx style
 			
 		}
 		
@@ -300,12 +303,12 @@ class HTML_Parser
 
 		if ($list_type == "ul"){
 		
-			$markdown = "- ".$value."\r\n";
+			$markdown = "- ".$value.HTML2MD_NEWLINE;
 
 		} else {
 			
 			$number = $this->get_list_position($node);		
-			$markdown = $number.". ".$value."\r\n";						
+			$markdown = $number.". ".$value.HTML2MD_NEWLINE;
 			
 		}
 		
@@ -345,7 +348,7 @@ class HTML_Parser
 			foreach($lines as $line){
 	
 				if ($count == $total){
-					$markdown .= "    ".$line."\r\n";
+					$markdown .= "    ".$line.HTML2MD_NEWLINE;
 				} else {
 					$markdown .= "    ".$line; #final line of the code block; don't add newlines.
 				}
@@ -378,7 +381,7 @@ class HTML_Parser
 		$lines = array_filter($lines); //strips empty lines		
 		
 		foreach($lines as $line){	
-			$markdown .= "> ".$line."\r\n\r\n";
+			$markdown .= "> ".$line. HTML2MD_NEWLINE . HTML2MD_NEWLINE;
 		}
 		
 		return $markdown;	
