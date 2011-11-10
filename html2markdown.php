@@ -339,6 +339,7 @@ class HTML_Parser
 				$count++;
 			}
 			$markdown .= HTML2MD_NEWLINE;
+			$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
 
 		} else { # There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
 
