@@ -332,6 +332,7 @@ class HTML_Parser
 			$count = 1;
 			foreach ($lines as $line) {
 				//$line = trim($line, '&#xD;');
+				$line = str_replace('&#xD;', '', $line);
 				$markdown .= "    ".$line;
 				// Add newlines, except final line of the code
 				if ($count != $total) $markdown .= HTML2MD_NEWLINE;
