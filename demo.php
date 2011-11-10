@@ -1,6 +1,7 @@
 <?php 
 require_once( dirname( __FILE__) . '/html2markdown.php' );
 
+$markdown = '';
 $html = ($_POST) ? $_POST["html"] : null;
 
 if ( !is_null($html) )
