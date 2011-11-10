@@ -111,11 +111,12 @@ class HTML_Parser
 		# and XML encoding lines, then converting entities such as &amp; back to &.
 	
 		$markdown = $this->doc->saveHTML();
+		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
+		// Double decode. http://www.php.net/manual/en/function.htmlentities.php#99984
+		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
 		$markdown = str_replace(array('<html>','</html>','<body>','</body>'), array('','','',''), $markdown);
 		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
 		$markdown = str_replace("<?xml encoding=\"UTF-8\">", "", $markdown);
-		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-	
 		return $markdown;
 	
 	}
