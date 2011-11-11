@@ -3,7 +3,8 @@
 # html2markdown  -  An HTML-to-markdown conversion tool for PHP
 # Copyright (c) 2011 Nick Cernis | @nickcernis | http://modnerd.com
 # 
-# Version 1.0
+# Version 1.0.1
+# Latest version available from https://github.com/nickcernis/html2markdown/
 #
 # Licensed under The MIT license 
 # http://www.opensource.org/licenses/mit-license.php
@@ -54,7 +55,7 @@ class HTML_Parser
 
 	}
 
-
+	# Don't convert code that's inside a code block
 	private static function has_parent_code($node) {
 		for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
 			if (is_null($p)) return false;
@@ -63,12 +64,13 @@ class HTML_Parser
 		return false;
 	}
 	
-	private function convert_childs($node) {
+	# Convert child nodes from the outside in
+	private function convert_children($node) {
 		if (self::has_parent_code($node)) return;
 		if ($node->hasChildNodes()) {
 			for ($length = $node->childNodes->length, $i = 0; $i < $length; $i++) {
 				$child = $node->childNodes->item($i);
-				$this->convert_childs($child);
+				$this->convert_children($child);
 			}
 		}
 		$this->convert_to_markdown($node);
@@ -80,31 +82,30 @@ class HTML_Parser
 		# Use the body tag as our root element
 		$body = $this->doc->getElementsByTagName("body")->item(0);
 		
-		# For each element inside the body, find child and grandchild
-		# elements and convert those to markdown #text nodes, starting
-		# with the innermost element ($grandchild_node) and working
-		# towards the outermost element ($node).
-				
-		$this->convert_childs($body);
+		# For each element inside the body, find child elements and convert 
+		# those to markdown #text nodes, starting with the innermost element 
+		# and working towards the outermost element ($node).
+		
+		$this->convert_children($body);
 	
-		# The DOMDocument represented by $doc now consists of #text nodes, each containing a markdown
-		# version of the original DOM node created by convert_to_markdown().
+		# The DOMDocument represented by $doc now consists of #text nodes, each containing a 
+		# markdown version of the original DOM node created by convert_to_markdown().
 	
 		# Return the <body> contents of $doc, first stripping html and body tags, the DOCTYPE 
 		# and XML encoding lines, then converting entities such as &amp; back to &.
 	
 		$markdown = $this->doc->saveHTML();
-		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-		// Double decode. http://www.php.net/manual/en/function.htmlentities.php#99984
-		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-		$remove = array('<html>','</html>','<body>','</body>', '<?xml encoding="UTF-8">', '&#xD;');
+		// Double decode. http://www.php.net/manual/en/function.htmlentities.php#99984		
+		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');		
+		$markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');		
 		$markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown);
+		$remove = array('<html>','</html>','<body>','</body>', '<?xml encoding="UTF-8">', '&#xD;');
 		$markdown = str_replace($remove, '', $markdown);
 		return $markdown;
 	}
 	
 	
-	# Convert the supplied element into it's markdown equivalent,
+	# Convert the supplied element into its markdown equivalent,
 	# then swap the original element in the DOM with the markdown
 	# version as a #text node. This converts the HTML $doc into
 	# markdown while retaining the nesting and order of all tags.
@@ -196,7 +197,7 @@ class HTML_Parser
 	# matching the number of underscores with the length of the title.
 	#
 	#	e.g.	Header 1	Header Two
-	#			========	----------
+	#		========	----------
 	#
 	#	Returns atx headers instead if HTML2MD_HEADER_STYLE is "ATX"
 	#
