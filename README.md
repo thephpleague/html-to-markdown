@@ -2,14 +2,11 @@ html2markdown for PHP
 =====================
 
 An HTML-to-markdown conversion tool for PHP by Nick Cernis  
-[@nickcernis](http://twitter.com/nickcernis)  |  http://modnerd.com
+[@nickcernis](http://twitter.com/nickcernis) 
 
 Version 1.0.1  
 Requires PHP 5  
 Licensed under The MIT license: http://www.opensource.org/licenses/mit-license.php
-
-###Live demo
-A live demo is available at http://modnerd.com/html2markdown/
 
 ###Instructions
 
@@ -44,7 +41,7 @@ The included `demo.php` file contains an HTML->markdown conversion form for test
 ###Architecture notes
 
 html2markdown is about 450 lines. It's a single file with no dependencies. It uses native DOM manipulation libraries (DOMDocument), not regex voodoo, 
-to convert code. I'd appreciate your help with any bug fixes and improvements.
+to convert code. Bug fixes and improvements are welcome.
 
 ###Contributors
 
