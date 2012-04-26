@@ -1,8 +1,7 @@
 html2markdown for PHP
 =====================
 
-An HTML-to-markdown conversion tool for PHP by Nick Cernis  
-[@nickcernis](http://twitter.com/nickcernis) 
+An HTML-to-markdown conversion tool for PHP by [@nickcernis](http://twitter.com/nickcernis) 
 
 Version 1.0.1  
 Requires PHP 5  
