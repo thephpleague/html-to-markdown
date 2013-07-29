@@ -1,0 +1,18 @@
+{
+  "name": "nickcernis/html2markdown",
+	"type": "library",
+	"description": "An HTML-to-markdown conversion helper for PHP",
+	"keywords": ["markdown", "php"],
+	"homepage": "https://github.com/nickcernis/html2markdown",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Nick Cernis",
+			"email": "nickcernis@me.com",
+			"homepage": "http://www.krop.com/nickcernis/"
+		}
+	],
+	"require": {
+		"php": ">=5"
+	}
+}
