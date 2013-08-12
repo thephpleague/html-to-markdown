@@ -1,60 +1,84 @@
-html2markdown for PHP
-=====================
+HTML To Markdown for PHP
+========================
 
-An HTML-to-markdown conversion tool for PHP by [@nickcernis](http://twitter.com/nickcernis) 
+A helper class that converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
-Version 1.0.1  
-Requires PHP 5  
-Licensed under The MIT license: http://www.opensource.org/licenses/mit-license.php
+**Version**: 1.1  
+**Requires**: PHP 5.2+  
+**Author**: [@nickcernis](http://twitter.com/nickcernis)   
+**License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
-###Instructions
+### Why convert HTML to Markdown?
+*"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](http://michelf.com/projects/php-markdown/),"* you continue, already labouring the point somewhat, *"but why go the other way?"*
+
+Typically you would convert HTML to Markdown if:
+
+1. You have an existing HTML document that needs to be edited by people with good taste.
+2. You want to store new content in HTML format but write and edit it as Markdown. (Sometimes, converting the HTML from the database to Markdown before displaying it in a textarea makes more sense than storing it as Markdown and converting it to HTML when displaying it on the front end. Or, worse, storing it as Markdown *and* HTML and updating both versions every time the content changes.)
+3. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
+4. You just really like Markdown.
+
+### How to use it
+First, you must create the universe. But it gets easier after that.
 
 Include html2markdown.php:
 	
 	require_once( dirname( __FILE__) . '/html2markdown.php' );
        
-Call html2markdown() on your valid, slash-stripped HTML code:
+Create a new HTML_To_Markdown instance, passing in your valid HTML code:
 
-    $markdown = html2markdown($html);
+	$html = "<h3>Quick, to the Batpoles!</h3>";
+    $markdown = new HTML_To_Markdown($html);
     
-The `$markdown` string now contains the markdowned version of your HTML.
+The `$markdown` object now contains the Markdown version of your HTML. Use it like a string:
 
-The included `demo.php` file contains an HTML->markdown conversion form for testing.
+    echo $markdown;
+    // ==> ### Quick, to the Batpoles!
 
-###Limitations
+The included `demo.php` file contains an HTML->Markdown conversion form to try out.
 
-- Chokes on malformed HTML. i.e. unclosed tags. Am considering a cleanup function to check for simple errors with an off switch for projects that perform their own reformatting, like WordPress. At present, you must nest `<code>` blocks inside `<p>` or `<pre>`, for example.
-- Markdown Extra, MultiMarkdown and other variants aren't supported; just Markdown.
+### Limitations
 
-###Bugs
+- Malformed HTML, such as unclosed tags, will cause markdown to render out of order. 
+- At present, your HTML must nest `<code>` blocks inside `<p>` or `<pre>`. Basically, your HTML has to be valid. 
+- Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
 
-- Nested lists and lists with multiple paragraphs aren't converted correctly.
+If you want to see a cleanup feature to check for simple HTML errors, with an off switch for projects like WordPress that perform their own reformatting, feel free to add it yourself or [request it](https://github.com/nickcernis/html2markdown/issues?direction=desc&sort=created&state=closed).
+
+### Known issues
+
+- Nested lists and lists containing multiple paragraphs aren't converted correctly.
 - Lists inside blockquotes aren't converted correctly.
 
-###Style notes
+[Report your issue here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches are especially welcome.
 
-- SETEX (underlined) headers are the default for H1 and H2. Change the HTML2MD_HEADER_STYLE constant to "ATX" if you want `# H1` and `## H2` style tags instead.
-- Reference-style labels (with src and href links in the footnotes) are not used. Links and images are all referenced inline.
-- Blockquotes aren't line wrapped (makes them easier to edit).
+### Style notes
 
-###Architecture notes
+- SETEX (underlined) headers are the default for H1 and H2. If you prefer the ATX style for H1 and H2 (# Header 1 and ## Header 2), set `header_style` to 'atx' in the options array when you instantiate the object:  
 
-html2markdown is about 450 lines. It's a single file with no dependencies. It uses native DOM manipulation libraries (DOMDocument), not regex voodoo, 
-to convert code. Bug fixes and improvements are welcome.
+    `$markdown = new HTML_To_Markdown( $html, array('header_style'=>'atx') );`
 
-###Contributors
+     Headers of H3 priority and lower always use atx style.
+    
+- Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used. 
+- Blockquotes aren't line wrapped – it makes the converted Markdown easier to edit.
 
-My thanks to [unlight](https://github.com/unlight) and [iamthes](https://github.com/iamthes) for their contributions.
+### Architecture notes
 
-###How it works
-html2markdown creates a DOM tree from the supplied HTML, walks through the tree, and converts each node to a text node, starting from the most deeply nested node and working inwards towards the root node.
+HTML To Markdown is a single file with no dependencies except for PHP 5.2. It uses native DOM manipulation libraries (DOMDocument), not regex voodoo, to convert code.
 
+### Contributors
 
-###TO-DO
+Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors). You'd be very welcome to contribute improvements and feature suggestions as well.
 
+### How it works
+HTML To Markdown creates a DOMDocument from the supplied HTML, walks through the tree, and converts each node to a text node containing the equivalent markdown, starting from the most deeply nested node and working inwards towards the root node.
+
+### To-do
 - Support for nested lists and lists inside blockquotes.
+- Preserve tags as HTML if they contain attributes that can't be represented with Markdown (e.g. `style`).
 
-###Trying to convert Markdown to HTML?
+### Trying to convert Markdown to HTML?
 
-Use [PHP Markdown](http://michelf.com/projects/php-markdown/) from Michel Fortin.
+Use [PHP Markdown](http://michelf.com/projects/php-markdown/) from Michel Fortin. No guarantees about the Elvish, though.
 
