@@ -3,8 +3,8 @@ HTML To Markdown for PHP
 
 A helper class that converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
-**Version**: 2.0
-**Requires**: PHP 5.2+
+**Version**: 2.0  
+**Requires**: PHP 5.2+  
 **Author**: [@nickcernis](http://twitter.com/nickcernis)   
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
