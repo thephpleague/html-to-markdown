@@ -1,5 +1,5 @@
 <?php
-require_once '../HTML_To_Markdown.php';
+require_once dirname(__FILE__) . '/../HTML_To_Markdown.php';
 
 class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 {
