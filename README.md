@@ -11,12 +11,12 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
 ### Why convert HTML to Markdown?
-*"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](http://michelf.com/projects/php-markdown/),"* you continue, already labouring the point somewhat, *"but why go the other way?"*
+*"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](http://michelf.com/projects/php-markdown/),"* you continue, already labouring the question somewhat, *"but why go the other way?"*
 
 Typically you would convert HTML to Markdown if:
 
 1. You have an existing HTML document that needs to be edited by people with good taste.
-2. You want to store new content in HTML format but write and edit it as Markdown. (Sometimes, converting the HTML from the database to Markdown before displaying it in a textarea makes more sense than storing it as Markdown and converting it to HTML when displaying it on the front end. Or, worse, storing it as Markdown *and* HTML and updating both versions every time the content changes.)
+2. You want to store new content in HTML format but write and edit it as Markdown. (Sometimes, converting the HTML to Markdown before displaying it in a textarea in the backend makes more sense than storing it as Markdown and converting it to HTML when displaying it on the front end. Or storing it as Markdown *and* HTML and updating both versions every time the content changes.)
 3. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
 4. You just really like Markdown.
 
