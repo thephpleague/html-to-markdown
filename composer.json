@@ -13,7 +13,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "HTML_To_Markdown": "" }
+        "classmap": [ "HTML_To_Markdown.php" ]
     },
     "require": {
         "php": ">=5.2"
