@@ -4,7 +4,7 @@
  *
  * A helper class to convert HTML to Markdown.
  *
- * @version 1.1
+ * @version 2.0
  * @author Nick Cernis <nick@cern.is>
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @link http://twitter.com/nickcernis Nick on twitter.
@@ -23,12 +23,13 @@ class HTML_To_Markdown
     private $output;
 
     /**
-     * @var array Class-wide options users can override. See $defaults in __construct().
+     * @var array Class-wide options users can override.
      */
     private $options = array(
-        'header_style'    => 'setex', // Set to "atx" to output H1 and H2 headers as #Header1 and ##Header2
-        'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML/unsupported tags
+        'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
+        'suppress_errors' => true,     // Set to false to show warnings when loading malformed HTML
     );
+
 
     /**
      * Constructor
@@ -63,10 +64,10 @@ class HTML_To_Markdown
     /**
      * Is Code Sample?
      *
-     * Is the node part of an HTML code sample inside a <code> tag?
+     * Is the node part of an HTML code sample inside a <code> tag? Workaround for malformed <code> samples.
      *
-     * Walks up the DOM tree to see if any parent nodes are <code> tags. Used in convert_children()
-     * to return early and prevent conversion of HTML code samples to Markdown.
+     * Walks up the DOM tree to see if any parent nodes are <code> tags. Used in convert_children() to return early
+     * and prevent conversion of HTML code samples inside <code> that are not encoded correctly. (i.e. contain <tags>)
      *
      * @param $node
      * @return bool
@@ -140,6 +141,7 @@ class HTML_To_Markdown
         $markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown); // Strip doctype declaration
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
+        $markdown = trim($markdown, "\n\r\0\x0B");
 
         return $markdown;
     }
@@ -162,7 +164,7 @@ class HTML_To_Markdown
         switch ($tag) {
             case "p":
             case "pre":
-                $markdown = $value . PHP_EOL . PHP_EOL;
+                $markdown = trim($value) . PHP_EOL . PHP_EOL;
                 break;
             case "h1":
                 $markdown = $this->convert_header("h1", $value);
@@ -215,6 +217,9 @@ class HTML_To_Markdown
             case "a":
                 $markdown = $this->convert_anchor($node);
                 break;
+            case "#text":
+                $markdown = preg_replace('~\s+~', ' ', $value);
+                break;
             default:
                 // Preserve tags that don't have Markdown equivalents, such as <span> and #text nodes on their own,
                 // like WordPress [short_tags]. C14N() is the XML canonicalization function. It returns the full
@@ -234,7 +239,7 @@ class HTML_To_Markdown
     /**
      * Convert Header
      *
-     * Converts h1 and h2 headers to Markdown-style headers in setex style,
+     * Converts h1 and h2 headers to Markdown-style headers in setext style,
      * matching the number of underscores with the length of the title.
      *
      * e.g.     Header 1    Header Two
@@ -250,10 +255,10 @@ class HTML_To_Markdown
      */
     private function convert_header($level, $content)
     {
-        if ($this->options['header_style'] == "setex") {
+        if ($this->options['header_style'] == "setext") {
             $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
             $underline = ($level == "h1") ? "=" : "-";
-            $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // Setex style
+            $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
         } else {
             $prefix = ($level == "h1") ? "# " : "## ";
             $markdown = $prefix . $content . PHP_EOL . PHP_EOL; // atx style
@@ -268,7 +273,7 @@ class HTML_To_Markdown
      *
      * Converts <img /> tags to Markdown.
      *
-     * e.g.     <img src="/path/img.jpg" alt="blah" title="Title" />
+     * e.g.     <img src="/path/img.jpg" alt="alt text" title="Title" />
      * becomes  ![alt text](/path/img.jpg "Title")
      *
      * @param $node
@@ -332,10 +337,10 @@ class HTML_To_Markdown
         $value = $node->nodeValue;
 
         if ($list_type == "ul") {
-            $markdown = "- " . $value . PHP_EOL;
+            $markdown = "- " . trim($value) . PHP_EOL;
         } else {
             $number = $this->get_list_position($node);
-            $markdown = $number . ". " . $value . PHP_EOL;
+            $markdown = $number . ". " . trim($value) . PHP_EOL;
         }
 
         return $markdown;
@@ -356,8 +361,8 @@ class HTML_To_Markdown
 
         $markdown = '';
 
-        $code_content = $node->C14N();
-        $code_content = str_replace(array("<code>", "</code>"), array("", ""), $code_content);
+        $code_content = html_entity_decode($node->C14N());
+        $code_content = str_replace(array("<code>", "</code>"), "", $code_content);
 
         $lines = preg_split('/\r\n|\r|\n/', $code_content);
         $total = count($lines);
@@ -382,11 +387,11 @@ class HTML_To_Markdown
                 $line = str_replace('&#xD;', '', $line);
                 $markdown .= "    " . $line;
                 // Add newlines, except final line of the code
-                if ($count != $total) $markdown .= PHP_EOL;
+                if ($count != $total)
+                    $markdown .= PHP_EOL;
                 $count++;
             }
             $markdown .= PHP_EOL;
-            $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
 
         } else { // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
 
@@ -466,4 +471,16 @@ class HTML_To_Markdown
         return $this->output;
     }
 
+
+    /**
+     * Output
+     *
+     * Getter for the converted Markdown contents stored in $this->output
+     *
+     * @return string
+     */
+    public function output()
+    {
+        return $this->output;
+    }
 }

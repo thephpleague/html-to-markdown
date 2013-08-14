@@ -3,8 +3,8 @@ HTML To Markdown for PHP
 
 A helper class that converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
-**Version**: 1.1  
-**Requires**: PHP 5.2+  
+**Version**: 2.0
+**Requires**: PHP 5.2+
 **Author**: [@nickcernis](http://twitter.com/nickcernis)   
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
@@ -21,55 +21,54 @@ Typically you would convert HTML to Markdown if:
 ### How to use it
 First, you must create the universe. But it gets easier after that.
 
-Include html2markdown.php:
-	
-	require_once( dirname( __FILE__) . '/html2markdown.php' );
-       
+Include HTML_To_Markdown.php:
+
+    require_once( dirname( __FILE__) . '/HTML_To_Markdown.php' );
+
 Create a new HTML_To_Markdown instance, passing in your valid HTML code:
 
-	$html = "<h3>Quick, to the Batpoles!</h3>";
+    $html = "<h3>Quick, to the Batpoles!</h3>";
     $markdown = new HTML_To_Markdown($html);
-    
+
 The `$markdown` object now contains the Markdown version of your HTML. Use it like a string:
 
     echo $markdown;
     // ==> ### Quick, to the Batpoles!
 
-The included `demo.php` file contains an HTML->Markdown conversion form to try out.
+Or access the Markdown output directly:
+
+    $string = $markdown->output();
+
+The included `demo` directory contains an HTML->Markdown conversion form to try out.
 
 ### Limitations
 
-- Malformed HTML, such as unclosed tags, will cause markdown to render out of order. 
-- At present, your HTML must nest `<code>` blocks inside `<p>` or `<pre>`. Basically, your HTML has to be valid. 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
-
-If you want to see a cleanup feature to check for simple HTML errors, with an off switch for projects like WordPress that perform their own reformatting, feel free to add it yourself or [request it](https://github.com/nickcernis/html2markdown/issues?direction=desc&sort=created&state=closed).
 
 ### Known issues
 
 - Nested lists and lists containing multiple paragraphs aren't converted correctly.
 - Lists inside blockquotes aren't converted correctly.
 
-[Report your issue here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches are especially welcome.
+[Report your issue or request a feature here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches are especially welcome.
 
 ### Style notes
 
-- SETEX (underlined) headers are the default for H1 and H2. If you prefer the ATX style for H1 and H2 (# Header 1 and ## Header 2), set `header_style` to 'atx' in the options array when you instantiate the object:  
+- Setext (underlined) headers are the default for H1 and H2. If you prefer the ATX style for H1 and H2 (# Header 1 and ## Header 2), set `header_style` to 'atx' in the options array when you instantiate the object:
 
     `$markdown = new HTML_To_Markdown( $html, array('header_style'=>'atx') );`
 
      Headers of H3 priority and lower always use atx style.
-    
+
 - Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used. 
 - Blockquotes aren't line wrapped – it makes the converted Markdown easier to edit.
 
 ### Architecture notes
-
 HTML To Markdown is a single file with no dependencies except for PHP 5.2. It uses native DOM manipulation libraries (DOMDocument), not regex voodoo, to convert code.
 
 ### Contributors
 
-Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors). You'd be very welcome to contribute improvements and feature suggestions as well.
+Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors) so far. You'd be very welcome to contribute improvements and feature suggestions as well.
 
 ### How it works
 HTML To Markdown creates a DOMDocument from the supplied HTML, walks through the tree, and converts each node to a text node containing the equivalent markdown, starting from the most deeply nested node and working inwards towards the root node.

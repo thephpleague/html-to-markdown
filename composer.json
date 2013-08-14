@@ -1,9 +1,9 @@
 {
-    "name": "nickcernis/html2markdown",
+    "name": "nickcernis/html-to-markdown",
     "type": "library",
     "description": "An HTML-to-markdown conversion helper for PHP",
     "keywords": ["markdown", "html"],
-    "homepage": "https://github.com/nickcernis/html2markdown",
+    "homepage": "https://github.com/nickcernis/html-to-markdown",
     "license": "MIT",
     "authors": [
         {
@@ -12,7 +12,14 @@
             "homepage": "http://modernnerd.net"
         }
     ],
+    "autoload": {
+        "psr-0": { "HTML_To_Markdown": "" }
+    },
     "require": {
         "php": ">=5.2"
+    },
+    "require-dev": {
+        "php": ">=5.3.3",
+        "phpunit/phpunit": "3.7.0"
     }
 }
