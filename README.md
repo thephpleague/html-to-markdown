@@ -21,11 +21,21 @@ Typically you would convert HTML to Markdown if:
 ### How to use it
 First, you must create the universe. But it gets easier after that.
 
-Include HTML_To_Markdown.php:
+Either include HTML_To_Markdown.php directly:
 
     require_once( dirname( __FILE__) . '/HTML_To_Markdown.php' );
 
-Create a new HTML_To_Markdown instance, passing in your valid HTML code:
+Or, require the library in your composer.json:
+
+    {
+        "require": {
+            "nickcernis/html-to-markdown": "dev-master"
+        }
+    }
+
+Then `composer install` and add `require 'vendor/autoload.php';` to top of your script.
+
+Next, create a new HTML_To_Markdown instance, passing in your valid HTML code:
 
     $html = "<h3>Quick, to the Batpoles!</h3>";
     $markdown = new HTML_To_Markdown($html);
