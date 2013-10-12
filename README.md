@@ -7,7 +7,7 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 
 **Version**: 2.0.1
 **Requires**: PHP 5.2+  
-**Author**: [@nickcernis](http://twitter.com/nickcernis)   
+**Author**: [@nickcernis](http://twitter.com/nickcernis)
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
 ### Why convert HTML to Markdown?
