@@ -4,7 +4,7 @@
  *
  * A helper class to convert HTML to Markdown.
  *
- * @version 2.0
+ * @version 2.0.1
  * @author Nick Cernis <nick@cern.is>
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @link http://twitter.com/nickcernis Nick on twitter.

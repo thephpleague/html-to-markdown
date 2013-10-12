@@ -5,9 +5,9 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 
 [![Build Status](https://travis-ci.org/nickcernis/html-to-markdown.png?branch=master)](https://travis-ci.org/nickcernis/html-to-markdown)
 
-**Version**: 2.0  
+**Version**: 2.0.1
 **Requires**: PHP 5.2+  
-**Author**: [@nickcernis](http://twitter.com/nickcernis)   
+**Author**: [@nickcernis](http://twitter.com/nickcernis)
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
 ### Why convert HTML to Markdown?
@@ -21,8 +21,6 @@ Typically you would convert HTML to Markdown if:
 4. You just really like Markdown.
 
 ### How to use it
-First, you must create the universe. But it gets easier after that.
-
 Either include HTML_To_Markdown.php directly:
 
     require_once( dirname( __FILE__) . '/HTML_To_Markdown.php' );
@@ -80,7 +78,7 @@ HTML To Markdown is a single file with no dependencies except for PHP 5.2. It us
 
 ### Contributors
 
-Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors) so far. You'd be very welcome to contribute improvements and feature suggestions as well.
+Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors) so far. Further improvements and feature suggestions are very welcome.
 
 ### How it works
 HTML To Markdown creates a DOMDocument from the supplied HTML, walks through the tree, and converts each node to a text node containing the equivalent markdown, starting from the most deeply nested node and working inwards towards the root node.
