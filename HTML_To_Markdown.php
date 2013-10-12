@@ -164,7 +164,7 @@ class HTML_To_Markdown
         switch ($tag) {
             case "p":
             case "pre":
-                $markdown = trim($value) . PHP_EOL . PHP_EOL;
+                $markdown = rtrim($value) . PHP_EOL . PHP_EOL;
                 break;
             case "h1":
                 $markdown = $this->convert_header("h1", $value);
