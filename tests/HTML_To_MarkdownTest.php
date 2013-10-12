@@ -57,6 +57,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<ul><li>Item A</li><li>Item B</li></ul>", "- Item A\n- Item B");
         $this->html_gives_markdown("<ul><li>   Item A</li><li>   Item B</li></ul>", "- Item A\n- Item B");
         $this->html_gives_markdown("<ol><li>Item A</li><li>Item B</li></ol>", "1. Item A\n2. Item B");
+        $this->html_gives_markdown("<ol>\n    <li>Item A</li>\n    <li>Item B</li>\n</ol>", "1. Item A\n2. Item B");
         $this->html_gives_markdown("<ol><li>   Item A</li><li>   Item B</li></ol>", "1. Item A\n2. Item B");
     }
 
@@ -64,6 +65,8 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>", "`<p>Some sample HTML</p>`");
         $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "    <p>Some sample HTML</p>\n    <p>And another line</p>");
+        $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "    #sidebar h1 {\n        font-size: 1.5em;\n        font-weight: bold;\n    }");
+        $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "    #sidebar h1 {\n        font-size: 1.5em;\n        font-weight: bold;\n    }");
     }
 
     public function test_blockquotes()
