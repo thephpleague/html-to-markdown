@@ -5,22 +5,24 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 
 [![Build Status](https://travis-ci.org/nickcernis/html-to-markdown.png?branch=master)](https://travis-ci.org/nickcernis/html-to-markdown)
 
-**Version**: 2.0.1
+**Version**: 2.0.1  
 **Requires**: PHP 5.2+  
-**Author**: [@nickcernis](http://twitter.com/nickcernis)
+**Author**: [@nickcernis](http://twitter.com/nickcernis)  
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
 ### Why convert HTML to Markdown?
+
 *"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](http://michelf.com/projects/php-markdown/),"* you continue, already labouring the question somewhat, *"but why go the other way?"*
 
 Typically you would convert HTML to Markdown if:
 
 1. You have an existing HTML document that needs to be edited by people with good taste.
-2. You want to store new content in HTML format but write and edit it as Markdown. (Sometimes, converting the HTML to Markdown before displaying it in a textarea in the backend makes more sense than storing it as Markdown and converting it to HTML when displaying it on the front end. Or storing it as Markdown *and* HTML and updating both versions every time the content changes.)
+2. You want to store new content in HTML format but edit it as Markdown. (Storing content as HTML is sometimes preferable to storing it as Markdown, or storing the same content in both formats. That way, you can convert stored HTML back to Markdown when editing it on the backend, instead of converting stored Markdown to HTML for every page view on the front end.)
 3. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
 4. You just really like Markdown.
 
 ### How to use it
+
 Either include HTML_To_Markdown.php directly:
 
     require_once( dirname( __FILE__) . '/HTML_To_Markdown.php' );
@@ -59,8 +61,9 @@ The included `demo` directory contains an HTML->Markdown conversion form to try 
 
 - Nested lists and lists containing multiple paragraphs aren't converted correctly.
 - Lists inside blockquotes aren't converted correctly.
+- Any reported [open issues here](https://github.com/nickcernis/html-to-markdown/issues?state=open).
 
-[Report your issue or request a feature here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches are especially welcome.
+[Report your issue or request a feature here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches or failing tests are especially welcome.
 
 ### Style notes
 
@@ -73,19 +76,28 @@ The included `demo` directory contains an HTML->Markdown conversion form to try 
 - Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used. 
 - Blockquotes aren't line wrapped – it makes the converted Markdown easier to edit.
 
+### Dependencies
+
+HTML To Markdown requires PHP's [xml](http://www.php.net/manual/en/xml.installation.php), [lib-xml](http://www.php.net/manual/en/libxml.installation.php), and [dom](http://www.php.net/manual/en/dom.installation.php) extensions, all of which are enabled by default on most distributions.
+
+Errors such as "Fatal error: Class 'DOMDocument' not found" on distributions such as CentOS that disable PHP's xml extension can be resolved by installing php-xml.
+
 ### Architecture notes
-HTML To Markdown is a single file with no dependencies except for PHP 5.2. It uses native DOM manipulation libraries (DOMDocument), not regex voodoo, to convert code.
+
+HTML To Markdown is a single file that uses native DOM manipulation libraries (DOMDocument), not regex voodoo, to convert code.
 
 ### Contributors
 
 Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors) so far. Further improvements and feature suggestions are very welcome.
 
 ### How it works
+
 HTML To Markdown creates a DOMDocument from the supplied HTML, walks through the tree, and converts each node to a text node containing the equivalent markdown, starting from the most deeply nested node and working inwards towards the root node.
 
 ### To-do
+
 - Support for nested lists and lists inside blockquotes.
-- Preserve tags as HTML if they contain attributes that can't be represented with Markdown (e.g. `style`).
+- Offer an option to preserve tags as HTML if they contain attributes that can't be represented with Markdown (e.g. `style`).
 
 ### Trying to convert Markdown to HTML?
 
