@@ -501,7 +501,7 @@ class HTML_To_Markdown
      */
     public function __toString()
     {
-        return $this->output;
+        return $this->output();
     }
 
 
@@ -514,6 +514,10 @@ class HTML_To_Markdown
      */
     public function output()
     {
-        return $this->output;
+        if(!$this->output) {
+            return '';
+        } else {
+            return $this->output;
+        }
     }
 }
