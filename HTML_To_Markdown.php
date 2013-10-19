@@ -18,7 +18,7 @@ class HTML_To_Markdown
     private $document;
 
     /**
-     * @var string The Markdown version of the original HTML.
+     * @var string|boolean The Markdown version of the original HTML, or false if conversion failed
      */
     private $output;
 
