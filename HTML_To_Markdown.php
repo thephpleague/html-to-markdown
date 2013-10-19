@@ -4,7 +4,7 @@
  *
  * A helper class to convert HTML to Markdown.
  *
- * @version 2.0.1
+ * @version 2.1.0
  * @author Nick Cernis <nick@cern.is>
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @link http://twitter.com/nickcernis Nick on twitter.
@@ -18,7 +18,7 @@ class HTML_To_Markdown
     private $document;
 
     /**
-     * @var string The Markdown version of the original HTML.
+     * @var string|boolean The Markdown version of the original HTML, or false if conversion failed
      */
     private $output;
 
@@ -28,6 +28,7 @@ class HTML_To_Markdown
     private $options = array(
         'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
         'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
+        'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
     );
 
 
@@ -39,11 +40,38 @@ class HTML_To_Markdown
      * @param string $html The HTML to convert to Markdown.
      * @param array $overrides [optional] List of style and error display overrides.
      */
-    public function __construct($html, $overrides = null)
+    public function __construct($html = null, $overrides = null)
     {
         if ($overrides)
             $this->options = array_merge($this->options, $overrides);
 
+        if ($html)
+            $this->convert($html);
+    }
+
+
+    /**
+     * Setter for conversion options
+     *
+     * @param $name
+     * @param $value
+     */
+    public function set_option($name, $value)
+    {
+        $this->options[$name] = $value;
+    }
+
+
+    /**
+     * Convert
+     *
+     * Loads HTML and passes to get_markdown()
+     *
+     * @param $html
+     * @return string The Markdown version of the html
+     */
+    public function convert($html)
+    {
         $html = preg_replace('~>\s+<~', '><', $html); // Strip white space between tags to prevent creation of empty #text nodes
 
         $this->document = new DOMDocument();
@@ -57,28 +85,26 @@ class HTML_To_Markdown
         if ($this->options['suppress_errors'])
             libxml_clear_errors();
 
-        $this->output = $this->get_markdown($html);
+        return $this->get_markdown($html);
     }
 
 
     /**
-     * Is Code Sample?
+     * Is Child Of?
      *
-     * Is the node part of an HTML code sample inside a <code> tag? Workaround for malformed <code> samples.
+     * Is the node a child of the given parent tag?
      *
-     * Walks up the DOM tree to see if any parent nodes are <code> tags. Used in convert_children() to return early
-     * and prevent conversion of HTML code samples inside <code> that are not encoded correctly. (i.e. contain <tags>)
-     *
+     * @param $parent_name string The name of the parent node to search for (e.g. 'code')
      * @param $node
      * @return bool
      */
-    private static function is_code_sample($node)
+    private static function is_child_of($parent_name, $node)
     {
         for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
             if (is_null($p))
                 return false;
 
-            if ($p->nodeName == 'code')
+            if ($p->nodeName == $parent_name)
                 return true;
         }
         return false;
@@ -98,7 +124,7 @@ class HTML_To_Markdown
     private function convert_children($node)
     {
         // Don't convert HTML code inside <code> blocks to Markdown - that should stay as HTML
-        if (self::is_code_sample($node))
+        if (self::is_child_of('code', $node))
             return;
 
         // If the node has children, convert those to Markdown first
@@ -122,12 +148,19 @@ class HTML_To_Markdown
      * Sends the body node to convert_children() to change inner nodes to Markdown #text nodes, then saves and
      * returns the resulting converted document as a string in Markdown format.
      *
-     * @return string The converted HTML as Markdown
+     * @return string|boolean The converted HTML as Markdown, or false if conversion failed
      */
     private function get_markdown()
     {
         // Use the body tag as our root element
         $body = $this->document->getElementsByTagName("body")->item(0);
+
+        // Try the head tag if there's no body tag (e.g. the user's passed a single <script> tag for conversion)
+        if (!$body)
+            $body = $this->document->getElementsByTagName("head")->item(0);
+
+        if (!$body)
+            return false;
 
         // Convert all children of the body element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
@@ -139,9 +172,11 @@ class HTML_To_Markdown
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
         $markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown); // Strip doctype declaration
-        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<?xml encoding="UTF-8">', '&#xD;');
+        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
         $markdown = trim($markdown, "\n\r\0\x0B");
+
+        $this->output = $markdown;
 
         return $markdown;
     }
@@ -164,13 +199,13 @@ class HTML_To_Markdown
         switch ($tag) {
             case "p":
             case "pre":
-                $markdown = rtrim($value) . PHP_EOL . PHP_EOL;
+                $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
                 break;
             case "h1":
-                $markdown = $this->convert_header("h1", $value);
+                $markdown = $this->convert_header("h1", $node);
                 break;
             case "h2":
-                $markdown = $this->convert_header("h2", $value);
+                $markdown = $this->convert_header("h2", $node);
                 break;
             case "h3":
                 $markdown = "### " . $value . PHP_EOL . PHP_EOL;
@@ -220,13 +255,14 @@ class HTML_To_Markdown
             case "#text":
                 $markdown = preg_replace('~\s+~', ' ', $value);
                 break;
+            case "#comment":
+                $markdown = '';
+                break;
             default:
-                // Preserve tags that don't have Markdown equivalents, such as <span> and #text nodes on their own,
-                // like WordPress [short_tags]. C14N() is the XML canonicalization function. It returns the full
-                // content of the node as a string, including surrounding tags. This effectively converts any tags
-                // not covered in the above cases into plain text nodes with the tags in tact. That way, they appear
-                // as HTML in the returned Markdown. http://www.php.net/manual/en/domnode.c14n.php
-                $markdown = $node->C14N();
+                // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
+                // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
+                // See: http://www.php.net/manual/en/domnode.c14n.php
+                $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
         }
 
         // Create a DOM text node containing the Markdown equivalent of the original node
@@ -251,12 +287,14 @@ class HTML_To_Markdown
      * e.g.    # Header 1   ## Header Two
      *
      * @param string $level The header level, including the "h". e.g. h1
-     * @param string $content The text inside the header tags.
+     * @param string $node The node to convert.
      * @return string The Markdown version of the header.
      */
-    private function convert_header($level, $content)
+    private function convert_header($level, $node)
     {
-        if ($this->options['header_style'] == "setext") {
+        $content = $node->nodeValue;
+
+        if (!$this->is_child_of('blockquote', $node) && $this->options['header_style'] == "setext") {
             $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
             $underline = ($level == "h1") ? "=" : "-";
             $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
@@ -428,10 +466,13 @@ class HTML_To_Markdown
         $quote_content = trim($node->nodeValue);
 
         $lines = preg_split('/\r\n|\r|\n/', $quote_content);
-        $lines = array_filter($lines); //strips empty lines
 
-        foreach ($lines as $line) {
-            $markdown .= "> " . $line . PHP_EOL . PHP_EOL;
+        $total_lines = count($lines);
+
+        foreach ($lines as $i => $line) {
+            $markdown .= "> " . $line . PHP_EOL;
+            if ($i + 1 == $total_lines)
+                $markdown .= PHP_EOL;
         }
 
         return $markdown;
@@ -497,7 +538,7 @@ class HTML_To_Markdown
      */
     public function __toString()
     {
-        return $this->output;
+        return $this->output();
     }
 
 
@@ -510,6 +551,10 @@ class HTML_To_Markdown
      */
     public function output()
     {
-        return $this->output;
+        if (!$this->output) {
+            return '';
+        } else {
+            return $this->output;
+        }
     }
 }

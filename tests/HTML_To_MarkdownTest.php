@@ -3,9 +3,9 @@ require_once dirname(__FILE__) . '/../HTML_To_Markdown.php';
 
 class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 {
-    private function html_gives_markdown($html, $expected_markdown)
+    private function html_gives_markdown($html, $expected_markdown, $options=null)
     {
-        $markdown = new HTML_To_Markdown($html);
+        $markdown = new HTML_To_Markdown($html, $options);
         $this->assertEquals($expected_markdown, $markdown->__toString());
     }
 
@@ -26,6 +26,8 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("<h1>Test</h1>", "Test\n====");
         $this->html_gives_markdown("<h2>Test</h2>", "Test\n----");
+        $this->html_gives_markdown("<blockquote><h1>Test</h1></blockquote>", "> # Test");
+        $this->html_gives_markdown("<blockquote><h2>Test</h2></blockquote>", "> ## Test");
         $this->html_gives_markdown("<h3>Test</h3>", "### Test");
         $this->html_gives_markdown("<h4>Test</h4>", "#### Test");
         $this->html_gives_markdown("<h5>Test</h5>", "##### Test");
@@ -39,6 +41,16 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<strong>Test</strong>", "**Test**");
         $this->html_gives_markdown("<b>Test</b>", "**Test**");
         $this->html_gives_markdown("<span>Test</span>", "<span>Test</span>");
+    }
+
+    public function test_nesting()
+    {
+        $this->html_gives_markdown("<span><span>Test</span></span>", "<span><span>Test</span></span>");
+    }
+
+    public function test_script()
+    {
+        $this->html_gives_markdown("<script>alert('test');</script>", "<script>alert('test');</script>");
     }
 
     public function test_image()
@@ -74,6 +86,8 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     public function test_blockquotes()
     {
         $this->html_gives_markdown("<blockquote>Something I said?</blockquote>", "> Something I said?");
+        $this->html_gives_markdown("<blockquote><blockquote>Something I said?</blockquote></blockquote>", "> > Something I said?");
+        $this->html_gives_markdown("<blockquote><p>Something I said?</p><p>Why, yes it was!</p></blockquote>", "> Something I said?\n> \n> Why, yes it was!");
     }
 
     public function test_malformed_html()
@@ -86,4 +100,31 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("<article>Some stuff</article>", "<article>Some stuff</article>");
     }
+
+    public function test_strip_unmarkdownable()
+    {
+        $this->html_gives_markdown('<span>Span</span>', 'Span', array('strip_tags' => true));
+    }
+
+    public function test_strip_comments()
+    {
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test');
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test', array('strip_tags' => true));
+    }
+
+    public function test_delete_blank_p()
+    {
+        $this->html_gives_markdown('<p></p>', '');
+        $this->html_gives_markdown('<p></p>', '', array('strip_tags' => true));
+    }
+
+    public function test_set_option()
+    {
+        $markdown = new HTML_To_Markdown();
+        $markdown->set_option('strip_tags', true);
+        $markdown->convert('<span>Strip</span>');
+
+        $this->assertEquals('Strip', $markdown->__toString());
+    }
+
 }
