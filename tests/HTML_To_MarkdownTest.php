@@ -26,6 +26,8 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("<h1>Test</h1>", "Test\n====");
         $this->html_gives_markdown("<h2>Test</h2>", "Test\n----");
+        $this->html_gives_markdown("<blockquote><h1>Test</h1></blockquote>", "> # Test");
+        $this->html_gives_markdown("<blockquote><h2>Test</h2></blockquote>", "> ## Test");
         $this->html_gives_markdown("<h3>Test</h3>", "### Test");
         $this->html_gives_markdown("<h4>Test</h4>", "#### Test");
         $this->html_gives_markdown("<h5>Test</h5>", "##### Test");

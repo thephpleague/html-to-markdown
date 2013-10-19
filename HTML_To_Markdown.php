@@ -62,23 +62,21 @@ class HTML_To_Markdown
 
 
     /**
-     * Is Code Sample?
+     * Is Child Of?
      *
-     * Is the node part of an HTML code sample inside a <code> tag? Workaround for malformed <code> samples.
+     * Is the node a child of the given parent tag?
      *
-     * Walks up the DOM tree to see if any parent nodes are <code> tags. Used in convert_children() to return early
-     * and prevent conversion of HTML code samples that are not encoded correctly. (i.e. contain <tags>)
-     *
+     * @param $parent_name string The name of the parent node to search for (e.g. 'code')
      * @param $node
      * @return bool
      */
-    private static function is_code_sample($node)
+    private static function is_child_of($parent_name, $node)
     {
         for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
             if (is_null($p))
                 return false;
 
-            if ($p->nodeName == 'code')
+            if ($p->nodeName == $parent_name)
                 return true;
         }
         return false;
@@ -98,7 +96,7 @@ class HTML_To_Markdown
     private function convert_children($node)
     {
         // Don't convert HTML code inside <code> blocks to Markdown - that should stay as HTML
-        if (self::is_code_sample($node))
+        if (self::is_child_of('code', $node))
             return;
 
         // If the node has children, convert those to Markdown first
@@ -174,10 +172,10 @@ class HTML_To_Markdown
                 $markdown = rtrim($value) . PHP_EOL . PHP_EOL;
                 break;
             case "h1":
-                $markdown = $this->convert_header("h1", $value);
+                $markdown = $this->convert_header("h1", $node);
                 break;
             case "h2":
-                $markdown = $this->convert_header("h2", $value);
+                $markdown = $this->convert_header("h2", $node);
                 break;
             case "h3":
                 $markdown = "### " . $value . PHP_EOL . PHP_EOL;
@@ -255,12 +253,14 @@ class HTML_To_Markdown
      * e.g.    # Header 1   ## Header Two
      *
      * @param string $level The header level, including the "h". e.g. h1
-     * @param string $content The text inside the header tags.
+     * @param string $node The node to convert.
      * @return string The Markdown version of the header.
      */
-    private function convert_header($level, $content)
+    private function convert_header($level, $node)
     {
-        if ($this->options['header_style'] == "setext") {
+        $content = $node->nodeValue;
+
+        if (!$this->is_child_of('blockquote', $node) && $this->options['header_style'] == "setext") {
             $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
             $underline = ($level == "h1") ? "=" : "-";
             $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
