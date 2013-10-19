@@ -41,6 +41,11 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<span>Test</span>", "<span>Test</span>");
     }
 
+    public function test_nesting()
+    {
+        $this->html_gives_markdown("<span><span>Test</span></span>", "<span><span>Test</span></span>");
+    }
+
     public function test_image()
     {
         $this->html_gives_markdown('<img src="/path/img.jpg" alt="alt text" title="Title" />', '![alt text](/path/img.jpg "Title")');

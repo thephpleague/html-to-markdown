@@ -221,12 +221,9 @@ class HTML_To_Markdown
                 $markdown = preg_replace('~\s+~', ' ', $value);
                 break;
             default:
-                // Preserve tags that don't have Markdown equivalents, such as <span> and #text nodes on their own,
-                // like WordPress [short_tags]. C14N() is the XML canonicalization function. It returns the full
-                // content of the node as a string, including surrounding tags. This effectively converts any tags
-                // not covered in the above cases into plain text nodes with the tags in tact. That way, they appear
-                // as HTML in the returned Markdown. http://www.php.net/manual/en/domnode.c14n.php
-                $markdown = $node->C14N();
+                // Preserve tags that don't have Markdown equivalents, such as <span> and #text nodes on their own.
+                // C14N() canonicalizes the node to a string: http://www.php.net/manual/en/domnode.c14n.php
+                $markdown = html_entity_decode($node->C14N());
         }
 
         // Create a DOM text node containing the Markdown equivalent of the original node
