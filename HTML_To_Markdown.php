@@ -170,7 +170,7 @@ class HTML_To_Markdown
         switch ($tag) {
             case "p":
             case "pre":
-                $markdown = rtrim($value) . PHP_EOL . PHP_EOL;
+                $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
                 break;
             case "h1":
                 $markdown = $this->convert_header("h1", $node);
@@ -225,6 +225,9 @@ class HTML_To_Markdown
                 break;
             case "#text":
                 $markdown = preg_replace('~\s+~', ' ', $value);
+                break;
+            case "#comment":
+                $markdown = '';
                 break;
             default:
                 // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,

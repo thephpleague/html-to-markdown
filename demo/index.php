@@ -9,6 +9,7 @@ if (!is_null($html)) {
         $html = stripslashes($html);
 
     $markdown = new HTML_To_Markdown($html);
+//    $markdown = new HTML_To_Markdown($html, array('strip_tags' => true));
 
 }
 ?>

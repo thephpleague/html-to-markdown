@@ -106,4 +106,16 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<span>Span</span>', 'Span', array('strip_tags' => true));
     }
 
+    public function test_strip_comments()
+    {
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test');
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test', array('strip_tags' => true));
+    }
+
+    public function test_delete_blank_p()
+    {
+        $this->html_gives_markdown('<p></p>', '');
+        $this->html_gives_markdown('<p></p>', '', array('strip_tags' => true));
+    }
+
 }
