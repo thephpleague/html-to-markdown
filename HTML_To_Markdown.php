@@ -67,7 +67,7 @@ class HTML_To_Markdown
      * Is the node part of an HTML code sample inside a <code> tag? Workaround for malformed <code> samples.
      *
      * Walks up the DOM tree to see if any parent nodes are <code> tags. Used in convert_children() to return early
-     * and prevent conversion of HTML code samples inside <code> that are not encoded correctly. (i.e. contain <tags>)
+     * and prevent conversion of HTML code samples that are not encoded correctly. (i.e. contain <tags>)
      *
      * @param $node
      * @return bool
@@ -122,12 +122,19 @@ class HTML_To_Markdown
      * Sends the body node to convert_children() to change inner nodes to Markdown #text nodes, then saves and
      * returns the resulting converted document as a string in Markdown format.
      *
-     * @return string The converted HTML as Markdown
+     * @return string|boolean The converted HTML as Markdown, or false if conversion failed
      */
     private function get_markdown()
     {
         // Use the body tag as our root element
         $body = $this->document->getElementsByTagName("body")->item(0);
+
+        // Try the head tag if there's no body tag (e.g. the user's passed a single <script> tag for conversion)
+        if (!$body)
+            $body = $this->document->getElementsByTagName("head")->item(0);
+
+        if (!$body)
+            return false;
 
         // Convert all children of the body element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
@@ -139,7 +146,7 @@ class HTML_To_Markdown
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
         $markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown); // Strip doctype declaration
-        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<?xml encoding="UTF-8">', '&#xD;');
+        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
         $markdown = trim($markdown, "\n\r\0\x0B");
 
