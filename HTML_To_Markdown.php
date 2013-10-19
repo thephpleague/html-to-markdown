@@ -28,6 +28,7 @@ class HTML_To_Markdown
     private $options = array(
         'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
         'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
+        'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
     );
 
 
@@ -226,9 +227,10 @@ class HTML_To_Markdown
                 $markdown = preg_replace('~\s+~', ' ', $value);
                 break;
             default:
-                // Preserve tags that don't have Markdown equivalents, such as <span> and #text nodes on their own.
-                // C14N() canonicalizes the node to a string: http://www.php.net/manual/en/domnode.c14n.php
-                $markdown = html_entity_decode($node->C14N());
+                // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
+                // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
+                // See: http://www.php.net/manual/en/domnode.c14n.php
+                $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
         }
 
         // Create a DOM text node containing the Markdown equivalent of the original node

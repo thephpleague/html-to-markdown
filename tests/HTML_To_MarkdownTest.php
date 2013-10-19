@@ -3,9 +3,9 @@ require_once dirname(__FILE__) . '/../HTML_To_Markdown.php';
 
 class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 {
-    private function html_gives_markdown($html, $expected_markdown)
+    private function html_gives_markdown($html, $expected_markdown, $options=null)
     {
-        $markdown = new HTML_To_Markdown($html);
+        $markdown = new HTML_To_Markdown($html, $options);
         $this->assertEquals($expected_markdown, $markdown->__toString());
     }
 
@@ -100,4 +100,10 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("<article>Some stuff</article>", "<article>Some stuff</article>");
     }
+
+    public function test_strip_unmarkdownable()
+    {
+        $this->html_gives_markdown('<span>Span</span>', 'Span', array('strip_tags' => true));
+    }
+
 }
