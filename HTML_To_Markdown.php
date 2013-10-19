@@ -40,11 +40,38 @@ class HTML_To_Markdown
      * @param string $html The HTML to convert to Markdown.
      * @param array $overrides [optional] List of style and error display overrides.
      */
-    public function __construct($html, $overrides = null)
+    public function __construct($html = null, $overrides = null)
     {
         if ($overrides)
             $this->options = array_merge($this->options, $overrides);
 
+        if ($html)
+            $this->convert($html);
+    }
+
+
+    /**
+     * Setter for conversion options
+     *
+     * @param $name
+     * @param $value
+     */
+    public function set_option($name, $value)
+    {
+        $this->options[$name] = $value;
+    }
+
+
+    /**
+     * Convert
+     *
+     * Loads HTML and passes to get_markdown()
+     *
+     * @param $html
+     * @return string The Markdown version of the html
+     */
+    public function convert($html)
+    {
         $html = preg_replace('~>\s+<~', '><', $html); // Strip white space between tags to prevent creation of empty #text nodes
 
         $this->document = new DOMDocument();
@@ -58,7 +85,7 @@ class HTML_To_Markdown
         if ($this->options['suppress_errors'])
             libxml_clear_errors();
 
-        $this->output = $this->get_markdown($html);
+        return $this->get_markdown($html);
     }
 
 
@@ -148,6 +175,8 @@ class HTML_To_Markdown
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
         $markdown = trim($markdown, "\n\r\0\x0B");
+
+        $this->output = $markdown;
 
         return $markdown;
     }
@@ -441,7 +470,7 @@ class HTML_To_Markdown
         $total_lines = count($lines);
 
         foreach ($lines as $i => $line) {
-            $markdown .= "> " . $line . PHP_EOL ;
+            $markdown .= "> " . $line . PHP_EOL;
             if ($i + 1 == $total_lines)
                 $markdown .= PHP_EOL;
         }
@@ -522,7 +551,7 @@ class HTML_To_Markdown
      */
     public function output()
     {
-        if(!$this->output) {
+        if (!$this->output) {
             return '';
         } else {
             return $this->output;

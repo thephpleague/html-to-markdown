@@ -118,4 +118,13 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p></p>', '', array('strip_tags' => true));
     }
 
+    public function test_set_option()
+    {
+        $markdown = new HTML_To_Markdown();
+        $markdown->set_option('strip_tags', true);
+        $markdown->convert('<span>Strip</span>');
+
+        $this->assertEquals('Strip', $markdown->__toString());
+    }
+
 }
