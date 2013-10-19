@@ -86,6 +86,8 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     public function test_blockquotes()
     {
         $this->html_gives_markdown("<blockquote>Something I said?</blockquote>", "> Something I said?");
+        $this->html_gives_markdown("<blockquote><blockquote>Something I said?</blockquote></blockquote>", "> > Something I said?");
+        $this->html_gives_markdown("<blockquote><p>Something I said?</p><p>Why, yes it was!</p></blockquote>", "> Something I said?\n> \n> Why, yes it was!");
     }
 
     public function test_malformed_html()

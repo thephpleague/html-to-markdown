@@ -432,10 +432,13 @@ class HTML_To_Markdown
         $quote_content = trim($node->nodeValue);
 
         $lines = preg_split('/\r\n|\r|\n/', $quote_content);
-        $lines = array_filter($lines); //strips empty lines
 
-        foreach ($lines as $line) {
-            $markdown .= "> " . $line . PHP_EOL . PHP_EOL;
+        $total_lines = count($lines);
+
+        foreach ($lines as $i => $line) {
+            $markdown .= "> " . $line . PHP_EOL ;
+            if ($i + 1 == $total_lines)
+                $markdown .= PHP_EOL;
         }
 
         return $markdown;
