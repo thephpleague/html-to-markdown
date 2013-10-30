@@ -325,7 +325,7 @@ class HTML_To_Markdown
         if ($tag == 'i') {
             $markdown = $char . $value . $char;
         }
-        else ($tag == 'b') {
+        else {
             $markdown = $char . $char . $value . $char. $char;
         }
         
