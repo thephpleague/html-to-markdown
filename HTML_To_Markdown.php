@@ -320,7 +320,7 @@ class HTML_To_Markdown
      */
      private function convert_inline($tag, $value)
      {
-        $char = ($this->options['inline_styles'] == 'asterisk') ? '*' : '_';
+        $char = ($this->options['inline_style'] == 'asterisk') ? '*' : '_';
 
         if ($tag == 'i') {
             $markdown = $char . $value . $char;
