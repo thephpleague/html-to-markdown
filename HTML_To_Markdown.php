@@ -29,6 +29,7 @@ class HTML_To_Markdown
         'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
         'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
         'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+        'inline_style'    => 'asterisk' // Set to 'underscore' to output strong and em with underscores instead off asterisks
     );
 
 
@@ -221,11 +222,11 @@ class HTML_To_Markdown
                 break;
             case "em":
             case "i":
-                $markdown = "*" . $value . "*";
+                $markdown = $this->convert_inline('i', $value);
                 break;
             case "strong":
             case "b":
-                $markdown = "**" . $value . "**";
+                $markdown = $this->convert_inline('b', $value);
                 break;
             case "hr":
                 $markdown = "- - - - - -" . PHP_EOL . PHP_EOL;
@@ -305,6 +306,31 @@ class HTML_To_Markdown
 
         return $markdown;
     }
+
+
+    /**
+     * Converts inline styles
+     * This function is used to render strong and em tags
+     * 
+     * eg <strong>bold text</strong> becomes **bold text** or __bold text__
+     * 
+     * @param string $tag
+     * @param string $value
+     * @return string
+     */
+     private function convert_inline($tag, $value)
+     {
+        $char = ($this->options['inline_styles'] == 'asterisk') ? '*' : '_';
+
+        if ($tag == 'i') {
+            $markdown = $char . $value . $char;
+        }
+        else ($tag == 'b') {
+            $markdown = $char . $char . $value . $char. $char;
+        }
+        
+        return $markdown;
+     }
 
 
     /**
