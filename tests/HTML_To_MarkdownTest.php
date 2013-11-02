@@ -40,10 +40,10 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<i>Test</i>", "*Test*");
         $this->html_gives_markdown("<strong>Test</strong>", "**Test**");
         $this->html_gives_markdown("<b>Test</b>", "**Test**");
-        $this->html_gives_markdown("<em>Test</em>", "_Test_", array('inline_style' => 'underscore'));
-        $this->html_gives_markdown("<i>Test</i>", "_Test_", array('inline_style' => 'underscore'));
-        $this->html_gives_markdown("<strong>Test</strong>", "__Test__", array('inline_style' => 'underscore'));
-        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('inline_style' => 'underscore'));
+        $this->html_gives_markdown("<em>Test</em>", "_Test_", array('italic_style' => '_'));
+        $this->html_gives_markdown("<i>Test</i>", "_Test_", array('italic_style' => '_'));
+        $this->html_gives_markdown("<strong>Test</strong>", "__Test__", array('bold_style' => '__'));
+        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('bold_style' => '__'));        
         $this->html_gives_markdown("<span>Test</span>", "<span>Test</span>");
     }
 

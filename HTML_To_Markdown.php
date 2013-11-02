@@ -4,7 +4,7 @@
  *
  * A helper class to convert HTML to Markdown.
  *
- * @version 2.1.0
+ * @version 2.1.1
  * @author Nick Cernis <nick@cern.is>
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @link http://twitter.com/nickcernis Nick on twitter.
@@ -29,7 +29,8 @@ class HTML_To_Markdown
         'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
         'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
         'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-        'inline_style'    => 'asterisk' // Set to 'underscore' to output strong and em with underscores instead off asterisks
+        'bold_style'      => '**', // Set to '__' if you prefer the underlined style
+        'italic_style'    => '*', // Set to '_' if you prefer the underlined style
     );
 
 
@@ -222,11 +223,9 @@ class HTML_To_Markdown
                 break;
             case "em":
             case "i":
-                $markdown = $this->convert_inline('i', $value);
-                break;
             case "strong":
             case "b":
-                $markdown = $this->convert_inline('b', $value);
+                $markdown = $this->convert_emphasis($tag, $value);
                 break;
             case "hr":
                 $markdown = "- - - - - -" . PHP_EOL . PHP_EOL;
@@ -318,15 +317,12 @@ class HTML_To_Markdown
      * @param string $value
      * @return string
      */
-     private function convert_inline($tag, $value)
+     private function convert_emphasis($tag, $value)
      {
-        $char = ($this->options['inline_style'] == 'asterisk') ? '*' : '_';
-
-        if ($tag == 'i') {
-            $markdown = $char . $value . $char;
-        }
-        else {
-            $markdown = $char . $char . $value . $char. $char;
+        if ($tag == 'i' || $tag == 'em') {
+            $markdown = $this->options['italic_style'] . $value . $this->options['italic_style'];
+        } else {
+            $markdown = $this->options['bold_style'] . $value . $this->options['bold_style'];
         }
         
         return $markdown;
