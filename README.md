@@ -70,6 +70,16 @@ Or more explicitly, like this:
 
 Note that only the tags themselves are stripped, not the content they hold.
 
+### Style options
+
+Bold and italic tags are converted using the asterisk syntax by default. Change this to the underlined syntax using the `bold_style` and `italic_style` options.
+
+    $html = '<em>Italic</em> and a <strong>bold</strong>';
+    $markdown = new HTML_To_Markdown();
+    $markdown->set_option('italic_style', '_');
+    $markdown->set_option('bold_style', '__');
+    $markdown->convert($html); // $markdown now contains "_Italic_ and a __bold__"
+
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
