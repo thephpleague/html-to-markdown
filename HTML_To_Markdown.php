@@ -204,10 +204,8 @@ class HTML_To_Markdown
                 $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
                 break;
             case "h1":
-                $markdown = $this->convert_header("h1", $node);
-                break;
             case "h2":
-                $markdown = $this->convert_header("h2", $node);
+                $markdown = $this->convert_header($tag, $node);
                 break;
             case "h3":
                 $markdown = "### " . $value . PHP_EOL . PHP_EOL;
