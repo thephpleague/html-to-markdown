@@ -256,6 +256,11 @@ class HTML_To_Markdown
             case "#comment":
                 $markdown = '';
                 break;
+            case "div":
+                if ($this->options['strip_tags']) {
+                    $markdown = PHP_EOL . PHP_EOL;
+                    break;    
+                }
             default:
                 // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
                 // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
