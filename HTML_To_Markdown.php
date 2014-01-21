@@ -258,7 +258,7 @@ class HTML_To_Markdown
                 break;
             case "div":
                 if ($this->options['strip_tags']) {
-                    $markdown = PHP_EOL . PHP_EOL;
+                    $markdown = $value . PHP_EOL . PHP_EOL;
                     break;    
                 }
             default:
