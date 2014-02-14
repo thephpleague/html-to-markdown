@@ -31,6 +31,7 @@ class HTML_To_Markdown
         'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
         'bold_style'      => '**', // Set to '__' if you prefer the underlined style
         'italic_style'    => '*', // Set to '_' if you prefer the underlined style
+        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: "meta style script"
     );
 
 
@@ -154,6 +155,17 @@ class HTML_To_Markdown
      */
     private function get_markdown()
     {
+        // First remove all nodes that should be removed.
+        if ($this->options['remove_nodes'] <> '') {
+          $tags = split(' ', $this->options['remove_nodes']);
+          foreach ($tags as $tag) {
+            $removeNodes = $this->document->getElementsByTagName($tag);
+            for ($i = 0; $i < $removeNodes->length; $i++) {
+              $removeNodes->item(0)->parentNode->removeChild($removeNodes->item(0));
+            }
+          }
+        }
+        
         // Use the body tag as our root element
         $body = $this->document->getElementsByTagName("body")->item(0);
 
@@ -252,6 +264,7 @@ class HTML_To_Markdown
                 break;
             case "#text":
                 $markdown = preg_replace('~\s+~', ' ', $value);
+                $markdown = preg_replace('~^#~', '\\\\#', $markdown);
                 break;
             case "#comment":
                 $markdown = '';
