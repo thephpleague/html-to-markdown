@@ -383,7 +383,7 @@ class HTML_To_Markdown
     {
         $href = $node->getAttribute('href');
         $title = $node->getAttribute('title');
-        $text = $node->nodeValue;
+        $text = trim(preg_replace('/\s+/', ' ', $node->nodeValue));
 
         if ($title != "") {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
