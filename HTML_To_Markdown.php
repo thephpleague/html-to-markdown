@@ -155,31 +155,16 @@ class HTML_To_Markdown
      */
     private function get_markdown()
     {
-        // First remove all nodes that should be removed.
-        if ($this->options['remove_nodes'] <> '') {
-          $tags = split(' ', $this->options['remove_nodes']);
-          foreach ($tags as $tag) {
-            $removeNodes = $this->document->getElementsByTagName($tag);
-            for ($i = 0; $i < $removeNodes->length; $i++) {
-              $removeNodes->item(0)->parentNode->removeChild($removeNodes->item(0));
-            }
-          }
-        }
-        
-        // Use the body tag as our root element
-        $body = $this->document->getElementsByTagName("body")->item(0);
+        // Work on the entire DOM tree (including head and body)
+        $input = $this->document->getElementsByTagName("html")->item(0);
 
-        // Try the head tag if there's no body tag (e.g. the user's passed a single <script> tag for conversion)
-        if (!$body)
-            $body = $this->document->getElementsByTagName("head")->item(0);
-
-        if (!$body)
+        if (!$input)
             return false;
 
-        // Convert all children of the body element. The DOMDocument stored in $this->doc will
+        // Convert all children of this root element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
         // that it replaced.
-        $this->convert_children($body);
+        $this->convert_children($input);
 
         // Sanitize and return the body contents as a string.
         $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
@@ -209,76 +194,87 @@ class HTML_To_Markdown
     {
         $tag = $node->nodeName; // the type of element, e.g. h1
         $value = $node->nodeValue; // the value of that element, e.g. The Title
+        
+        $diveIn = true;
+        if ($this->options['remove_nodes'] <> '') {
+          $tags = split(' ', $this->options['remove_nodes']);
+          if (in_array($tag, $tags)) {
+            $markdown = '';
+            $diveIn = false;
+          }
+        }
 
-        switch ($tag) {
-            case "p":
-            case "pre":
-                $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
-                break;
-            case "h1":
-            case "h2":
-                $markdown = $this->convert_header($tag, $node);
-                break;
-            case "h3":
-                $markdown = "### " . $value . PHP_EOL . PHP_EOL;
-                break;
-            case "h4":
-                $markdown = "#### " . $value . PHP_EOL . PHP_EOL;
-                break;
-            case "h5":
-                $markdown = "##### " . $value . PHP_EOL . PHP_EOL;
-                break;
-            case "h6":
-                $markdown = "###### " . $value . PHP_EOL . PHP_EOL;
-                break;
-            case "em":
-            case "i":
-            case "strong":
-            case "b":
-                $markdown = $this->convert_emphasis($tag, $value);
-                break;
-            case "hr":
-                $markdown = "- - - - - -" . PHP_EOL . PHP_EOL;
-                break;
-            case "br":
-                $markdown = "  " . PHP_EOL;
-                break;
-            case "blockquote":
-                $markdown = $this->convert_blockquote($node);
-                break;
-            case "code":
-                $markdown = $this->convert_code($node);
-                break;
-            case "ol":
-            case "ul":
-                $markdown = PHP_EOL . PHP_EOL . $value . PHP_EOL;
-                break;
-            case "li":
-                $markdown = $this->convert_list($node);
-                break;
-            case "img":
-                $markdown = $this->convert_image($node);
-                break;
-            case "a":
-                $markdown = $this->convert_anchor($node);
-                break;
-            case "#text":
-                $markdown = preg_replace('~\s+~', ' ', $value);
-                $markdown = preg_replace('~^#~', '\\\\#', $markdown);
-                break;
-            case "#comment":
-                $markdown = '';
-                break;
-            case "div":
-                if ($this->options['strip_tags']) {
-                    $markdown = PHP_EOL . PHP_EOL . $value;
-                    break;    
-                }
-            default:
-                // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
-                // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
-                // See: http://www.php.net/manual/en/domnode.c14n.php
-                $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
+        if ($diveIn) {
+          switch ($tag) {
+              case "p":
+              case "pre":
+                  $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
+                  break;
+              case "h1":
+              case "h2":
+                  $markdown = $this->convert_header($tag, $node);
+                  break;
+              case "h3":
+                  $markdown = "### " . $value . PHP_EOL . PHP_EOL;
+                  break;
+              case "h4":
+                  $markdown = "#### " . $value . PHP_EOL . PHP_EOL;
+                  break;
+              case "h5":
+                  $markdown = "##### " . $value . PHP_EOL . PHP_EOL;
+                  break;
+              case "h6":
+                  $markdown = "###### " . $value . PHP_EOL . PHP_EOL;
+                  break;
+              case "em":
+              case "i":
+              case "strong":
+              case "b":
+                  $markdown = $this->convert_emphasis($tag, $value);
+                  break;
+              case "hr":
+                  $markdown = "- - - - - -" . PHP_EOL . PHP_EOL;
+                  break;
+              case "br":
+                  $markdown = "  " . PHP_EOL;
+                  break;
+              case "blockquote":
+                  $markdown = $this->convert_blockquote($node);
+                  break;
+              case "code":
+                  $markdown = $this->convert_code($node);
+                  break;
+              case "ol":
+              case "ul":
+                  $markdown = PHP_EOL . PHP_EOL . $value . PHP_EOL;
+                  break;
+              case "li":
+                  $markdown = $this->convert_list($node);
+                  break;
+              case "img":
+                  $markdown = $this->convert_image($node);
+                  break;
+              case "a":
+                  $markdown = $this->convert_anchor($node);
+                  break;
+              case "#text":
+                  $markdown = preg_replace('~\s+~', ' ', $value);
+                  $markdown = preg_replace('~^#~', '\\\\#', $markdown);
+                  break;
+              case "#comment":
+                  $markdown = '';
+                  break;
+              case "div":
+                  if ($this->options['strip_tags']) {
+                      $markdown = PHP_EOL . PHP_EOL . $value ;
+                      break;    
+                  }         
+              default:
+                  // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
+                  // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
+                  // See: http://www.php.net/manual/en/domnode.c14n.php
+                  $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
+          }
         }
 
         // Create a DOM text node containing the Markdown equivalent of the original node
