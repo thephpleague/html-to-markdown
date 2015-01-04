@@ -123,6 +123,20 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p></p>', '', array('strip_tags' => true));
     }
 
+
+    public function test_divs()
+    {
+        $this->html_gives_markdown('<div>Hello</div><div>World</div>', '<div>Hello</div><div>World</div>');
+        $this->html_gives_markdown('<div>Hello</div><div>World</div>', "Hello\n\nWorld", array('strip_tags' => true));
+        $this->html_gives_markdown('<p>Paragraph</p><div>Hello</div><div>World</div>', "Paragraph\n\nHello\n\nWorld", array('strip_tags' => true));
+    }
+
+    public function test_remove_nodes()
+    {
+        $this->html_gives_markdown('<div>Hello</div><div>World</div>', '', array('remove_nodes' => 'div'));
+        $this->html_gives_markdown('<p>Hello</p><span>World</span>', '', array('remove_nodes' => 'p span'));
+    }
+
     public function test_set_option()
     {
         $markdown = new HTML_To_Markdown();

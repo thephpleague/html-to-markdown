@@ -31,6 +31,7 @@ class HTML_To_Markdown
         'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
         'bold_style'      => '**', // Set to '__' if you prefer the underlined style
         'italic_style'    => '*', // Set to '_' if you prefer the underlined style
+        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: "meta style script"
     );
 
 
@@ -140,7 +141,13 @@ class HTML_To_Markdown
         }
 
         // Now that child nodes have been converted, convert the original node
-        $this->convert_to_markdown($node);
+        $markdown = $this->convert_to_markdown($node);
+
+        // Create a DOM text node containing the Markdown equivalent of the original node
+        $markdown_node = $this->document->createTextNode($markdown);
+
+        // Replace the old $node e.g. "<h3>Title</h3>" with the new $markdown_node e.g. "### Title"
+        $node->parentNode->replaceChild($markdown_node, $node);
     }
 
 
@@ -154,20 +161,16 @@ class HTML_To_Markdown
      */
     private function get_markdown()
     {
-        // Use the body tag as our root element
-        $body = $this->document->getElementsByTagName("body")->item(0);
+        // Work on the entire DOM tree (including head and body)
+        $input = $this->document->getElementsByTagName("html")->item(0);
 
-        // Try the head tag if there's no body tag (e.g. the user's passed a single <script> tag for conversion)
-        if (!$body)
-            $body = $this->document->getElementsByTagName("head")->item(0);
-
-        if (!$body)
+        if (!$input)
             return false;
 
-        // Convert all children of the body element. The DOMDocument stored in $this->doc will
+        // Convert all children of this root element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
         // that it replaced.
-        $this->convert_children($body);
+        $this->convert_children($input);
 
         // Sanitize and return the body contents as a string.
         $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
@@ -192,11 +195,17 @@ class HTML_To_Markdown
      * Example: An <h3> node with text content of "Title" becomes a text node with content of "### Title"
      *
      * @param $node
+     * @return string The converted HTML as Markdown
      */
     private function convert_to_markdown($node)
     {
         $tag = $node->nodeName; // the type of element, e.g. h1
         $value = $node->nodeValue; // the value of that element, e.g. The Title
+        
+        // Strip nodes named in remove_nodes
+        $tags_to_remove = explode(' ', $this->options['remove_nodes']);
+        if ( in_array($tag, $tags_to_remove) )
+            return false;
 
         switch ($tag) {
             case "p":
@@ -252,9 +261,13 @@ class HTML_To_Markdown
                 break;
             case "#text":
                 $markdown = preg_replace('~\s+~', ' ', $value);
+                $markdown = preg_replace('~^#~', '\\\\#', $markdown);
                 break;
             case "#comment":
                 $markdown = '';
+                break;
+            case "div":
+                $markdown = ($this->options['strip_tags']) ? $value . PHP_EOL . PHP_EOL : html_entity_decode($node->C14N());
                 break;
             default:
                 // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
@@ -263,11 +276,7 @@ class HTML_To_Markdown
                 $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
         }
 
-        // Create a DOM text node containing the Markdown equivalent of the original node
-        $markdown_node = $this->document->createTextNode($markdown);
-
-        // Replace the old $node e.g. "<h3>Title</h3>" with the new $markdown_node e.g. "### Title"
-        $node->parentNode->replaceChild($markdown_node, $node);
+        return $markdown;
     }
 
 
