@@ -1,0 +1,4 @@
+test:
+  override:
+    - phpunit --no-configuration HTML_To_MarkdownTest ./tests/HTML_To_MarkdownTest.php
+
