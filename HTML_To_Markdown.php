@@ -248,7 +248,7 @@ class HTML_To_Markdown
                 break;
             case "ol":
             case "ul":
-                $markdown = PHP_EOL . PHP_EOL . $value . PHP_EOL;
+                $markdown = $value . PHP_EOL;
                 break;
             case "li":
                 $markdown = $this->convert_list($node);
