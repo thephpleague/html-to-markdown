@@ -17,9 +17,10 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 Typically you would convert HTML to Markdown if:
 
 1. You have an existing HTML document that needs to be edited by people with good taste.
-2. You want to store new content in HTML format but edit it as Markdown. (Storing content as HTML is sometimes preferable to storing it as Markdown, or storing the same content in both formats. That way, you can convert stored HTML back to Markdown when editing it on the backend, instead of converting stored Markdown to HTML for every page view on the front end.)
-3. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
-4. You just really like Markdown.
+2. You want to store new content in HTML format but edit it as Markdown.
+3. You want to convert HTML email to plain text email. 
+4. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
+5. You just really like Markdown.
 
 ### How to use it
 
