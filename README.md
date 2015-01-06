@@ -57,7 +57,7 @@ The included `demo` directory contains an HTML->Markdown conversion form to try 
 
 By default, HTML To Markdown preserves HTML tags without Markdown equivalents, like `<span>` and `<div>`.
 
-To strip HTML tags that don't have a Markdown equivalent, set `strip_tags` to true, like this:
+To strip HTML tags that don't have a Markdown equivalent while preserving the content inside them, set `strip_tags` to true, like this:
 
     $html = '<span>Turnips!</span>';
     $markdown = new HTML_To_Markdown($html, array('strip_tags' => true)); // $markdown now contains "Turnips!"    
@@ -70,6 +70,11 @@ Or more explicitly, like this:
     $markdown->convert($html); // $markdown now contains "Turnips!"
 
 Note that only the tags themselves are stripped, not the content they hold.
+
+To strip tags and their content, pass a space-separated list of tags in `remove_nodes`, like this:
+
+    $html = '<span>Turnips!</span><div>Monkeys!</div>';
+    $markdown = new HTML_To_Markdown($html, array('remove_nodes' => 'span div')); // $markdown now contains ""
 
 ### Style options
 
