@@ -126,8 +126,8 @@ class HTML_To_Markdown
      */
     private function convert_children($node)
     {
-        // Don't convert HTML code inside <code> blocks to Markdown - that should stay as HTML
-        if (self::is_child_of('code', $node))
+        // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
+        if (self::is_child_of('pre', $node) || self::is_child_of('code', $node))
             return;
 
         // If the node has children, convert those to Markdown first
@@ -209,8 +209,10 @@ class HTML_To_Markdown
 
         switch ($tag) {
             case "p":
-            case "pre":
                 $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
+                break;
+            case "pre":
+                $markdown = PHP_EOL . $this->convert_code($node) . PHP_EOL;
                 break;
             case "h1":
             case "h2":
@@ -426,7 +428,7 @@ class HTML_To_Markdown
      *
      * Convert code tags by indenting blocks of code and wrapping single lines in backticks.
      *
-     * @param $node
+     * @param DOMNode $node
      * @return string
      */
     private function convert_code($node)
@@ -435,14 +437,15 @@ class HTML_To_Markdown
 
         $markdown = '';
 
-        $code_content = html_entity_decode($node->C14N());
+        $code_content = html_entity_decode($this->document->saveHTML($node));
         $code_content = str_replace(array("<code>", "</code>"), "", $code_content);
+        $code_content = str_replace(array("<pre>", "</pre>"), "", $code_content);
 
         $lines = preg_split('/\r\n|\r|\n/', $code_content);
         $total = count($lines);
 
         // If there's more than one line of code, prepend each line with four spaces and no backticks.
-        if ($total > 1) {
+        if ($total > 1 || $node->nodeName === 'pre') {
 
             // Remove the first and last line if they're empty
             $first_line = trim($lines[0]);
@@ -472,7 +475,7 @@ class HTML_To_Markdown
             $markdown .= "`" . $lines[0] . "`";
 
         }
-
+        
         return $markdown;
     }
 

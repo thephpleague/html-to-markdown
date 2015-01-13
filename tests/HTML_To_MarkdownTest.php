@@ -88,6 +88,13 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "    #sidebar h1 {\n        font-size: 1.5em;\n        font-weight: bold;\n    }");
     }
 
+    public function test_preformat()
+    {
+        $this->html_gives_markdown("<pre>test\ntest\r\ntest</pre>", '    test' . PHP_EOL . '    test' . PHP_EOL . '    test');
+        $this->html_gives_markdown("<pre>test\n\ttab\r\n</pre>", '    test' . PHP_EOL . "    \ttab");
+        $this->html_gives_markdown("<pre>  one line with spaces  </pre>", '    ' . '  one line with spaces  ');
+    }
+
     public function test_blockquotes()
     {
         $this->html_gives_markdown("<blockquote>Something I said?</blockquote>", "> Something I said?");
