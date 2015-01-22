@@ -3,5 +3,4 @@ php:
   - "5.5"
   - "5.4"
   - "5.3"
-  - "5.2"
 script: phpunit --no-configuration HTML_To_MarkdownTest ./tests/HTML_To_MarkdownTest.php

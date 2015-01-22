@@ -16,7 +16,7 @@
         "classmap": [ "HTML_To_Markdown.php" ]
     },
     "require": {
-        "php": ">=5.2"
+        "php": ">=5.3"
     },
     "require-dev": {
         "php": ">=5.3.3",
