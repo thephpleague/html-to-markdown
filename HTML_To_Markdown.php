@@ -437,7 +437,7 @@ class HTML_To_Markdown
 
         $markdown = '';
 
-        $code_content = html_entity_decode($this->document->saveHTML($node));
+        $code_content = html_entity_decode($node->C14N());
         $code_content = str_replace(array("<code>", "</code>"), "", $code_content);
         $code_content = str_replace(array("<pre>", "</pre>"), "", $code_content);
 
