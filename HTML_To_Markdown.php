@@ -273,7 +273,7 @@ class HTML_To_Markdown
                 break;
             default:
                 // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
-                // such as <span> and #text nodes on their own. C14N() canonicalizes the node to a string.
+                // such as <span> nodes on their own. C14N() canonicalizes the node to a string.
                 // See: http://www.php.net/manual/en/domnode.c14n.php
                 $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
         }
