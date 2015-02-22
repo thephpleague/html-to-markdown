@@ -5,7 +5,7 @@ A helper class that converts HTML to [Markdown](http://daringfireball.net/projec
 
 [![Build Status](https://travis-ci.org/nickcernis/html-to-markdown.png?branch=master)](https://travis-ci.org/nickcernis/html-to-markdown)
 
-**Version**: 2.2.0  
+**Version**: 2.2.1  
 **Requires**: PHP 5.3+  
 **Author**: [@nickcernis](http://twitter.com/nickcernis)  
 **License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
