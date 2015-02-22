@@ -388,6 +388,9 @@ class HTML_To_Markdown
             $markdown = '[' . $text . '](' . $href . ')';
         }
 
+        if (! $href)
+            $markdown = html_entity_decode($node->C14N());
+
         // Append a space if the node after this one is also an anchor
         $next_node_name = $this->get_next_node_name($node);
 

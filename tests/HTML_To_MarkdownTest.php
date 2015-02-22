@@ -69,6 +69,12 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="http://modernnerd.net" title="Title">Modern Nerd</a> <a href="http://modernnerd.net" title="Title">Modern Nerd</a>', '[Modern Nerd](http://modernnerd.net "Title") [Modern Nerd](http://modernnerd.net "Title")');
         $this->html_gives_markdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/></a>', '[![alt text](/path/img.jpg "Title")](http://modernnerd.net/ "Title")');
         $this->html_gives_markdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/> Test</a>', '[![alt text](/path/img.jpg "Title") Test](http://modernnerd.net/ "Title")');
+
+        // Placeholder links and fragment identifiers
+        $this->html_gives_markdown('<a>Test</a>', '<a>Test</a>');
+        $this->html_gives_markdown('<a href="">Test</a>', '<a href="">Test</a>');
+        $this->html_gives_markdown('<a href="#nerd" title="Title">Test</a>', '[Test](#nerd "Title")');
+        $this->html_gives_markdown('<a href="#nerd">Test</a>', '[Test](#nerd)');
     }
 
     public function test_lists()
