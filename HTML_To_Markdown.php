@@ -26,12 +26,13 @@ class HTML_To_Markdown
      * @var array Class-wide options users can override.
      */
     private $options = array(
-        'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
-        'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
-        'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-        'bold_style'      => '**', // Set to '__' if you prefer the underlined style
-        'italic_style'    => '*', // Set to '_' if you prefer the underlined style
-        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: "meta style script"
+        'header_style'        => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
+        'suppress_errors'     => true, // Set to false to show warnings when loading malformed HTML
+        'strip_tags'          => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+        'bold_style'          => '**', // Set to '__' if you prefer the underlined style
+        'italic_style'        => '*', // Set to '_' if you prefer the underlined style
+        'remove_nodes'        => '', // space-separated list of dom nodes that should be removed. example: "meta style script"
+        'preserve_attributes' => false, // Set to true to prevent conversion of tags with attributes that can't be presented in markdown   
     );
 
 
@@ -209,6 +210,17 @@ class HTML_To_Markdown
         $tags_to_remove = explode(' ', $this->options['remove_nodes']);
         if ( in_array($tag, $tags_to_remove) )
             return false;
+        
+        // Don't convert tags with attributes if preserve_attributes is on
+        if ( $this->options['preserve_attributes'] ) {
+            $length = $node->attributes->length;
+            for ($i = 0; $i < $length; ++$i) {
+                $attribute_name = $node->attributes->item($i)->name;
+                if ( in_array($attribute_name, array('id', 'class')) )
+                    return html_entity_decode($node->C14N());
+            }
+            
+        }
 
         switch ($tag) {
             case "p":

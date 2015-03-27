@@ -150,6 +150,57 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>Hello</p><span>World</span>', '', array('remove_nodes' => 'p span'));
     }
 
+    public function test_preserve_attributes()
+    {
+        $this->html_gives_markdown(
+            '<span class="class">Label: </span><a class="class" href="http://example.com">Link</a>',
+            '<span class="class">Label: </span><a class="class" href="http://example.com">Link</a>',
+            array('preserve_attributes' => true)
+        );
+
+        $this->html_gives_markdown(
+            '<span class="class">Label: </span><a class="class" href="http://example.com">Link</a>',
+            '<span class="class">Label: </span>[Link](http://example.com)'
+        );
+
+        $this->html_gives_markdown(
+            '<span class="class">Label: </span><a class="class" href="http://example.com">Link</a>',
+            '<span class="class">Label: </span>[Link](http://example.com)',
+            array('preserve_attributes' => false)
+        );
+
+        $this->html_gives_markdown(
+            '<div id="test">Div content</div>',
+            '<div id="test">Div content</div>',
+            array('preserve_attributes' => true)
+        );
+
+        $this->html_gives_markdown(
+            '<div id="test">Div content</div>',
+            '<div id="test">Div content</div>',
+            array('preserve_attributes' => false)
+        );
+
+        $this->html_gives_markdown(
+            '<div id="test">Div content</div>',
+            'Div content',
+            array(
+                'preserve_attributes' => false,
+                'strip_tags' => true,
+            )
+        );
+
+        $this->html_gives_markdown(
+            '<div id="test">Div content</div>',
+            '',
+            array(
+                'preserve_attributes' => false,
+                'remove_nodes' => 'div',
+            )
+        );
+        
+    }
+    
     public function test_set_option()
     {
         $markdown = new HTML_To_Markdown();
