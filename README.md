@@ -1,14 +1,18 @@
 HTML To Markdown for PHP
 ========================
 
-A helper class that converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
+[![Latest Version](https://img.shields.io/packagist/v/nickcernis/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/nickcernis/html-to-markdown)
+[![Software License](http://img.shields.io/badge/MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Build Status](https://img.shields.io/travis/nickcernis/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/nickcernis/html-to-markdown)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown)
+[![Total Downloads](https://img.shields.io/packagist/dt/nickcernis/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/nickcernis/html-to-markdown)
 
-[![Build Status](https://travis-ci.org/nickcernis/html-to-markdown.png?branch=master)](https://travis-ci.org/nickcernis/html-to-markdown)
+Library which converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
-**Version**: 2.2.2
+
 **Requires**: PHP 5.3+  
 **Author**: [@nickcernis](http://twitter.com/nickcernis)  
-**License**: [MIT](http://www.opensource.org/licenses/mit-license.php)  
 
 ### Why convert HTML to Markdown?
 
@@ -134,5 +138,12 @@ HTML To Markdown creates a DOMDocument from the supplied HTML, walks through the
 
 ### Trying to convert Markdown to HTML?
 
-Use [PHP Markdown](http://michelf.com/projects/php-markdown/) from Michel Fortin. No guarantees about the Elvish, though.
+Use one of these great libraries:
+
+ - [league/commonmark](https://github.com/thephpleague/commonmark) (recommended)
+ - [cebe/markdown](https://github.com/cebe/markdown)
+ - [PHP Markdown](https://michelf.ca/projects/php-markdown/)
+ - [Parsedown](https://github.com/erusev/parsedown)
+
+No guarantees about the Elvish, though.
 
