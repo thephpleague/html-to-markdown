@@ -81,6 +81,11 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="#nerd">Test</a>', '[Test](#nerd)');
     }
 
+    public function test_horizontal_rule()
+    {
+        $this->html_gives_markdown('<hr>', '- - - - - -');
+    }
+
     public function test_lists()
     {
         $this->html_gives_markdown("<ul><li>Item A</li><li>Item B</li><li>Item C</li></ul>", "- Item A\n- Item B\n- Item C");
