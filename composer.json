@@ -16,10 +16,11 @@
         "classmap": [ "HTML_To_Markdown.php" ]
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3.3",
+        "ext-dom": "*",
+        "ext-xml": "*"
     },
     "require-dev": {
-        "php": ">=5.3.3",
         "phpunit/phpunit": "4.*"
     }
 }
