@@ -3,7 +3,7 @@
 namespace HTMLToMarkdown;
 
 /**
- * Class Converter
+ * Class HtmlConverter
  *
  * A helper class to convert HTML to Markdown.
  *
@@ -13,7 +13,7 @@ namespace HTMLToMarkdown;
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
-class Converter
+class HtmlConverter
 {
     /**
      * @var \DOMDocument The root of the document tree that holds our HTML.

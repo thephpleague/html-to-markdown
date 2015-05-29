@@ -8,7 +8,7 @@ if (!is_null($html)) {
     if (get_magic_quotes_gpc())
         $html = stripslashes($html);
 
-    $markdown = new Converter($html);
+    $markdown = new \HTMLToMarkdown\HtmlConverter($html);
 
 }
 ?>

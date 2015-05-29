@@ -42,11 +42,11 @@ Require the library in your composer.json:
 
 Then `composer install` and add `require 'vendor/autoload.php';` to the top of your script.
 
-Next, create a new Converter instance, passing in your valid HTML code to its `convert()` function:
+Next, create a new HtmlConverter instance, passing in your valid HTML code to its `convert()` function:
 
-    use HTMLToMarkdown\Converter;
+    use HTMLToMarkdown\HtmlConverter;
 
-    $converer = new Converter();
+    $converer = new HtmlConverter();
 
     $html = "<h3>Quick, to the Batpoles!</h3>";
     $markdown = $converter->convert($html);
@@ -63,14 +63,14 @@ By default, HTML To Markdown preserves HTML tags without Markdown equivalents, l
 
 To strip HTML tags that don't have a Markdown equivalent while preserving the content inside them, set `strip_tags` to true, like this:
 
-    $converter = new Converter(array('strip_tags' => true));
+    $converter = new HtmlConverter(array('strip_tags' => true));
 
     $html = '<span>Turnips!</span>';
     $markdown = $converter->convert($html); // $markdown now contains "Turnips!"
 
 Or more explicitly, like this:
 
-    $converter = new Converter();
+    $converter = new HtmlConverter();
     $converter->setOption('strip_tags', true);
 
     $html = '<span>Turnips!</span>';
@@ -80,7 +80,7 @@ Note that only the tags themselves are stripped, not the content they hold.
 
 To strip tags and their content, pass a space-separated list of tags in `remove_nodes`, like this:
 
-    $converter = new Converter(array('remove_nodes' => 'span div'));
+    $converter = new HtmlConverter(array('remove_nodes' => 'span div'));
 
     $html = '<span>Turnips!</span><div>Monkeys!</div>';
     $markdown = $converter->convert($html); // $markdown now contains ""
@@ -89,7 +89,7 @@ To strip tags and their content, pass a space-separated list of tags in `remove_
 
 Bold and italic tags are converted using the asterisk syntax by default. Change this to the underlined syntax using the `bold_style` and `italic_style` options.
 
-    $converter = new Converter();
+    $converter = new HtmlConverter();
     $converter->setOption('italic_style', '_');
     $converter->setOption('bold_style', '__');
 
@@ -112,7 +112,7 @@ Bold and italic tags are converted using the asterisk syntax by default. Change 
 
 - Setext (underlined) headers are the default for H1 and H2. If you prefer the ATX style for H1 and H2 (# Header 1 and ## Header 2), set `header_style` to 'atx' in the options array when you instantiate the object:
 
-    `$converter = new Converter(array('header_style'=>'atx'));`
+    `$converter = new HtmlConverter(array('header_style'=>'atx'));`
 
      Headers of H3 priority and lower always use atx style.
 

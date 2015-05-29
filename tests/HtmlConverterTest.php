@@ -2,13 +2,13 @@
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
-use HTMLToMarkdown\Converter;
+use HTMLToMarkdown\HtmlConverter;
 
-class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
+class HtmlConverterTest extends PHPUnit_Framework_TestCase
 {
     private function html_gives_markdown($html, $expected_markdown, array $options = array())
     {
-        $markdown = new Converter($options);
+        $markdown = new HtmlConverter($options);
         $result = $markdown->convert($html);
         $this->assertEquals($expected_markdown, $result);
     }
@@ -158,7 +158,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 
     public function test_set_option()
     {
-        $markdown = new Converter();
+        $markdown = new HtmlConverter();
         $markdown->setOption('strip_tags', true);
         $result = $markdown->convert('<span>Strip</span>');
 
