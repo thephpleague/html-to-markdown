@@ -511,7 +511,7 @@ class HTML_To_Markdown
     /**
      * Get Position
      *
-     * Returns the numbered position of a node inside its parent
+     * Returns the numbered position of a node inside its parent, excluding empty text nodes
      *
      * @param $node
      * @return int The numbered position of the node, starting at 1.
@@ -520,41 +520,31 @@ class HTML_To_Markdown
     {
         // Get all of the nodes inside the parent
         $list_nodes = $node->parentNode->childNodes;
-        $total_nodes = $list_nodes->length;
 
-        $position = 1;
+        $position = 0;
 
         // Loop through all nodes and find the given $node
-        for ($a = 0; $a < $total_nodes; $a++) {
-            $current_node = $list_nodes->item($a);
+        foreach ($list_nodes as $current_node) {
+            if (!$this->is_whitespace($current_node)) {
+                $position++;
+            }
 
-            if ($current_node->isSameNode($node))
-                $position = $a + 1;
+            if ($current_node->isSameNode($node)) {
+                break;
+            }
         }
 
         return $position;
     }
 
-
     /**
-     * Get Next Node Name
+     * @param \DomNode $node
      *
-     * Return the name of the node immediately after the passed one.
-     *
-     * @param $node
-     * @return string|null The node name (e.g. 'h1') or null.
+     * @return bool
      */
-    private function get_next_node_name($node)
+    private function is_whitespace($node)
     {
-        $next_node_name = null;
-
-        $current_position = $this->get_position($node);
-        $next_node = $node->parentNode->childNodes->item($current_position);
-
-        if ($next_node)
-            $next_node_name = $next_node->nodeName;
-
-        return $next_node_name;
+        return $node->nodeName === '#text' && trim($node->nodeValue) === '';
     }
 
 
