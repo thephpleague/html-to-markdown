@@ -41,20 +41,11 @@ class Converter
     /**
      * Constructor
      *
-     * Set up a new DOMDocument from the supplied HTML, convert it to Markdown, and store it in $this->$output.
-     *
-     * @param string $html The HTML to convert to Markdown.
-     * @param array $overrides [optional] List of style and error display overrides.
+     * @param array $options Configuration options
      */
-    public function __construct($html = null, $overrides = null)
+    public function __construct(array $options = array())
     {
-        if ($overrides) {
-            $this->options = array_merge($this->options, $overrides);
-        }
-
-        if ($html) {
-            $this->convert($html);
-        }
+        $this->options = array_merge($this->options, $options);
     }
 
 
@@ -576,36 +567,6 @@ class Converter
     private function isWhitespace($node)
     {
         return $node->nodeName === '#text' && trim($node->nodeValue) === '';
-    }
-
-
-    /**
-     * To String
-     *
-     * Magic method to return Markdown output when Converter instance is treated as a string.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->output();
-    }
-
-
-    /**
-     * Output
-     *
-     * Getter for the converted Markdown contents stored in $this->output
-     *
-     * @return string
-     */
-    public function output()
-    {
-        if (!$this->output) {
-            return '';
-        } else {
-            return $this->output;
-        }
     }
 
     /**

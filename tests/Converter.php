@@ -6,10 +6,11 @@ use HTMLToMarkdown\Converter;
 
 class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 {
-    private function html_gives_markdown($html, $expected_markdown, $options=null)
+    private function html_gives_markdown($html, $expected_markdown, array $options = array())
     {
-        $markdown = new Converter($html, $options);
-        $this->assertEquals($expected_markdown, $markdown->__toString());
+        $markdown = new Converter($options);
+        $result = $markdown->convert($html);
+        $this->assertEquals($expected_markdown, $result);
     }
 
     public function test_plain_text()
@@ -158,10 +159,10 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     public function test_set_option()
     {
         $markdown = new Converter();
-        $markdown->set_option('strip_tags', true);
-        $markdown->convert('<span>Strip</span>');
+        $markdown->setOption('strip_tags', true);
+        $result = $markdown->convert('<span>Strip</span>');
 
-        $this->assertEquals('Strip', $markdown->__toString());
+        $this->assertEquals('Strip', $result);
     }
 
 }
