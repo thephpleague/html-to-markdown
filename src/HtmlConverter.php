@@ -37,11 +37,6 @@ class HtmlConverter
     private $document;
 
     /**
-     * @var string|boolean The Markdown version of the original HTML, or false if conversion failed
-     */
-    private $output;
-
-    /**
      * @var array Class-wide options users can override.
      */
     private $options = array(
@@ -200,8 +195,6 @@ class HtmlConverter
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
         $markdown = trim($markdown, "\n\r\0\x0B");
-
-        $this->output = $markdown;
 
         return $markdown;
     }
