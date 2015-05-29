@@ -20,7 +20,9 @@
         }
     ],
     "autoload": {
-        "classmap": [ "HTML_To_Markdown.php" ]
+        "psr-4": {
+            "HTMLToMarkdown\\": "src/"
+        }
     },
     "require": {
         "php": ">=5.3.3",

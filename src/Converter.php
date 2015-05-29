@@ -1,7 +1,9 @@
 <?php
 
+namespace HTMLToMarkdown;
+
 /**
- * Class HTML_To_Markdown
+ * Class Converter
  *
  * A helper class to convert HTML to Markdown.
  *
@@ -11,10 +13,10 @@
  * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
-class HTML_To_Markdown
+class Converter
 {
     /**
-     * @var DOMDocument The root of the document tree that holds our HTML.
+     * @var \DOMDocument The root of the document tree that holds our HTML.
      */
     private $document;
 
@@ -62,7 +64,7 @@ class HTML_To_Markdown
      * @param $name
      * @param $value
      */
-    public function set_option($name, $value)
+    public function setOption($name, $value)
     {
         $this->options[$name] = $value;
     }
@@ -71,7 +73,7 @@ class HTML_To_Markdown
     /**
      * Convert
      *
-     * Loads HTML and passes to get_markdown()
+     * Loads HTML and passes to getMarkdown()
      *
      * @param $html
      *
@@ -79,7 +81,7 @@ class HTML_To_Markdown
      */
     public function convert($html)
     {
-        $this->document = new DOMDocument();
+        $this->document = new \DOMDocument();
 
         if ($this->options['suppress_errors']) {
             // Suppress conversion errors (from http://bit.ly/pCCRSX)
@@ -94,7 +96,7 @@ class HTML_To_Markdown
             libxml_clear_errors();
         }
 
-        return $this->get_markdown($html);
+        return $this->getMarkdown($html);
     }
 
 
@@ -108,7 +110,7 @@ class HTML_To_Markdown
      *
      * @return bool
      */
-    private static function is_child_of($parent_name, $node)
+    private static function isChildOf($parent_name, $node)
     {
         for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
             if (is_null($p)) {
@@ -138,10 +140,10 @@ class HTML_To_Markdown
      *
      * @param $node
      */
-    private function convert_children($node)
+    private function convertChildren($node)
     {
         // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
-        if (self::is_child_of(array('pre', 'code'), $node)) {
+        if (self::isChildOf(array('pre', 'code'), $node)) {
             return;
         }
 
@@ -151,12 +153,12 @@ class HTML_To_Markdown
 
             for ($i = 0; $i < $length; $i++) {
                 $child = $node->childNodes->item($i);
-                $this->convert_children($child);
+                $this->convertChildren($child);
             }
         }
 
         // Now that child nodes have been converted, convert the original node
-        $markdown = $this->convert_to_markdown($node);
+        $markdown = $this->convertToMarkdown($node);
 
         // Create a DOM text node containing the Markdown equivalent of the original node
         $markdown_node = $this->document->createTextNode($markdown);
@@ -169,12 +171,12 @@ class HTML_To_Markdown
     /**
      * Get Markdown
      *
-     * Sends the body node to convert_children() to change inner nodes to Markdown #text nodes, then saves and
+     * Sends the body node to convertChildren() to change inner nodes to Markdown #text nodes, then saves and
      * returns the resulting converted document as a string in Markdown format.
      *
      * @return string|boolean The converted HTML as Markdown, or false if conversion failed
      */
-    private function get_markdown()
+    private function getMarkdown()
     {
         // Work on the entire DOM tree (including head and body)
         $input = $this->document->getElementsByTagName('html')->item(0);
@@ -186,7 +188,7 @@ class HTML_To_Markdown
         // Convert all children of this root element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
         // that it replaced.
-        $this->convert_children($input);
+        $this->convertChildren($input);
 
         // Sanitize and return the body contents as a string.
         $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
@@ -214,7 +216,7 @@ class HTML_To_Markdown
      *
      * @return string The converted HTML as Markdown
      */
-    private function convert_to_markdown($node)
+    private function convertToMarkdown($node)
     {
         $tag = $node->nodeName; // the type of element, e.g. h1
         $value = $node->nodeValue; // the value of that element, e.g. The Title
@@ -230,11 +232,11 @@ class HTML_To_Markdown
                 $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
                 break;
             case 'pre':
-                $markdown = PHP_EOL . $this->convert_code($node) . PHP_EOL;
+                $markdown = PHP_EOL . $this->convertCode($node) . PHP_EOL;
                 break;
             case 'h1':
             case 'h2':
-                $markdown = $this->convert_header($tag, $node);
+                $markdown = $this->convertHeader($tag, $node);
                 break;
             case 'h3':
                 $markdown = '### ' . $value . PHP_EOL . PHP_EOL;
@@ -252,7 +254,7 @@ class HTML_To_Markdown
             case 'i':
             case 'strong':
             case 'b':
-                $markdown = $this->convert_emphasis($tag, $value);
+                $markdown = $this->convertEmphasis($tag, $value);
                 break;
             case 'hr':
                 $markdown = '- - - - - -' . PHP_EOL . PHP_EOL;
@@ -261,26 +263,26 @@ class HTML_To_Markdown
                 $markdown = '  ' . PHP_EOL;
                 break;
             case 'blockquote':
-                $markdown = $this->convert_blockquote($node);
+                $markdown = $this->convertBlockquote($node);
                 break;
             case 'code':
-                $markdown = $this->convert_code($node);
+                $markdown = $this->convertCode($node);
                 break;
             case 'ol':
             case 'ul':
                 $markdown = $value . PHP_EOL;
                 break;
             case 'li':
-                $markdown = $this->convert_list($node);
+                $markdown = $this->convertList($node);
                 break;
             case 'img':
-                $markdown = $this->convert_image($node);
+                $markdown = $this->convertImage($node);
                 break;
             case 'a':
                 $markdown = $this->convert_anchor($node);
                 break;
             case '#text':
-                $markdown = $this->convert_text($node);
+                $markdown = $this->convertText($node);
                 break;
             case '#comment':
                 $markdown = '';
@@ -317,11 +319,11 @@ class HTML_To_Markdown
      *
      * @return string The Markdown version of the header.
      */
-    private function convert_header($level, $node)
+    private function convertHeader($level, $node)
     {
         $content = $node->nodeValue;
 
-        if (!$this->is_child_of('blockquote', $node) && $this->options['header_style'] == 'setext') {
+        if (!$this->isChildOf('blockquote', $node) && $this->options['header_style'] == 'setext') {
             $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
             $underline = ($level == 'h1') ? '=' : '-';
             $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
@@ -345,7 +347,7 @@ class HTML_To_Markdown
      *
      * @return string
      */
-    private function convert_emphasis($tag, $value)
+    private function convertEmphasis($tag, $value)
     {
         if ($tag == 'i' || $tag == 'em') {
             $markdown = $this->options['italic_style'] . $value . $this->options['italic_style'];
@@ -369,7 +371,7 @@ class HTML_To_Markdown
      *
      * @return string
      */
-    private function convert_image($node)
+    private function convertImage($node)
     {
         $src = $node->getAttribute('src');
         $alt = $node->getAttribute('alt');
@@ -427,7 +429,7 @@ class HTML_To_Markdown
      *
      * @return string
      */
-    private function convert_list($node)
+    private function convertList($node)
     {
         // If parent is an ol, use numbers, otherwise, use dashes
         $list_type = $node->parentNode->nodeName;
@@ -436,7 +438,7 @@ class HTML_To_Markdown
         if ($list_type == 'ul') {
             $markdown = '- ' . trim($value) . PHP_EOL;
         } else {
-            $number = $this->get_position($node);
+            $number = $this->getPosition($node);
             $markdown = $number . '. ' . trim($value) . PHP_EOL;
         }
 
@@ -449,11 +451,11 @@ class HTML_To_Markdown
      *
      * Convert code tags by indenting blocks of code and wrapping single lines in backticks.
      *
-     * @param DOMNode $node
+     * @param \DOMNode $node
      *
      * @return string
      */
-    private function convert_code($node)
+    private function convertCode($node)
     {
         // Store the content of the code block in an array, one entry for each line
 
@@ -512,7 +514,7 @@ class HTML_To_Markdown
      *
      * @return string
      */
-    private function convert_blockquote($node)
+    private function convertBlockquote($node)
     {
         // Contents should have already been converted to Markdown by this point,
         // so we just need to add '>' symbols to each line.
@@ -545,7 +547,7 @@ class HTML_To_Markdown
      *
      * @return int The numbered position of the node, starting at 1.
      */
-    private function get_position($node)
+    private function getPosition($node)
     {
         // Get all of the nodes inside the parent
         $list_nodes = $node->parentNode->childNodes;
@@ -554,7 +556,7 @@ class HTML_To_Markdown
 
         // Loop through all nodes and find the given $node
         foreach ($list_nodes as $current_node) {
-            if (!$this->is_whitespace($current_node)) {
+            if (!$this->isWhitespace($current_node)) {
                 $position++;
             }
 
@@ -571,7 +573,7 @@ class HTML_To_Markdown
      *
      * @return bool
      */
-    private function is_whitespace($node)
+    private function isWhitespace($node)
     {
         return $node->nodeName === '#text' && trim($node->nodeValue) === '';
     }
@@ -580,7 +582,7 @@ class HTML_To_Markdown
     /**
      * To String
      *
-     * Magic method to return Markdown output when HTML_To_Markdown instance is treated as a string.
+     * Magic method to return Markdown output when Converter instance is treated as a string.
      *
      * @return string
      */
@@ -611,7 +613,7 @@ class HTML_To_Markdown
      *
      * @return string
      */
-    private function convert_text($node)
+    private function convertText($node)
     {
         $value = $node->nodeValue;
 
@@ -619,8 +621,8 @@ class HTML_To_Markdown
         $markdown = preg_replace('~^#~', '\\\\#', $markdown);
 
         if ($markdown === ' ') {
-            $next = $this->get_next($node);
-            if (!$next || $this->is_block($next)) {
+            $next = $this->getNext($node);
+            if (!$next || $this->isBlock($next)) {
                 $markdown = '';
             }
         }
@@ -633,14 +635,14 @@ class HTML_To_Markdown
      *
      * @return \DomNode|null
      */
-    private function get_next($node, $checkChildren = true)
+    private function getNext($node, $checkChildren = true)
     {
         if ($checkChildren && $node->firstChild) {
             return $node->firstChild;
         } elseif ($node->nextSibling) {
             return $node->nextSibling;
         } elseif ($node->parentNode) {
-            return $this->get_next($node->parentNode, false);
+            return $this->getNext($node->parentNode, false);
         } else {
             return null;
         }
@@ -651,7 +653,7 @@ class HTML_To_Markdown
      *
      * @return bool
      */
-    private function is_block($node)
+    private function isBlock($node)
     {
         switch ($node->nodeName) {
             case 'blockquote':

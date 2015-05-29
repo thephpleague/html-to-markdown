@@ -1,11 +1,14 @@
 <?php
-require_once dirname(__FILE__) . '/../HTML_To_Markdown.php';
+
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
+
+use HTMLToMarkdown\Converter;
 
 class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 {
     private function html_gives_markdown($html, $expected_markdown, $options=null)
     {
-        $markdown = new HTML_To_Markdown($html, $options);
+        $markdown = new Converter($html, $options);
         $this->assertEquals($expected_markdown, $markdown->__toString());
     }
 
@@ -44,7 +47,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<em>Italic</em> and a <strong>bold</strong>", "_Italic_ and a __bold__", array('italic_style' => '_', 'bold_style' => '__'));
         $this->html_gives_markdown("<i>Test</i>", "_Test_", array('italic_style' => '_'));
         $this->html_gives_markdown("<strong>Test</strong>", "__Test__", array('bold_style' => '__'));
-        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('bold_style' => '__'));        
+        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('bold_style' => '__'));
         $this->html_gives_markdown("<span>Test</span>", "<span>Test</span>");
         $this->html_gives_markdown("<b>Bold</b> <i>Italic</i>", "**Bold** *Italic*");
         $this->html_gives_markdown("<b>Bold</b><i>Italic</i>", "**Bold***Italic*");
@@ -154,7 +157,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 
     public function test_set_option()
     {
-        $markdown = new HTML_To_Markdown();
+        $markdown = new Converter();
         $markdown->set_option('strip_tags', true);
         $markdown->convert('<span>Strip</span>');
 

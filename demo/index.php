@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . '/../HTML_To_Markdown.php');
+require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
 $markdown = '';
 $html = ($_POST) ? $_POST["html"] : null;
@@ -8,8 +8,7 @@ if (!is_null($html)) {
     if (get_magic_quotes_gpc())
         $html = stripslashes($html);
 
-    $markdown = new HTML_To_Markdown($html);
-//    $markdown = new HTML_To_Markdown($html, array('strip_tags' => true));
+    $markdown = new Converter($html);
 
 }
 ?>

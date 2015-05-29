@@ -14,4 +14,4 @@ matrix:
 
 sudo: false
 
-script: phpunit --no-configuration HTML_To_MarkdownTest ./tests/HTML_To_MarkdownTest.php
+script: phpunit --no-configuration HTML_To_MarkdownTest ./tests/Converter.php
