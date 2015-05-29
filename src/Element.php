@@ -99,9 +99,13 @@ class Element implements ElementInterface
      */
     public function getChildren()
     {
-        return array_map(function (\DOMNode $node) {
-            return new static($node);
-        }, iterator_to_array($this->node->childNodes));
+        $ret = array();
+        /** @var \DOMNode $node */
+        foreach ($this->node->childNodes as $node) {
+            $ret[] = new static($node);
+        }
+
+        return $ret;
     }
 
     /**
