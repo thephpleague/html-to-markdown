@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [2.2.2]
 ### Added
  - Added support for PHP 5.6 and HHVM
  - Enabled testing against PHP 7 nightlies
@@ -66,7 +68,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/nickcernis/html-to-markdown/compare/2.2.1...master
+[unreleased]: https://github.com/nickcernis/html-to-markdown/compare/2.2.2...master
+[2.2.2]: https://github.com/nickcernis/html-to-markdown/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/nickcernis/html-to-markdown/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/nickcernis/html-to-markdown/compare/2.1.2...2.2.0
 [2.1.2]: https://github.com/nickcernis/html-to-markdown/compare/2.1.1...2.1.2
