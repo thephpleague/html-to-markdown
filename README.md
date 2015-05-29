@@ -2,7 +2,7 @@ HTML To Markdown for PHP
 ========================
 
 [![Latest Version](https://img.shields.io/packagist/v/nickcernis/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/nickcernis/html-to-markdown)
-[![Software License](http://img.shields.io/badge/MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Software License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/travis/nickcernis/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/nickcernis/html-to-markdown)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown)
