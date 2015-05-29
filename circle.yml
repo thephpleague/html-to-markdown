@@ -1,4 +1,4 @@
 test:
   override:
-    - phpunit --no-configuration HtmlConverterTest ./tests/HtmlConverterTest.php
+    - phpunit
 

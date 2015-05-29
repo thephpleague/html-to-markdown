@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-
 use HTMLToMarkdown\HtmlConverter;
 
 class HtmlConverterTest extends PHPUnit_Framework_TestCase
