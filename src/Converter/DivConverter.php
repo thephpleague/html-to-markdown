@@ -2,15 +2,23 @@
 
 namespace HTMLToMarkdown\Converter;
 
+use HTMLToMarkdown\Configuration;
+use HTMLToMarkdown\ConfigurationAwareInterface;
 use HTMLToMarkdown\ElementInterface;
 
-class DivConverter implements ConverterInterface
+class DivConverter implements ConverterInterface, ConfigurationAwareInterface
 {
-    protected $stripTags;
+    /**
+     * @var Configuration
+     */
+    protected $config;
 
-    public function __construct($stripTags = false)
+    /**
+     * @param Configuration $config
+     */
+    public function setConfig(Configuration $config)
     {
-        $this->stripTags = $stripTags;
+        $this->config = $config;
     }
 
     /**
@@ -20,7 +28,11 @@ class DivConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        return ($this->stripTags) ? $element->getValue() . PHP_EOL . PHP_EOL : html_entity_decode($element->getChildrenAsString());
+        if ($this->config->getOption('strip_tags', false)) {
+            return $element->getValue() . PHP_EOL . PHP_EOL;
+        }
+
+        return html_entity_decode($element->getChildrenAsString());
     }
 
     /**

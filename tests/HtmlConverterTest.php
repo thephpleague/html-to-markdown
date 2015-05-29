@@ -159,7 +159,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     public function test_set_option()
     {
         $markdown = new HtmlConverter();
-        $markdown->setOption('strip_tags', true);
+        $markdown->getConfig()->setOption('strip_tags', true);
         $result = $markdown->convert('<span>Strip</span>');
 
         $this->assertEquals('Strip', $result);

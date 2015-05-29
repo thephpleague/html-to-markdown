@@ -2,22 +2,6 @@
 
 namespace HTMLToMarkdown;
 
-use HTMLToMarkdown\Converter\BlockquoteConverter;
-use HTMLToMarkdown\Converter\CommentConverter;
-use HTMLToMarkdown\Converter\ConverterInterface;
-use HTMLToMarkdown\Converter\DivConverter;
-use HTMLToMarkdown\Converter\EmphasisConverter;
-use HTMLToMarkdown\Converter\HardBreakConverter;
-use HTMLToMarkdown\Converter\HeaderConverter;
-use HTMLToMarkdown\Converter\HorizontalRuleConverter;
-use HTMLToMarkdown\Converter\ImageConverter;
-use HTMLToMarkdown\Converter\LinkConverter;
-use HTMLToMarkdown\Converter\ListBlockConverter;
-use HTMLToMarkdown\Converter\ListItemConverter;
-use HTMLToMarkdown\Converter\ParagraphConverter;
-use HTMLToMarkdown\Converter\PreformattedConverter;
-use HTMLToMarkdown\Converter\TextConverter;
-
 /**
  * Class HtmlConverter
  *
@@ -32,26 +16,14 @@ use HTMLToMarkdown\Converter\TextConverter;
 class HtmlConverter
 {
     /**
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
      * @var \DOMDocument The root of the document tree that holds our HTML.
      */
     private $document;
-
-    /**
-     * @var array Class-wide options users can override.
-     */
-    private $options = array(
-        'header_style'    => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
-        'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
-        'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-        'bold_style'      => '**', // Set to '__' if you prefer the underlined style
-        'italic_style'    => '*', // Set to '_' if you prefer the underlined style
-        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
-    );
-
-    /**
-     * @var ConverterInterface[]
-     */
-    protected $converters = array();
 
     /**
      * Constructor
@@ -60,45 +32,27 @@ class HtmlConverter
      */
     public function __construct(array $options = array())
     {
-        $this->options = array_merge($this->options, $options);
+        $defaults = array(
+            'header_style'    => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
+            'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
+            'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+            'bold_style'      => '**', // Set to '__' if you prefer the underlined style
+            'italic_style'    => '*', // Set to '_' if you prefer the underlined style
+            'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
+        );
 
-        $this->addConverter(new BlockquoteConverter());
-        $this->addConverter(new HardBreakConverter());
-        $this->addConverter(new ParagraphConverter());
-        $this->addConverter(new HeaderConverter($this->options['header_style']));
-        $this->addConverter(new EmphasisConverter($this->options['italic_style'], $this->options['bold_style']));
-        $this->addConverter(new CommentConverter());
-        $this->addConverter(new ListBlockConverter());
-        $this->addConverter(new HorizontalRuleConverter());
-        $this->addConverter(new ListItemConverter());
-        $this->addConverter(new TextConverter());
-        $this->addConverter(new PreformattedConverter());
-        $this->addConverter(new LinkConverter());
-        $this->addConverter(new ImageConverter());
-        $this->addConverter(new DivConverter($this->options['strip_tags']));
+        $this->environment = Environment::createDefaultEnvironment($defaults);
+
+        $this->environment->getConfig()->merge($options);
     }
 
     /**
-     * @param ConverterInterface $converter
+     * @return Configuration
      */
-    protected function addConverter(ConverterInterface $converter)
+    public function getConfig()
     {
-        foreach ($converter->getSupportedTags() as $tag) {
-            $this->converters[$tag] = $converter;
-        }
+        return $this->environment->getConfig();
     }
-
-    /**
-     * Setter for conversion options
-     *
-     * @param $name
-     * @param $value
-     */
-    public function setOption($name, $value)
-    {
-        $this->options[$name] = $value;
-    }
-
 
     /**
      * Convert
@@ -113,7 +67,7 @@ class HtmlConverter
     {
         $this->document = new \DOMDocument();
 
-        if ($this->options['suppress_errors']) {
+        if ($this->getConfig()->getOption('suppress_errors')) {
             // Suppress conversion errors (from http://bit.ly/pCCRSX)
             libxml_use_internal_errors(true);
         }
@@ -122,7 +76,7 @@ class HtmlConverter
         $this->document->loadHTML('<?xml encoding="UTF-8">' . $html);
         $this->document->encoding = 'UTF-8';
 
-        if ($this->options['suppress_errors']) {
+        if ($this->getConfig()->getOption('suppress_errors')) {
             libxml_clear_errors();
         }
 
@@ -214,25 +168,14 @@ class HtmlConverter
     private function convertToMarkdown(ElementInterface $element)
     {
         $tag = $element->getTagName();
-        $value = $element->getValue();
 
         // Strip nodes named in remove_nodes
-        $tags_to_remove = explode(' ', $this->options['remove_nodes']);
+        $tags_to_remove = explode(' ', $this->getConfig()->getOption('remove_nodes'));
         if (in_array($tag, $tags_to_remove)) {
             return false;
         }
 
-        if (isset($this->converters[$tag])) {
-            return $this->converters[$tag]->convert($element);
-        }
-
-        // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
-        // such as <span> nodes on their own. C14N() canonicalizes the node to a string.
-        // See: http://www.php.net/manual/en/domnode.c14n.php
-        if ($this->options['strip_tags']) {
-            return $value;
-        }
-
-        return html_entity_decode($element->getChildrenAsString());
+        $converter = $this->environment->getConverterByTag($tag);
+        return $converter->convert($element);
     }
 }

@@ -2,18 +2,26 @@
 
 namespace HTMLToMarkdown\Converter;
 
+use HTMLToMarkdown\Configuration;
+use HTMLToMarkdown\ConfigurationAwareInterface;
 use HTMLToMarkdown\ElementInterface;
 
-class HeaderConverter implements ConverterInterface
+class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 {
     const STYLE_ATX = 'atx';
     const STYLE_SETEXT = 'setext';
 
-    protected $style;
+    /**
+     * @var Configuration
+     */
+    protected $config;
 
-    public function __construct($style = self::STYLE_ATX)
+    /**
+     * @param Configuration $config
+     */
+    public function setConfig(Configuration $config)
     {
-        $this->style = $style;
+        $this->config = $config;
     }
 
     /**
@@ -24,7 +32,9 @@ class HeaderConverter implements ConverterInterface
     public function convert(ElementInterface $element)
     {
         $level = (int)$element->getTagName()[1];
-        if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $this->style === self::STYLE_SETEXT) {
+        $style = $this->config->getOption('header_style', self::STYLE_SETEXT);
+
+        if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
             return $this->createSetextHeader($level, $element->getValue());
         } else {
             return $this->createAtxHeader($level, $element->getValue());

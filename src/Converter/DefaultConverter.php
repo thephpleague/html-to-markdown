@@ -6,8 +6,10 @@ use HTMLToMarkdown\Configuration;
 use HTMLToMarkdown\ConfigurationAwareInterface;
 use HTMLToMarkdown\ElementInterface;
 
-class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
+class DefaultConverter implements ConverterInterface, ConfigurationAwareInterface
 {
+    const DEFAULT_CONVERTER = '_default';
+
     /**
      * @var Configuration
      */
@@ -28,16 +30,14 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
      */
     public function convert(ElementInterface $element)
     {
-        $tag = $element->getTagName();
-        $value = $element->getValue();
-
-        if ($tag == 'i' || $tag == 'em') {
-            $style = $this->config->getOption('italic_style');
-        } else {
-            $style = $this->config->getOption('bold_style');
+        // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
+        // such as <span> nodes on their own. C14N() canonicalizes the node to a string.
+        // See: http://www.php.net/manual/en/domnode.c14n.php
+        if ($this->config->getOption('strip_tags', false)) {
+            return $element->getValue();
         }
 
-        return $style . $value . $style;
+        return html_entity_decode($element->getChildrenAsString());
     }
 
     /**
@@ -45,6 +45,6 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
      */
     public function getSupportedTags()
     {
-        return array('em', 'i', 'strong', 'b');
+        return array(self::DEFAULT_CONVERTER);
     }
 }
