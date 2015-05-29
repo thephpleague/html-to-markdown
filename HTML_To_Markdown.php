@@ -75,8 +75,6 @@ class HTML_To_Markdown
      */
     public function convert($html)
     {
-        $html = preg_replace('~>\s+<~', '><', $html); // Strip white space between tags to prevent creation of empty #text nodes
-
         $this->document = new DOMDocument();
 
         if ($this->options['suppress_errors'])
@@ -265,8 +263,7 @@ class HTML_To_Markdown
                 $markdown = $this->convert_anchor($node);
                 break;
             case "#text":
-                $markdown = preg_replace('~\s+~', ' ', $value);
-                $markdown = preg_replace('~^#~', '\\\\#', $markdown);
+                $markdown = $this->convert_text($node);
                 break;
             case "#comment":
                 $markdown = '';
@@ -593,6 +590,75 @@ class HTML_To_Markdown
             return '';
         } else {
             return $this->output;
+        }
+    }
+
+    /**
+     * @param \DomNode $node
+     *
+     * @return string
+     */
+    private function convert_text($node)
+    {
+        $value = $node->nodeValue;
+
+        $markdown = preg_replace('~\s+~', ' ', $value);
+        $markdown = preg_replace('~^#~', '\\\\#', $markdown);
+
+        if ($markdown === ' ') {
+            $next = $this->get_next($node);
+            if (!$next || $this->is_block($next)) {
+                $markdown = '';
+            }
+        }
+
+        return $markdown;
+    }
+
+    /**
+     * @param \DomNode $node
+     *
+     * @return \DomNode|null
+     */
+    private function get_next($node, $checkChildren = true)
+    {
+        if ($checkChildren && $node->firstChild) {
+            return $node->firstChild;
+        } elseif ($node->nextSibling) {
+            return $node->nextSibling;
+        } elseif ($node->parentNode) {
+            return $this->get_next($node->parentNode, false);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param \DomNode $node
+     *
+     * @return bool
+     */
+    private function is_block($node)
+    {
+        switch ($node->nodeName) {
+            case "blockquote":
+            case "body":
+            case "code":
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+            case "h5":
+            case "h6":
+            case "hr":
+            case "html":
+            case "li":
+            case "p":
+            case "ol":
+            case "ul":
+                return true;
+            default:
+                return false;
         }
     }
 }
