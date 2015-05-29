@@ -21,11 +21,6 @@ class HtmlConverter
     protected $environment;
 
     /**
-     * @var \DOMDocument The root of the document tree that holds our HTML.
-     */
-    private $document;
-
-    /**
      * Constructor
      *
      * @param array $options Configuration options
@@ -65,7 +60,32 @@ class HtmlConverter
      */
     public function convert($html)
     {
-        $this->document = new \DOMDocument();
+        $document = $this->createDOMDocument($html);
+
+        // Work on the entire DOM tree (including head and body)
+        if (!($root = $document->getElementsByTagName('html')->item(0))) {
+            throw new \InvalidArgumentException('Invalid HTML was provided');
+        }
+
+        $rootElement = new Element($root);
+        $this->convertChildren($rootElement);
+
+        // Store the now-modified DOMDocument as a string
+        $markdown = $document->saveHTML();
+
+        $markdown = $this->sanitize($markdown);
+
+        return $markdown;
+    }
+
+    /**
+     * @param string $html
+     *
+     * @return \DOMDocument
+     */
+    protected function createDOMDocument($html)
+    {
+        $document = new \DOMDocument();
 
         if ($this->getConfig()->getOption('suppress_errors')) {
             // Suppress conversion errors (from http://bit.ly/pCCRSX)
@@ -73,14 +93,14 @@ class HtmlConverter
         }
 
         // Hack to load utf-8 HTML (from http://bit.ly/pVDyCt)
-        $this->document->loadHTML('<?xml encoding="UTF-8">' . $html);
-        $this->document->encoding = 'UTF-8';
+        $document->loadHTML('<?xml encoding="UTF-8">' . $html);
+        $document->encoding = 'UTF-8';
 
         if ($this->getConfig()->getOption('suppress_errors')) {
             libxml_clear_errors();
         }
 
-        return $this->getMarkdown($html);
+        return $document;
     }
 
 
@@ -117,43 +137,6 @@ class HtmlConverter
         $element->setFinalMarkdown($markdown);
     }
 
-
-    /**
-     * Get Markdown
-     *
-     * Sends the body node to convertChildren() to change inner nodes to Markdown #text nodes, then saves and
-     * returns the resulting converted document as a string in Markdown format.
-     *
-     * @return string|boolean The converted HTML as Markdown, or false if conversion failed
-     */
-    private function getMarkdown()
-    {
-        // Work on the entire DOM tree (including head and body)
-        $input = $this->document->getElementsByTagName('html')->item(0);
-
-        if (!$input) {
-            return false;
-        }
-
-        // Convert all children of this root element. The DOMDocument stored in $this->doc will
-        // then consist of #text nodes, each containing a Markdown version of the original node
-        // that it replaced.
-        $element =  new Element($input);
-        $this->convertChildren($element);
-
-        // Sanitize and return the body contents as a string.
-        $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
-        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
-        $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
-        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
-        $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
-        $markdown = trim($markdown, "\n\r\0\x0B");
-
-        return $markdown;
-    }
-
-
     /**
      * Convert to Markdown
      *
@@ -165,7 +148,7 @@ class HtmlConverter
      *
      * @return string The converted HTML as Markdown
      */
-    private function convertToMarkdown(ElementInterface $element)
+    protected function convertToMarkdown(ElementInterface $element)
     {
         $tag = $element->getTagName();
 
@@ -176,6 +159,24 @@ class HtmlConverter
         }
 
         $converter = $this->environment->getConverterByTag($tag);
+
         return $converter->convert($element);
+    }
+
+    /**
+     * @param string $markdown
+     *
+     * @return string
+     */
+    protected function sanitize($markdown)
+    {
+        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
+        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
+        $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
+        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
+        $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
+        $markdown = trim($markdown, "\n\r\0\x0B");
+
+        return $markdown;
     }
 }
