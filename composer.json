@@ -24,6 +24,11 @@
             "HTMLToMarkdown\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "HTMLToMarkdown\\Test\\": "tests"
+        }
+    },
     "require": {
         "php": ">=5.3.3",
         "ext-dom": "*",

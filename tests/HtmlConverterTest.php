@@ -1,8 +1,10 @@
 <?php
 
+namespace HTMLToMarkdown\Test;
+
 use HTMLToMarkdown\HtmlConverter;
 
-class HtmlConverterTest extends PHPUnit_Framework_TestCase
+class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 {
     private function html_gives_markdown($html, $expected_markdown, array $options = array())
     {
