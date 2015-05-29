@@ -27,12 +27,12 @@ class HTML_To_Markdown
      * @var array Class-wide options users can override.
      */
     private $options = array(
-        'header_style'    => 'setext', // Set to "atx" to output H1 and H2 headers as # Header1 and ## Header2
+        'header_style'    => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
         'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
         'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
         'bold_style'      => '**', // Set to '__' if you prefer the underlined style
         'italic_style'    => '*', // Set to '_' if you prefer the underlined style
-        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: "meta style script"
+        'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
     );
 
 
@@ -161,7 +161,7 @@ class HTML_To_Markdown
         // Create a DOM text node containing the Markdown equivalent of the original node
         $markdown_node = $this->document->createTextNode($markdown);
 
-        // Replace the old $node e.g. "<h3>Title</h3>" with the new $markdown_node e.g. "### Title"
+        // Replace the old $node e.g. '<h3>Title</h3>' with the new $markdown_node e.g. '### Title'
         $node->parentNode->replaceChild($markdown_node, $node);
     }
 
@@ -177,7 +177,7 @@ class HTML_To_Markdown
     private function get_markdown()
     {
         // Work on the entire DOM tree (including head and body)
-        $input = $this->document->getElementsByTagName("html")->item(0);
+        $input = $this->document->getElementsByTagName('html')->item(0);
 
         if (!$input) {
             return false;
@@ -192,7 +192,7 @@ class HTML_To_Markdown
         $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
-        $markdown = preg_replace("/<!DOCTYPE [^>]+>/", "", $markdown); // Strip doctype declaration
+        $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
         $markdown = trim($markdown, "\n\r\0\x0B");
@@ -208,7 +208,7 @@ class HTML_To_Markdown
      *
      * Converts an individual node into a #text node containing a string of its Markdown equivalent.
      *
-     * Example: An <h3> node with text content of "Title" becomes a text node with content of "### Title"
+     * Example: An <h3> node with text content of 'Title' becomes a text node with content of '### Title'
      *
      * @param $node
      *
@@ -226,66 +226,66 @@ class HTML_To_Markdown
         }
 
         switch ($tag) {
-            case "p":
+            case 'p':
                 $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
                 break;
-            case "pre":
+            case 'pre':
                 $markdown = PHP_EOL . $this->convert_code($node) . PHP_EOL;
                 break;
-            case "h1":
-            case "h2":
+            case 'h1':
+            case 'h2':
                 $markdown = $this->convert_header($tag, $node);
                 break;
-            case "h3":
-                $markdown = "### " . $value . PHP_EOL . PHP_EOL;
+            case 'h3':
+                $markdown = '### ' . $value . PHP_EOL . PHP_EOL;
                 break;
-            case "h4":
-                $markdown = "#### " . $value . PHP_EOL . PHP_EOL;
+            case 'h4':
+                $markdown = '#### ' . $value . PHP_EOL . PHP_EOL;
                 break;
-            case "h5":
-                $markdown = "##### " . $value . PHP_EOL . PHP_EOL;
+            case 'h5':
+                $markdown = '##### ' . $value . PHP_EOL . PHP_EOL;
                 break;
-            case "h6":
-                $markdown = "###### " . $value . PHP_EOL . PHP_EOL;
+            case 'h6':
+                $markdown = '###### ' . $value . PHP_EOL . PHP_EOL;
                 break;
-            case "em":
-            case "i":
-            case "strong":
-            case "b":
+            case 'em':
+            case 'i':
+            case 'strong':
+            case 'b':
                 $markdown = $this->convert_emphasis($tag, $value);
                 break;
-            case "hr":
-                $markdown = "- - - - - -" . PHP_EOL . PHP_EOL;
+            case 'hr':
+                $markdown = '- - - - - -' . PHP_EOL . PHP_EOL;
                 break;
-            case "br":
-                $markdown = "  " . PHP_EOL;
+            case 'br':
+                $markdown = '  ' . PHP_EOL;
                 break;
-            case "blockquote":
+            case 'blockquote':
                 $markdown = $this->convert_blockquote($node);
                 break;
-            case "code":
+            case 'code':
                 $markdown = $this->convert_code($node);
                 break;
-            case "ol":
-            case "ul":
+            case 'ol':
+            case 'ul':
                 $markdown = $value . PHP_EOL;
                 break;
-            case "li":
+            case 'li':
                 $markdown = $this->convert_list($node);
                 break;
-            case "img":
+            case 'img':
                 $markdown = $this->convert_image($node);
                 break;
-            case "a":
+            case 'a':
                 $markdown = $this->convert_anchor($node);
                 break;
-            case "#text":
+            case '#text':
                 $markdown = $this->convert_text($node);
                 break;
-            case "#comment":
+            case '#comment':
                 $markdown = '';
                 break;
-            case "div":
+            case 'div':
                 $markdown = ($this->options['strip_tags']) ? $value . PHP_EOL . PHP_EOL : html_entity_decode($node->C14N());
                 break;
             default:
@@ -308,11 +308,11 @@ class HTML_To_Markdown
      * e.g.     Header 1    Header Two
      *          ========    ----------
      *
-     * Returns atx headers instead if $this->options['header_style'] is "atx"
+     * Returns atx headers instead if $this->options['header_style'] is 'atx'
      *
      * e.g.    # Header 1   ## Header Two
      *
-     * @param string $level The header level, including the "h". e.g. h1
+     * @param string $level The header level, including the 'h'. e.g. h1
      * @param string $node  The node to convert.
      *
      * @return string The Markdown version of the header.
@@ -321,12 +321,12 @@ class HTML_To_Markdown
     {
         $content = $node->nodeValue;
 
-        if (!$this->is_child_of('blockquote', $node) && $this->options['header_style'] == "setext") {
+        if (!$this->is_child_of('blockquote', $node) && $this->options['header_style'] == 'setext') {
             $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
-            $underline = ($level == "h1") ? "=" : "-";
+            $underline = ($level == 'h1') ? '=' : '-';
             $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
         } else {
-            $prefix = ($level == "h1") ? "# " : "## ";
+            $prefix = ($level == 'h1') ? '# ' : '## ';
             $markdown = $prefix . $content . PHP_EOL . PHP_EOL; // atx style
         }
 
@@ -375,7 +375,7 @@ class HTML_To_Markdown
         $alt = $node->getAttribute('alt');
         $title = $node->getAttribute('title');
 
-        if ($title != "") {
+        if ($title != '') {
             // No newlines added. <img> should be in a block-level element.
             $markdown = '![' . $alt . '](' . $src . ' "' . $title . '")';
         } else {
@@ -404,7 +404,7 @@ class HTML_To_Markdown
         $title = $node->getAttribute('title');
         $text = $node->nodeValue;
 
-        if ($title != "") {
+        if ($title != '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
         } else {
             $markdown = '[' . $text . '](' . $href . ')';
@@ -433,11 +433,11 @@ class HTML_To_Markdown
         $list_type = $node->parentNode->nodeName;
         $value = $node->nodeValue;
 
-        if ($list_type == "ul") {
-            $markdown = "- " . trim($value) . PHP_EOL;
+        if ($list_type == 'ul') {
+            $markdown = '- ' . trim($value) . PHP_EOL;
         } else {
             $number = $this->get_position($node);
-            $markdown = $number . ". " . trim($value) . PHP_EOL;
+            $markdown = $number . '. ' . trim($value) . PHP_EOL;
         }
 
         return $markdown;
@@ -460,8 +460,8 @@ class HTML_To_Markdown
         $markdown = '';
 
         $code_content = html_entity_decode($node->C14N());
-        $code_content = str_replace(array("<code>", "</code>"), "", $code_content);
-        $code_content = str_replace(array("<pre>", "</pre>"), "", $code_content);
+        $code_content = str_replace(array('<code>', '</code>'), '', $code_content);
+        $code_content = str_replace(array('<pre>', '</pre>'), '', $code_content);
 
         $lines = preg_split('/\r\n|\r|\n/', $code_content);
         $total = count($lines);
@@ -471,8 +471,8 @@ class HTML_To_Markdown
             // Remove the first and last line if they're empty
             $first_line = trim($lines[0]);
             $last_line = trim($lines[$total - 1]);
-            $first_line = trim($first_line, "&#xD;"); //trim XML style carriage returns too
-            $last_line = trim($last_line, "&#xD;");
+            $first_line = trim($first_line, '&#xD;'); //trim XML style carriage returns too
+            $last_line = trim($last_line, '&#xD;');
 
             if (empty($first_line)) {
                 array_shift($lines);
@@ -485,7 +485,7 @@ class HTML_To_Markdown
             $count = 1;
             foreach ($lines as $line) {
                 $line = str_replace('&#xD;', '', $line);
-                $markdown .= "    " . $line;
+                $markdown .= '    ' . $line;
                 // Add newlines, except final line of the code
                 if ($count != $total) {
                     $markdown .= PHP_EOL;
@@ -496,7 +496,7 @@ class HTML_To_Markdown
 
         } else {
             // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
-            $markdown .= "`" . $lines[0] . "`";
+            $markdown .= '`' . $lines[0] . '`';
         }
 
         return $markdown;
@@ -515,7 +515,7 @@ class HTML_To_Markdown
     private function convert_blockquote($node)
     {
         // Contents should have already been converted to Markdown by this point,
-        // so we just need to add ">" symbols to each line.
+        // so we just need to add '>' symbols to each line.
 
         $markdown = '';
 
@@ -526,7 +526,7 @@ class HTML_To_Markdown
         $total_lines = count($lines);
 
         foreach ($lines as $i => $line) {
-            $markdown .= "> " . $line . PHP_EOL;
+            $markdown .= '> ' . $line . PHP_EOL;
             if ($i + 1 == $total_lines) {
                 $markdown .= PHP_EOL;
             }
@@ -654,21 +654,21 @@ class HTML_To_Markdown
     private function is_block($node)
     {
         switch ($node->nodeName) {
-            case "blockquote":
-            case "body":
-            case "code":
-            case "h1":
-            case "h2":
-            case "h3":
-            case "h4":
-            case "h5":
-            case "h6":
-            case "hr":
-            case "html":
-            case "li":
-            case "p":
-            case "ol":
-            case "ul":
+            case 'blockquote':
+            case 'body':
+            case 'code':
+            case 'h1':
+            case 'h2':
+            case 'h3':
+            case 'h4':
+            case 'h5':
+            case 'h6':
+            case 'hr':
+            case 'html':
+            case 'li':
+            case 'p':
+            case 'ol':
+            case 'ul':
                 return true;
             default:
                 return false;
