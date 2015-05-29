@@ -2,6 +2,22 @@
 
 namespace HTMLToMarkdown;
 
+use HTMLToMarkdown\Converter\BlockquoteConverter;
+use HTMLToMarkdown\Converter\CommentConverter;
+use HTMLToMarkdown\Converter\ConverterInterface;
+use HTMLToMarkdown\Converter\DivConverter;
+use HTMLToMarkdown\Converter\EmphasisConverter;
+use HTMLToMarkdown\Converter\HardBreakConverter;
+use HTMLToMarkdown\Converter\HeaderConverter;
+use HTMLToMarkdown\Converter\HorizontalRuleConverter;
+use HTMLToMarkdown\Converter\ImageConverter;
+use HTMLToMarkdown\Converter\LinkConverter;
+use HTMLToMarkdown\Converter\ListBlockConverter;
+use HTMLToMarkdown\Converter\ListItemConverter;
+use HTMLToMarkdown\Converter\ParagraphConverter;
+use HTMLToMarkdown\Converter\PreformattedConverter;
+use HTMLToMarkdown\Converter\TextConverter;
+
 /**
  * Class HtmlConverter
  *
@@ -37,6 +53,10 @@ class HtmlConverter
         'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
     );
 
+    /**
+     * @var ConverterInterface[]
+     */
+    protected $converters = array();
 
     /**
      * Constructor
@@ -46,8 +66,32 @@ class HtmlConverter
     public function __construct(array $options = array())
     {
         $this->options = array_merge($this->options, $options);
+
+        $this->addConverter(new BlockquoteConverter());
+        $this->addConverter(new HardBreakConverter());
+        $this->addConverter(new ParagraphConverter());
+        $this->addConverter(new HeaderConverter($this->options['header_style']));
+        $this->addConverter(new EmphasisConverter($this->options['italic_style'], $this->options['bold_style']));
+        $this->addConverter(new CommentConverter());
+        $this->addConverter(new ListBlockConverter());
+        $this->addConverter(new HorizontalRuleConverter());
+        $this->addConverter(new ListItemConverter());
+        $this->addConverter(new TextConverter());
+        $this->addConverter(new PreformattedConverter());
+        $this->addConverter(new LinkConverter());
+        $this->addConverter(new ImageConverter());
+        $this->addConverter(new DivConverter($this->options['strip_tags']));
     }
 
+    /**
+     * @param ConverterInterface $converter
+     */
+    protected function addConverter(ConverterInterface $converter)
+    {
+        foreach ($converter->getSupportedTags() as $tag) {
+            $this->converters[$tag] = $converter;
+        }
+    }
 
     /**
      * Setter for conversion options
@@ -92,36 +136,6 @@ class HtmlConverter
 
 
     /**
-     * Is Child Of?
-     *
-     * Is the node a child of the given parent tag?
-     *
-     * @param $parent_name string|array The name of the parent node(s) to search for e.g. 'code' or array('pre', 'code')
-     * @param $node
-     *
-     * @return bool
-     */
-    private static function isChildOf($parent_name, $node)
-    {
-        for ($p = $node->parentNode; $p != false; $p = $p->parentNode) {
-            if (is_null($p)) {
-                return false;
-            }
-
-            if (is_array($parent_name) && in_array($p->nodeName, $parent_name)) {
-                return true;
-            }
-
-            if ($p->nodeName == $parent_name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
      * Convert Children
      *
      * Recursive function to drill into the DOM and convert each node into Markdown from the inside out.
@@ -129,33 +143,29 @@ class HtmlConverter
      * Finds children of each node and convert those to #text nodes containing their Markdown equivalent,
      * starting with the innermost element and working up to the outermost element.
      *
-     * @param $node
+     * @param ElementInterface $element
      */
-    private function convertChildren($node)
+    private function convertChildren(ElementInterface $element)
     {
         // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
-        if (self::isChildOf(array('pre', 'code'), $node)) {
+        if ($element->isDescendantOf(array('pre', 'code'))) {
             return;
         }
 
         // If the node has children, convert those to Markdown first
-        if ($node->hasChildNodes()) {
-            $length = $node->childNodes->length;
-
-            for ($i = 0; $i < $length; $i++) {
-                $child = $node->childNodes->item($i);
+        if ($element->hasChildren()) {
+            foreach ($element->getChildren() as $child) {
                 $this->convertChildren($child);
             }
         }
 
         // Now that child nodes have been converted, convert the original node
-        $markdown = $this->convertToMarkdown($node);
+        $markdown = $this->convertToMarkdown($element);
 
         // Create a DOM text node containing the Markdown equivalent of the original node
-        $markdown_node = $this->document->createTextNode($markdown);
 
         // Replace the old $node e.g. '<h3>Title</h3>' with the new $markdown_node e.g. '### Title'
-        $node->parentNode->replaceChild($markdown_node, $node);
+        $element->setFinalMarkdown($markdown);
     }
 
 
@@ -179,7 +189,8 @@ class HtmlConverter
         // Convert all children of this root element. The DOMDocument stored in $this->doc will
         // then consist of #text nodes, each containing a Markdown version of the original node
         // that it replaced.
-        $this->convertChildren($input);
+        $element =  new Element($input);
+        $this->convertChildren($element);
 
         // Sanitize and return the body contents as a string.
         $markdown = $this->document->saveHTML(); // stores the DOMDocument as a string
@@ -203,14 +214,14 @@ class HtmlConverter
      *
      * Example: An <h3> node with text content of 'Title' becomes a text node with content of '### Title'
      *
-     * @param $node
+     * @param ElementInterface $element
      *
      * @return string The converted HTML as Markdown
      */
-    private function convertToMarkdown($node)
+    private function convertToMarkdown(ElementInterface $element)
     {
-        $tag = $node->nodeName; // the type of element, e.g. h1
-        $value = $node->nodeValue; // the value of that element, e.g. The Title
+        $tag = $element->getTagName();
+        $value = $element->getValue();
 
         // Strip nodes named in remove_nodes
         $tags_to_remove = explode(' ', $this->options['remove_nodes']);
@@ -218,423 +229,17 @@ class HtmlConverter
             return false;
         }
 
-        switch ($tag) {
-            case 'p':
-                $markdown = (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
-                break;
-            case 'pre':
-                $markdown = PHP_EOL . $this->convertCode($node) . PHP_EOL;
-                break;
-            case 'h1':
-            case 'h2':
-                $markdown = $this->convertHeader($tag, $node);
-                break;
-            case 'h3':
-                $markdown = '### ' . $value . PHP_EOL . PHP_EOL;
-                break;
-            case 'h4':
-                $markdown = '#### ' . $value . PHP_EOL . PHP_EOL;
-                break;
-            case 'h5':
-                $markdown = '##### ' . $value . PHP_EOL . PHP_EOL;
-                break;
-            case 'h6':
-                $markdown = '###### ' . $value . PHP_EOL . PHP_EOL;
-                break;
-            case 'em':
-            case 'i':
-            case 'strong':
-            case 'b':
-                $markdown = $this->convertEmphasis($tag, $value);
-                break;
-            case 'hr':
-                $markdown = '- - - - - -' . PHP_EOL . PHP_EOL;
-                break;
-            case 'br':
-                $markdown = '  ' . PHP_EOL;
-                break;
-            case 'blockquote':
-                $markdown = $this->convertBlockquote($node);
-                break;
-            case 'code':
-                $markdown = $this->convertCode($node);
-                break;
-            case 'ol':
-            case 'ul':
-                $markdown = $value . PHP_EOL;
-                break;
-            case 'li':
-                $markdown = $this->convertList($node);
-                break;
-            case 'img':
-                $markdown = $this->convertImage($node);
-                break;
-            case 'a':
-                $markdown = $this->convert_anchor($node);
-                break;
-            case '#text':
-                $markdown = $this->convertText($node);
-                break;
-            case '#comment':
-                $markdown = '';
-                break;
-            case 'div':
-                $markdown = ($this->options['strip_tags']) ? $value . PHP_EOL . PHP_EOL : html_entity_decode($node->C14N());
-                break;
-            default:
-                // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
-                // such as <span> nodes on their own. C14N() canonicalizes the node to a string.
-                // See: http://www.php.net/manual/en/domnode.c14n.php
-                $markdown = ($this->options['strip_tags']) ? $value : html_entity_decode($node->C14N());
+        if (isset($this->converters[$tag])) {
+            return $this->converters[$tag]->convert($element);
         }
 
-        return $markdown;
-    }
-
-
-    /**
-     * Convert Header
-     *
-     * Converts h1 and h2 headers to Markdown-style headers in setext style,
-     * matching the number of underscores with the length of the title.
-     *
-     * e.g.     Header 1    Header Two
-     *          ========    ----------
-     *
-     * Returns atx headers instead if $this->options['header_style'] is 'atx'
-     *
-     * e.g.    # Header 1   ## Header Two
-     *
-     * @param string $level The header level, including the 'h'. e.g. h1
-     * @param string $node  The node to convert.
-     *
-     * @return string The Markdown version of the header.
-     */
-    private function convertHeader($level, $node)
-    {
-        $content = $node->nodeValue;
-
-        if (!$this->isChildOf('blockquote', $node) && $this->options['header_style'] == 'setext') {
-            $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
-            $underline = ($level == 'h1') ? '=' : '-';
-            $markdown = $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL; // setext style
-        } else {
-            $prefix = ($level == 'h1') ? '# ' : '## ';
-            $markdown = $prefix . $content . PHP_EOL . PHP_EOL; // atx style
+        // If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
+        // such as <span> nodes on their own. C14N() canonicalizes the node to a string.
+        // See: http://www.php.net/manual/en/domnode.c14n.php
+        if ($this->options['strip_tags']) {
+            return $value;
         }
 
-        return $markdown;
-    }
-
-
-    /**
-     * Converts inline styles
-     * This function is used to render strong and em tags
-     *
-     * eg <strong>bold text</strong> becomes **bold text** or __bold text__
-     *
-     * @param string $tag
-     * @param string $value
-     *
-     * @return string
-     */
-    private function convertEmphasis($tag, $value)
-    {
-        if ($tag == 'i' || $tag == 'em') {
-            $markdown = $this->options['italic_style'] . $value . $this->options['italic_style'];
-        } else {
-            $markdown = $this->options['bold_style'] . $value . $this->options['bold_style'];
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Convert Image
-     *
-     * Converts <img /> tags to Markdown.
-     *
-     * e.g.     <img src="/path/img.jpg" alt="alt text" title="Title" />
-     * becomes  ![alt text](/path/img.jpg "Title")
-     *
-     * @param $node
-     *
-     * @return string
-     */
-    private function convertImage($node)
-    {
-        $src = $node->getAttribute('src');
-        $alt = $node->getAttribute('alt');
-        $title = $node->getAttribute('title');
-
-        if ($title != '') {
-            // No newlines added. <img> should be in a block-level element.
-            $markdown = '![' . $alt . '](' . $src . ' "' . $title . '")';
-        } else {
-            $markdown = '![' . $alt . '](' . $src . ')';
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Convert Anchor
-     *
-     * Converts <a> tags to Markdown.
-     *
-     * e.g.     <a href="http://modernnerd.net" title="Title">Modern Nerd</a>
-     * becomes  [Modern Nerd](http://modernnerd.net "Title")
-     *
-     * @param $node
-     *
-     * @return string
-     */
-    private function convert_anchor($node)
-    {
-        $href = $node->getAttribute('href');
-        $title = $node->getAttribute('title');
-        $text = $node->nodeValue;
-
-        if ($title != '') {
-            $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } else {
-            $markdown = '[' . $text . '](' . $href . ')';
-        }
-
-        if (!$href) {
-            $markdown = html_entity_decode($node->C14N());
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Convert List
-     *
-     * Converts <ul> and <ol> lists to Markdown.
-     *
-     * @param $node
-     *
-     * @return string
-     */
-    private function convertList($node)
-    {
-        // If parent is an ol, use numbers, otherwise, use dashes
-        $list_type = $node->parentNode->nodeName;
-        $value = $node->nodeValue;
-
-        if ($list_type == 'ul') {
-            $markdown = '- ' . trim($value) . PHP_EOL;
-        } else {
-            $number = $this->getPosition($node);
-            $markdown = $number . '. ' . trim($value) . PHP_EOL;
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Convert Code
-     *
-     * Convert code tags by indenting blocks of code and wrapping single lines in backticks.
-     *
-     * @param \DOMNode $node
-     *
-     * @return string
-     */
-    private function convertCode($node)
-    {
-        // Store the content of the code block in an array, one entry for each line
-
-        $markdown = '';
-
-        $code_content = html_entity_decode($node->C14N());
-        $code_content = str_replace(array('<code>', '</code>'), '', $code_content);
-        $code_content = str_replace(array('<pre>', '</pre>'), '', $code_content);
-
-        $lines = preg_split('/\r\n|\r|\n/', $code_content);
-        $total = count($lines);
-
-        // If there's more than one line of code, prepend each line with four spaces and no backticks.
-        if ($total > 1 || $node->nodeName === 'pre') {
-            // Remove the first and last line if they're empty
-            $first_line = trim($lines[0]);
-            $last_line = trim($lines[$total - 1]);
-            $first_line = trim($first_line, '&#xD;'); //trim XML style carriage returns too
-            $last_line = trim($last_line, '&#xD;');
-
-            if (empty($first_line)) {
-                array_shift($lines);
-            }
-
-            if (empty($last_line)) {
-                array_pop($lines);
-            }
-
-            $count = 1;
-            foreach ($lines as $line) {
-                $line = str_replace('&#xD;', '', $line);
-                $markdown .= '    ' . $line;
-                // Add newlines, except final line of the code
-                if ($count != $total) {
-                    $markdown .= PHP_EOL;
-                }
-                $count++;
-            }
-            $markdown .= PHP_EOL;
-
-        } else {
-            // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
-            $markdown .= '`' . $lines[0] . '`';
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Convert blockquote
-     *
-     * Prepend blockquotes with > chars.
-     *
-     * @param $node
-     *
-     * @return string
-     */
-    private function convertBlockquote($node)
-    {
-        // Contents should have already been converted to Markdown by this point,
-        // so we just need to add '>' symbols to each line.
-
-        $markdown = '';
-
-        $quote_content = trim($node->nodeValue);
-
-        $lines = preg_split('/\r\n|\r|\n/', $quote_content);
-
-        $total_lines = count($lines);
-
-        foreach ($lines as $i => $line) {
-            $markdown .= '> ' . $line . PHP_EOL;
-            if ($i + 1 == $total_lines) {
-                $markdown .= PHP_EOL;
-            }
-        }
-
-        return $markdown;
-    }
-
-
-    /**
-     * Get Position
-     *
-     * Returns the numbered position of a node inside its parent, excluding empty text nodes
-     *
-     * @param $node
-     *
-     * @return int The numbered position of the node, starting at 1.
-     */
-    private function getPosition($node)
-    {
-        // Get all of the nodes inside the parent
-        $list_nodes = $node->parentNode->childNodes;
-
-        $position = 0;
-
-        // Loop through all nodes and find the given $node
-        foreach ($list_nodes as $current_node) {
-            if (!$this->isWhitespace($current_node)) {
-                $position++;
-            }
-
-            if ($current_node->isSameNode($node)) {
-                break;
-            }
-        }
-
-        return $position;
-    }
-
-    /**
-     * @param \DomNode $node
-     *
-     * @return bool
-     */
-    private function isWhitespace($node)
-    {
-        return $node->nodeName === '#text' && trim($node->nodeValue) === '';
-    }
-
-    /**
-     * @param \DomNode $node
-     *
-     * @return string
-     */
-    private function convertText($node)
-    {
-        $value = $node->nodeValue;
-
-        $markdown = preg_replace('~\s+~', ' ', $value);
-        $markdown = preg_replace('~^#~', '\\\\#', $markdown);
-
-        if ($markdown === ' ') {
-            $next = $this->getNext($node);
-            if (!$next || $this->isBlock($next)) {
-                $markdown = '';
-            }
-        }
-
-        return $markdown;
-    }
-
-    /**
-     * @param \DomNode $node
-     *
-     * @return \DomNode|null
-     */
-    private function getNext($node, $checkChildren = true)
-    {
-        if ($checkChildren && $node->firstChild) {
-            return $node->firstChild;
-        } elseif ($node->nextSibling) {
-            return $node->nextSibling;
-        } elseif ($node->parentNode) {
-            return $this->getNext($node->parentNode, false);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param \DomNode $node
-     *
-     * @return bool
-     */
-    private function isBlock($node)
-    {
-        switch ($node->nodeName) {
-            case 'blockquote':
-            case 'body':
-            case 'code':
-            case 'h1':
-            case 'h2':
-            case 'h3':
-            case 'h4':
-            case 'h5':
-            case 'h6':
-            case 'hr':
-            case 'html':
-            case 'li':
-            case 'p':
-            case 'ol':
-            case 'ul':
-                return true;
-            default:
-                return false;
-        }
+        return html_entity_decode($element->getChildrenAsString());
     }
 }
