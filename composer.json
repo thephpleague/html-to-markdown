@@ -7,9 +7,16 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Colin O'Dell",
+            "email": "colinodell@gmail.com",
+            "homepage": "http://www.colinodell.com",
+            "role": "Lead Developer"
+        },
+        {
             "name": "Nick Cernis",
             "email": "nick@cern.is",
-            "homepage": "http://modernnerd.net"
+            "homepage": "http://modernnerd.net",
+            "role": "Original Author"
         }
     ],
     "autoload": {
