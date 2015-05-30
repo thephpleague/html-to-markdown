@@ -630,6 +630,7 @@ class HTML_To_Markdown
             case "blockquote":
             case "body":
             case "code":
+            case "div":
             case "h1":
             case "h2":
             case "h3":
