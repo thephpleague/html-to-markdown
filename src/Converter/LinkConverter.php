@@ -19,6 +19,8 @@ class LinkConverter implements ConverterInterface
 
         if ($title != '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
+        } elseif ($href === $text) {
+            $markdown = '<' . $href . '>';
         } else {
             $markdown = '[' . $text . '](' . $href . ')';
         }
