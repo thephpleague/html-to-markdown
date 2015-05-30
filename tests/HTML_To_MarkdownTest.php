@@ -144,6 +144,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown('<div>Hello</div><div>World</div>', '<div>Hello</div><div>World</div>');
         $this->html_gives_markdown('<div>Hello</div><div>World</div>', "Hello\n\nWorld", array('strip_tags' => true));
+        $this->html_gives_markdown("<div>Hello</div>\n<div>World</div>", "Hello\n\nWorld", array('strip_tags' => true));
         $this->html_gives_markdown('<p>Paragraph</p><div>Hello</div><div>World</div>', "Paragraph\n\nHello\n\nWorld", array('strip_tags' => true));
     }
 
