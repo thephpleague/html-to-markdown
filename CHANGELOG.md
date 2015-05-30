@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+### Changed
+ - `<a>` tags with identical href and inner text are now rendered using angular bracket syntax (#31)
 
 ## [2.2.2]
 ### Added
