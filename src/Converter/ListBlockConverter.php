@@ -1,8 +1,8 @@
 <?php
 
-namespace HTMLToMarkdown\Converter;
+namespace League\HTMLToMarkdown\Converter;
 
-use HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\ElementInterface;
 
 class ListBlockConverter implements ConverterInterface
 {

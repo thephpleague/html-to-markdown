@@ -21,12 +21,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "HTMLToMarkdown\\": "src/"
+            "League\\HTMLToMarkdown\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HTMLToMarkdown\\Test\\": "tests"
+            "League\\HTMLToMarkdown\\Test\\": "tests"
         }
     },
     "require": {

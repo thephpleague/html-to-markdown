@@ -1,10 +1,10 @@
 <?php
 
-namespace HTMLToMarkdown\Converter;
+namespace League\HTMLToMarkdown\Converter;
 
-use HTMLToMarkdown\Configuration;
-use HTMLToMarkdown\ConfigurationAwareInterface;
-use HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\Configuration;
+use League\HTMLToMarkdown\ConfigurationAwareInterface;
+use League\HTMLToMarkdown\ElementInterface;
 
 class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace HTMLToMarkdown;
+namespace League\HTMLToMarkdown;
 
 /**
  * Class HtmlConverter

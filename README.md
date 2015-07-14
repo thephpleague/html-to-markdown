@@ -44,7 +44,7 @@ Then `composer install` and add `require 'vendor/autoload.php';` to the top of y
 
 Next, create a new HtmlConverter instance, passing in your valid HTML code to its `convert()` function:
 
-    use HTMLToMarkdown\HtmlConverter;
+    use League\HTMLToMarkdown\HtmlConverter;
 
     $converer = new HtmlConverter();
 

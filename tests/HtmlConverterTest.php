@@ -1,8 +1,8 @@
 <?php
 
-namespace HTMLToMarkdown\Test;
+namespace League\HTMLToMarkdown\Test;
 
-use HTMLToMarkdown\HtmlConverter;
+use League\HTMLToMarkdown\HtmlConverter;
 
 class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 {

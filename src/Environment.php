@@ -1,23 +1,23 @@
 <?php
 
-namespace HTMLToMarkdown;
+namespace League\HTMLToMarkdown;
 
-use HTMLToMarkdown\Converter\BlockquoteConverter;
-use HTMLToMarkdown\Converter\CommentConverter;
-use HTMLToMarkdown\Converter\ConverterInterface;
-use HTMLToMarkdown\Converter\DefaultConverter;
-use HTMLToMarkdown\Converter\DivConverter;
-use HTMLToMarkdown\Converter\EmphasisConverter;
-use HTMLToMarkdown\Converter\HardBreakConverter;
-use HTMLToMarkdown\Converter\HeaderConverter;
-use HTMLToMarkdown\Converter\HorizontalRuleConverter;
-use HTMLToMarkdown\Converter\ImageConverter;
-use HTMLToMarkdown\Converter\LinkConverter;
-use HTMLToMarkdown\Converter\ListBlockConverter;
-use HTMLToMarkdown\Converter\ListItemConverter;
-use HTMLToMarkdown\Converter\ParagraphConverter;
-use HTMLToMarkdown\Converter\PreformattedConverter;
-use HTMLToMarkdown\Converter\TextConverter;
+use League\HTMLToMarkdown\Converter\BlockquoteConverter;
+use League\HTMLToMarkdown\Converter\CommentConverter;
+use League\HTMLToMarkdown\Converter\ConverterInterface;
+use League\HTMLToMarkdown\Converter\DefaultConverter;
+use League\HTMLToMarkdown\Converter\DivConverter;
+use League\HTMLToMarkdown\Converter\EmphasisConverter;
+use League\HTMLToMarkdown\Converter\HardBreakConverter;
+use League\HTMLToMarkdown\Converter\HeaderConverter;
+use League\HTMLToMarkdown\Converter\HorizontalRuleConverter;
+use League\HTMLToMarkdown\Converter\ImageConverter;
+use League\HTMLToMarkdown\Converter\LinkConverter;
+use League\HTMLToMarkdown\Converter\ListBlockConverter;
+use League\HTMLToMarkdown\Converter\ListItemConverter;
+use League\HTMLToMarkdown\Converter\ParagraphConverter;
+use League\HTMLToMarkdown\Converter\PreformattedConverter;
+use League\HTMLToMarkdown\Converter\TextConverter;
 
 class Environment
 {
