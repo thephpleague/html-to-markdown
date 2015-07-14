@@ -14,4 +14,11 @@ matrix:
 
 sudo: false
 
-script: phpunit --no-configuration HTML_To_MarkdownTest ./tests/HTML_To_MarkdownTest.php
+install: travis_retry composer install --no-interaction --prefer-source
+
+script:
+  - if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then vendor/bin/phpunit; fi
+  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover; fi
+
+after_script:
+  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "7.0" ]; then vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover; fi

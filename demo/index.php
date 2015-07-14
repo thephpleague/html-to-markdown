@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . '/../HTML_To_Markdown.php');
+require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
 $markdown = '';
 $html = ($_POST) ? $_POST["html"] : null;
@@ -8,8 +8,7 @@ if (!is_null($html)) {
     if (get_magic_quotes_gpc())
         $html = stripslashes($html);
 
-    $markdown = new HTML_To_Markdown($html);
-//    $markdown = new HTML_To_Markdown($html, array('strip_tags' => true));
+    $markdown = new \League\HTMLToMarkdown\HtmlConverter($html);
 
 }
 ?>
@@ -174,7 +173,7 @@ unforced break.</p>
 <div style="clear:both;"></div>
 
 <p>
-    <small><a href="https://github.com/nickcernis/html-to-markdown">HTML To Markdown</a> is a helper class to convert HTML into Markdown with PHP.</small>
+    <small><a href="https://github.com/thephpleague/html-to-markdown">HTML To Markdown</a> is a library to convert HTML into Markdown with PHP.</small>
 </p>
 
 </body>

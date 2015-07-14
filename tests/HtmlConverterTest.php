@@ -1,12 +1,16 @@
 <?php
-require_once dirname(__FILE__) . '/../HTML_To_Markdown.php';
 
-class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
+namespace League\HTMLToMarkdown\Test;
+
+use League\HTMLToMarkdown\HtmlConverter;
+
+class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 {
-    private function html_gives_markdown($html, $expected_markdown, $options=null)
+    private function html_gives_markdown($html, $expected_markdown, array $options = array())
     {
-        $markdown = new HTML_To_Markdown($html, $options);
-        $this->assertEquals($expected_markdown, $markdown->__toString());
+        $markdown = new HtmlConverter($options);
+        $result = $markdown->convert($html);
+        $this->assertEquals($expected_markdown, $result);
     }
 
     public function test_plain_text()
@@ -44,7 +48,7 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<em>Italic</em> and a <strong>bold</strong>", "_Italic_ and a __bold__", array('italic_style' => '_', 'bold_style' => '__'));
         $this->html_gives_markdown("<i>Test</i>", "_Test_", array('italic_style' => '_'));
         $this->html_gives_markdown("<strong>Test</strong>", "__Test__", array('bold_style' => '__'));
-        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('bold_style' => '__'));        
+        $this->html_gives_markdown("<b>Test</b>", "__Test__", array('bold_style' => '__'));
         $this->html_gives_markdown("<span>Test</span>", "<span>Test</span>");
         $this->html_gives_markdown("<b>Bold</b> <i>Italic</i>", "**Bold** *Italic*");
         $this->html_gives_markdown("<b>Bold</b><i>Italic</i>", "**Bold***Italic*");
@@ -80,9 +84,14 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="#nerd">Test</a>', '[Test](#nerd)');
     }
 
+    public function test_horizontal_rule()
+    {
+        $this->html_gives_markdown('<hr>', '- - - - - -');
+    }
+
     public function test_lists()
     {
-        $this->html_gives_markdown("<ul><li>Item A</li><li>Item B</li></ul>", "- Item A\n- Item B");
+        $this->html_gives_markdown("<ul><li>Item A</li><li>Item B</li><li>Item C</li></ul>", "- Item A\n- Item B\n- Item C");
         $this->html_gives_markdown("<ul><li>   Item A</li><li>   Item B</li></ul>", "- Item A\n- Item B");
         $this->html_gives_markdown("<ol><li>Item A</li><li>Item B</li></ol>", "1. Item A\n2. Item B");
         $this->html_gives_markdown("<ol>\n    <li>Item A</li>\n    <li>Item B</li>\n</ol>", "1. Item A\n2. Item B");
@@ -156,11 +165,11 @@ class HTML_To_MarkdownTest extends PHPUnit_Framework_TestCase
 
     public function test_set_option()
     {
-        $markdown = new HTML_To_Markdown();
-        $markdown->set_option('strip_tags', true);
-        $markdown->convert('<span>Strip</span>');
+        $markdown = new HtmlConverter();
+        $markdown->getConfig()->setOption('strip_tags', true);
+        $result = $markdown->convert('<span>Strip</span>');
 
-        $this->assertEquals('Strip', $markdown->__toString());
+        $this->assertEquals('Strip', $result);
     }
 
 }

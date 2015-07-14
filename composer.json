@@ -1,25 +1,41 @@
 {
-    "name": "nickcernis/html-to-markdown",
+    "name": "league/html-to-markdown",
     "type": "library",
     "description": "An HTML-to-markdown conversion helper for PHP",
     "keywords": ["markdown", "html"],
-    "homepage": "https://github.com/nickcernis/html-to-markdown",
+    "homepage": "https://github.com/thephpleague/html-to-markdown",
     "license": "MIT",
     "authors": [
         {
+            "name": "Colin O'Dell",
+            "email": "colinodell@gmail.com",
+            "homepage": "http://www.colinodell.com",
+            "role": "Lead Developer"
+        },
+        {
             "name": "Nick Cernis",
             "email": "nick@cern.is",
-            "homepage": "http://modernnerd.net"
+            "homepage": "http://modernnerd.net",
+            "role": "Original Author"
         }
     ],
     "autoload": {
-        "classmap": [ "HTML_To_Markdown.php" ]
+        "psr-4": {
+            "League\\HTMLToMarkdown\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "League\\HTMLToMarkdown\\Test\\": "tests"
+        }
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3.3",
+        "ext-dom": "*",
+        "ext-xml": "*"
     },
     "require-dev": {
-        "php": ">=5.3.3",
-        "phpunit/phpunit": "4.*"
+        "phpunit/phpunit": "4.*",
+        "scrutinizer/ocular": "~1.1"
     }
 }
