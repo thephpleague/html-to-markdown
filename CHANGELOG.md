@@ -3,8 +3,14 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [3.0.0]
 ### Changed
+ - Changed namespace to `League\HTMLToMarkdown`
+ - Changed packagist name to `league/html-to-markdown`
+ - Re-organized code into several separate classes
  - `<a>` tags with identical href and inner text are now rendered using angular bracket syntax (#31)
+ - `<div>` elements are now treated as block-level elements (#33)
 
 ## [2.2.2]
 ### Added
@@ -70,7 +76,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...master
+[3.0.0]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...3.0.0
 [2.2.2]: https://github.com/thephpleague/html-to-markdown/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/thephpleague/html-to-markdown/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/thephpleague/html-to-markdown/compare/2.1.2...2.2.0
