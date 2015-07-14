@@ -20,7 +20,7 @@ Library which converts HTML to [Markdown](http://daringfireball.net/projects/mar
 
 ### Why convert HTML to Markdown?
 
-*"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](http://michelf.com/projects/php-markdown/),"* you continue, already labouring the question somewhat, *"but why go the other way?"*
+*"What alchemy is this?"* you mutter. *"I can see why you'd convert [Markdown to HTML](https://github.com/thephpleague/commonmark),"* you continue, already labouring the question somewhat, *"but why go the other way?"*
 
 Typically you would convert HTML to Markdown if:
 
