@@ -10,7 +10,7 @@ namespace League\HTMLToMarkdown;
  * @version 2.2.2
  * @author Colin O'Dell <colinodell@gmail.com>
  * @author Nick Cernis <nick@cern.is>
- * @link https://github.com/nickcernis/html2markdown/ Latest version on GitHub.
+ * @link https://github.com/thephpleague/html-to-markdown/ Latest version on GitHub.
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
 class HtmlConverter

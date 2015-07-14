@@ -70,13 +70,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/nickcernis/html-to-markdown/compare/2.2.2...master
-[2.2.2]: https://github.com/nickcernis/html-to-markdown/compare/2.2.1...2.2.2
-[2.2.1]: https://github.com/nickcernis/html-to-markdown/compare/2.2.0...2.2.1
-[2.2.0]: https://github.com/nickcernis/html-to-markdown/compare/2.1.2...2.2.0
-[2.1.2]: https://github.com/nickcernis/html-to-markdown/compare/2.1.1...2.1.2
-[2.1.1]: https://github.com/nickcernis/html-to-markdown/compare/2.1.0...2.1.1
-[2.1.0]: https://github.com/nickcernis/html-to-markdown/compare/2.0.1...2.1.0
-[2.0.1]: https://github.com/nickcernis/html-to-markdown/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/nickcernis/html-to-markdown/compare/775f91e...2.0.0
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...master
+[2.2.2]: https://github.com/thephpleague/html-to-markdown/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/thephpleague/html-to-markdown/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/thephpleague/html-to-markdown/compare/2.1.2...2.2.0
+[2.1.2]: https://github.com/thephpleague/html-to-markdown/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/thephpleague/html-to-markdown/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/thephpleague/html-to-markdown/compare/2.0.1...2.1.0
+[2.0.1]: https://github.com/thephpleague/html-to-markdown/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/thephpleague/html-to-markdown/compare/775f91e...2.0.0
 

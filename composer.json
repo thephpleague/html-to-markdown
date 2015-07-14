@@ -1,9 +1,9 @@
 {
-    "name": "nickcernis/html-to-markdown",
+    "name": "league/html-to-markdown",
     "type": "library",
     "description": "An HTML-to-markdown conversion helper for PHP",
     "keywords": ["markdown", "html"],
-    "homepage": "https://github.com/nickcernis/html-to-markdown",
+    "homepage": "https://github.com/thephpleague/html-to-markdown",
     "license": "MIT",
     "authors": [
         {

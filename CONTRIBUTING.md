@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/nickcernis/html-to-markdown).
+We accept contributions via Pull Requests on [Github](https://github.com/thephpleague/html-to-markdown).
 
 
 ## Pull Requests

@@ -1,12 +1,12 @@
 HTML To Markdown for PHP
 ========================
 
-[![Latest Version](https://img.shields.io/packagist/v/nickcernis/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/nickcernis/html-to-markdown)
+[![Latest Version](https://img.shields.io/packagist/v/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
 [![Software License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/travis/nickcernis/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/nickcernis/html-to-markdown)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/nickcernis/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/nickcernis/html-to-markdown)
-[![Total Downloads](https://img.shields.io/packagist/dt/nickcernis/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/nickcernis/html-to-markdown)
+[![Build Status](https://img.shields.io/travis/thephpleague/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/html-to-markdown)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
 
 Library which converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
@@ -36,7 +36,7 @@ Require the library in your composer.json:
 
     {
         "require": {
-            "nickcernis/html-to-markdown": "dev-master"
+            "league/html-to-markdown": "~3.0"
         }
     }
 
@@ -104,9 +104,9 @@ Bold and italic tags are converted using the asterisk syntax by default. Change 
 
 - Nested lists and lists containing multiple paragraphs aren't converted correctly.
 - Lists inside blockquotes aren't converted correctly.
-- Any reported [open issues here](https://github.com/nickcernis/html-to-markdown/issues?state=open).
+- Any reported [open issues here](https://github.com/thephpleague/html-to-markdown/issues?state=open).
 
-[Report your issue or request a feature here.](https://github.com/nickcernis/html2markdown/issues/new) Issues with patches or failing tests are especially welcome.
+[Report your issue or request a feature here.](https://github.com/thephpleague/html-to-markdown/issues/new) Issues with patches or failing tests are especially welcome.
 
 ### Style notes
 
@@ -131,7 +131,7 @@ HTML To Markdown is a single file that uses native DOM manipulation libraries (D
 
 ### Contributors
 
-Many thanks to all [contributors](https://github.com/nickcernis/html2markdown/graphs/contributors) so far. Further improvements and feature suggestions are very welcome.
+Many thanks to all [contributors](https://github.com/thephpleague/html-to-markdown/graphs/contributors) so far. Further improvements and feature suggestions are very welcome.
 
 ### How it works
 

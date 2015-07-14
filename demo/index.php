@@ -173,7 +173,7 @@ unforced break.</p>
 <div style="clear:both;"></div>
 
 <p>
-    <small><a href="https://github.com/nickcernis/html-to-markdown">HTML To Markdown</a> is a helper class to convert HTML into Markdown with PHP.</small>
+    <small><a href="https://github.com/thephpleague/html-to-markdown">HTML To Markdown</a> is a library to convert HTML into Markdown with PHP.</small>
 </p>
 
 </body>
