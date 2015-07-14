@@ -37,5 +37,10 @@
     "require-dev": {
         "phpunit/phpunit": "4.*",
         "scrutinizer/ocular": "~1.1"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0-dev"
+        }
     }
 }
