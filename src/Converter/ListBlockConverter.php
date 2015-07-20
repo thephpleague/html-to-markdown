@@ -13,7 +13,7 @@ class ListBlockConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        return $element->getValue() . PHP_EOL;
+        return $element->getValue() . "\n";
     }
 
     /**

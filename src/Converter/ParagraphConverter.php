@@ -15,7 +15,7 @@ class ParagraphConverter implements ConverterInterface
     {
         $value = $element->getValue();
 
-        return (trim($value)) ? rtrim($value) . PHP_EOL . PHP_EOL : '';
+        return (trim($value)) ? rtrim($value) . "\n\n" : '';
     }
 
     /**

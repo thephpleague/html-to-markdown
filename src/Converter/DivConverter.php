@@ -29,7 +29,7 @@ class DivConverter implements ConverterInterface, ConfigurationAwareInterface
     public function convert(ElementInterface $element)
     {
         if ($this->config->getOption('strip_tags', false)) {
-            return $element->getValue() . PHP_EOL . PHP_EOL;
+            return $element->getValue() . "\n\n";
         }
 
         return html_entity_decode($element->getChildrenAsString());

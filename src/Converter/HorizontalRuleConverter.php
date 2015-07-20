@@ -13,7 +13,7 @@ class HorizontalRuleConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        return '- - - - - -' . PHP_EOL . PHP_EOL;
+        return "- - - - - -\n\n";
     }
 
     /**

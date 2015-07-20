@@ -18,10 +18,10 @@ class ListItemConverter implements ConverterInterface
         $value = $element->getValue();
 
         if ($list_type == 'ul') {
-            $markdown = '- ' . trim($value) . PHP_EOL;
+            $markdown = '- ' . trim($value) . "\n";
         } else {
             $number = $element->getSiblingPosition();
-            $markdown = $number . '. ' . trim($value) . PHP_EOL;
+            $markdown = $number . '. ' . trim($value) . "\n";
         }
 
         return $markdown;

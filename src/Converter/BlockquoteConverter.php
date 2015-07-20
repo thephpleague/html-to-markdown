@@ -25,9 +25,9 @@ class BlockquoteConverter implements ConverterInterface
         $total_lines = count($lines);
 
         foreach ($lines as $i => $line) {
-            $markdown .= '> ' . $line . PHP_EOL;
+            $markdown .= '> ' . $line . "\n";
             if ($i + 1 == $total_lines) {
-                $markdown .= PHP_EOL;
+                $markdown .= "\n";
             }
         }
 
