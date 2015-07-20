@@ -3,8 +3,13 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [3.1.0]
 ### Added
  - Added new `equals` method to `Element` to check for equality
+
+### Changes
+ - Use Linux line endings consistently instead of plaform-specific line endings (#36)
 
 ### Fixed
  - Cleaned up code style
@@ -81,7 +86,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.1.0...master
+[3.1.0]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...3.0.0
 [2.2.2]: https://github.com/thephpleague/html-to-markdown/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/thephpleague/html-to-markdown/compare/2.2.0...2.2.1
