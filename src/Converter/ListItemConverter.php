@@ -17,7 +17,7 @@ class ListItemConverter implements ConverterInterface
         $list_type = $element->getParent()->getTagName();
         $value = $element->getValue();
 
-        if ($list_type == 'ul') {
+        if ($list_type === 'ul') {
             $markdown = '- ' . trim($value) . "\n";
         } else {
             $number = $element->getSiblingPosition();

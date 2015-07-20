@@ -138,7 +138,7 @@ class Element implements ElementInterface
         } elseif ($node->parentNode) {
             return $this->getNextNode($node->parentNode, false);
         } else {
-            return null;
+            return;
         }
     }
 
@@ -153,7 +153,7 @@ class Element implements ElementInterface
             $tagNames = array($tagNames);
         }
 
-        for ($p = $this->node->parentNode; $p != false; $p = $p->parentNode) {
+        for ($p = $this->node->parentNode; $p !== false; $p = $p->parentNode) {
             if (is_null($p)) {
                 return false;
             }

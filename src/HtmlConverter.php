@@ -9,7 +9,9 @@ namespace League\HTMLToMarkdown;
  *
  * @author Colin O'Dell <colinodell@gmail.com>
  * @author Nick Cernis <nick@cern.is>
+ *
  * @link https://github.com/thephpleague/html-to-markdown/ Latest version on GitHub.
+ *
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
 class HtmlConverter
@@ -101,7 +103,6 @@ class HtmlConverter
 
         return $document;
     }
-
 
     /**
      * Convert Children

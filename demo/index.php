@@ -1,15 +1,15 @@
 <?php
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
 $markdown = '';
-$html = ($_POST) ? $_POST["html"] : null;
+$html = ($_POST) ? $_POST['html'] : null;
 
 if (!is_null($html)) {
-    if (get_magic_quotes_gpc())
+    if (get_magic_quotes_gpc()) {
         $html = stripslashes($html);
+    }
 
     $markdown = new \League\HTMLToMarkdown\HtmlConverter($html);
-
 }
 ?>
 <!DOCTYPE html>
