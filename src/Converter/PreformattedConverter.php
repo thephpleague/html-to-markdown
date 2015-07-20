@@ -46,11 +46,11 @@ class PreformattedConverter implements ConverterInterface
                 $markdown .= '    ' . $line;
                 // Add newlines, except final line of the code
                 if ($count != $total) {
-                    $markdown .= PHP_EOL;
+                    $markdown .= "\n";
                 }
                 $count++;
             }
-            $markdown .= PHP_EOL;
+            $markdown .= "\n";
 
         } else {
             // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
@@ -58,7 +58,7 @@ class PreformattedConverter implements ConverterInterface
         }
 
         if ($element->getTagName() === 'pre') {
-            $markdown = PHP_EOL . $markdown . PHP_EOL;
+            $markdown = "\n" . $markdown . "\n";
         }
 
         return $markdown;

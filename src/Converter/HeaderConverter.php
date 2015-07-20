@@ -60,7 +60,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
         $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
         $underline = ($level === 1) ? '=' : '-';
 
-        return $content . PHP_EOL . str_repeat($underline, $length) . PHP_EOL . PHP_EOL;
+        return $content . "\n" . str_repeat($underline, $length) . "\n\n";
     }
 
     /**
@@ -73,6 +73,6 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
     {
         $prefix = str_repeat('#', $level) . ' ';
 
-        return $prefix . $content . PHP_EOL . PHP_EOL;
+        return $prefix . $content . "\n\n";
     }
 }

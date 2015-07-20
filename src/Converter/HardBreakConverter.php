@@ -13,7 +13,7 @@ class HardBreakConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        return '  ' . PHP_EOL;
+        return "  \n";
     }
 
     /**
