@@ -137,8 +137,6 @@ class Element implements ElementInterface
             return $node->nextSibling;
         } elseif ($node->parentNode) {
             return $this->getNextNode($node->parentNode, false);
-        } else {
-            return;
         }
     }
 
