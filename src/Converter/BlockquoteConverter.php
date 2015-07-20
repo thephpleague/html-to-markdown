@@ -26,7 +26,7 @@ class BlockquoteConverter implements ConverterInterface
 
         foreach ($lines as $i => $line) {
             $markdown .= '> ' . $line . "\n";
-            if ($i + 1 == $total_lines) {
+            if ($i + 1 === $total_lines) {
                 $markdown .= "\n";
             }
         }

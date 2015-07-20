@@ -137,8 +137,6 @@ class Element implements ElementInterface
             return $node->nextSibling;
         } elseif ($node->parentNode) {
             return $this->getNextNode($node->parentNode, false);
-        } else {
-            return null;
         }
     }
 
@@ -153,7 +151,7 @@ class Element implements ElementInterface
             $tagNames = array($tagNames);
         }
 
-        for ($p = $this->node->parentNode; $p != false; $p = $p->parentNode) {
+        for ($p = $this->node->parentNode; $p !== false; $p = $p->parentNode) {
             if (is_null($p)) {
                 return false;
             }
@@ -198,8 +196,7 @@ class Element implements ElementInterface
 
             // TODO: Need a less-buggy way of comparing these
             // Perhaps we can somehow ensure that we always have the exact same object and use === instead?
-            // Or maybe implement an ->equals() method
-            if ($current_node == $this) {
+            if ($this->equals($current_node)) {
                 break;
             }
         }
@@ -219,5 +216,19 @@ class Element implements ElementInterface
         }
 
         return '';
+    }
+
+    /**
+     * @param ElementInterface $element
+     *
+     * @return bool
+     */
+    public function equals(ElementInterface $element)
+    {
+        if ($element instanceof self) {
+            return $element->node === $this->node;
+        }
+
+        return $element === $this;
     }
 }

@@ -31,7 +31,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
      */
     public function convert(ElementInterface $element)
     {
-        $level = (int)substr($element->getTagName(), 1, 1);
+        $level = (int) substr($element->getTagName(), 1, 1);
         $style = $this->config->getOption('header_style', self::STYLE_SETEXT);
 
         if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
@@ -50,7 +50,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
     }
 
     /**
-     * @param int   $level
+     * @param int    $level
      * @param string $content
      *
      * @return string
@@ -64,7 +64,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
     }
 
     /**
-     * @param int   $level
+     * @param int    $level
      * @param string $content
      *
      * @return string

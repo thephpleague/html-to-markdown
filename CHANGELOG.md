@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+### Added
+ - Added new `equals` method to `Element` to check for equality
+
+### Fixed
+ - Cleaned up code style
 
 ## [3.0.0]
 ### Changed

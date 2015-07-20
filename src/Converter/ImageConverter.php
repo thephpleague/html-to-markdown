@@ -17,7 +17,7 @@ class ImageConverter implements ConverterInterface
         $alt = $element->getAttribute('alt');
         $title = $element->getAttribute('title');
 
-        if ($title != '') {
+        if ($title !== '') {
             // No newlines added. <img> should be in a block-level element.
             $markdown = '![' . $alt . '](' . $src . ' "' . $title . '")';
         } else {

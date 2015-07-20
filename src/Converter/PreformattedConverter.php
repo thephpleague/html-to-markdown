@@ -45,13 +45,12 @@ class PreformattedConverter implements ConverterInterface
                 $line = str_replace('&#xD;', '', $line);
                 $markdown .= '    ' . $line;
                 // Add newlines, except final line of the code
-                if ($count != $total) {
+                if ($count !== $total) {
                     $markdown .= "\n";
                 }
                 $count++;
             }
             $markdown .= "\n";
-
         } else {
             // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
             $markdown .= '`' . $lines[0] . '`';
