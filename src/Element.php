@@ -196,7 +196,7 @@ class Element implements ElementInterface
 
             // TODO: Need a less-buggy way of comparing these
             // Perhaps we can somehow ensure that we always have the exact same object and use === instead?
-            if ($current_node->equals($this)) {
+            if ($this->equals($current_node)) {
                 break;
             }
         }

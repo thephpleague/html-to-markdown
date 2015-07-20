@@ -4,7 +4,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 ### Added
- - Added new `equals` method to `ElementInterface` to check for equality
+ - Added new `equals` method to `Element` to check for equality
 
 ### Fixed
  - Cleaned up code style
