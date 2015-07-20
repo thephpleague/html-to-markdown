@@ -46,7 +46,7 @@ Next, create a new HtmlConverter instance, passing in your valid HTML code to it
 
     use League\HTMLToMarkdown\HtmlConverter;
 
-    $converer = new HtmlConverter();
+    $converter = new HtmlConverter();
 
     $html = "<h3>Quick, to the Batpoles!</h3>";
     $markdown = $converter->convert($html);
