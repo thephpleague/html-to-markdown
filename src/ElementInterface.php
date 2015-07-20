@@ -77,4 +77,11 @@ interface ElementInterface
      * @return string
      */
     public function getAttribute($name);
+
+    /**
+     * @param ElementInterface $element
+     *
+     * @return bool
+     */
+    public function equals(ElementInterface $element);
 }
