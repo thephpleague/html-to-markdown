@@ -8,4 +8,5 @@ disabled:
   - concat_without_spaces
   - phpdoc_short_description
   - psr0
+  - short_array_syntax
 
