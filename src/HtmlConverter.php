@@ -61,6 +61,11 @@ class HtmlConverter
      */
     public function convert($html)
     {
+        
+        if ($html == '' && $this->environment->getConfig()->getOption('suppress_errors')) {
+            return '';
+        }
+        
         $document = $this->createDOMDocument($html);
 
         // Work on the entire DOM tree (including head and body)
