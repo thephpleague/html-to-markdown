@@ -13,6 +13,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_markdown, $result);
     }
 
+    public function test_empty_input()
+    {
+        $this->html_gives_markdown('', '');
+        $this->html_gives_markdown('     ', '');
+    }
+
     public function test_plain_text()
     {
         $this->html_gives_markdown('test', 'test');
