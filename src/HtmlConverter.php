@@ -61,6 +61,10 @@ class HtmlConverter
      */
     public function convert($html)
     {
+        if (trim($html) === '') {
+            return '';
+        }
+
         $document = $this->createDOMDocument($html);
 
         // Work on the entire DOM tree (including head and body)
