@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [3.1.1]
+### Fixed
+ - Empty HTML strings now result in empty Markdown documents (#40, #41)
+
 ## [3.1.0]
 ### Added
  - Added new `equals` method to `Element` to check for equality
@@ -86,7 +90,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.1.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.1.1...master
+[3.1.1]: https://github.com/thephpleague/html-to-markdown/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...3.0.0
 [2.2.2]: https://github.com/thephpleague/html-to-markdown/compare/2.2.1...2.2.2
