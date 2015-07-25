@@ -125,10 +125,6 @@ HTML To Markdown requires PHP's [xml](http://www.php.net/manual/en/xml.installat
 
 Errors such as "Fatal error: Class 'DOMDocument' not found" on distributions such as CentOS that disable PHP's xml extension can be resolved by installing php-xml.
 
-### Architecture notes
-
-HTML To Markdown is a single file that uses native DOM manipulation libraries (DOMDocument), not regex voodoo, to convert code.
-
 ### Contributors
 
 Many thanks to all [contributors](https://github.com/thephpleague/html-to-markdown/graphs/contributors) so far. Further improvements and feature suggestions are very welcome.
