@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+### Added
+ - Added new `HtmlConverter::getEnvironment()` method to expose the `Environment` (#42, #43)
+
+### Changed
+ - Made `Environment::addConverter()` public, enable custom converters to be added (#42, #43)
 
 ## [3.1.1]
 ### Fixed
