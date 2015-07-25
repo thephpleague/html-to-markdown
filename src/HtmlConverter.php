@@ -96,7 +96,7 @@ class HtmlConverter
      *
      * @return \DOMDocument
      */
-    protected function createDOMDocument($html)
+    private function createDOMDocument($html)
     {
         $document = new \DOMDocument();
 
