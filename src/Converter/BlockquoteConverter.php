@@ -4,7 +4,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class BlockquoteConverter implements ConverterInterface
+class BlockquoteConverter extends BaseConverter
 {
     /**
      * @param ElementInterface $element

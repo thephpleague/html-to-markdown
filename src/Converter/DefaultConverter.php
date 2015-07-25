@@ -6,7 +6,7 @@ use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class DefaultConverter implements ConverterInterface, ConfigurationAwareInterface
+class DefaultConverter extends BaseConverter implements ConfigurationAwareInterface
 {
     const DEFAULT_CONVERTER = '_default';
 

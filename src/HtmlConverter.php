@@ -133,12 +133,16 @@ class HtmlConverter
             return;
         }
 
+        $this->preProcess($element);
+
         // If the node has children, convert those to Markdown first
         if ($element->hasChildren()) {
             foreach ($element->getChildren() as $child) {
                 $this->convertChildren($child);
             }
         }
+
+        $this->postProcess($element);
 
         // Now that child nodes have been converted, convert the original node
         $markdown = $this->convertToMarkdown($element);
@@ -147,6 +151,24 @@ class HtmlConverter
 
         // Replace the old $node e.g. '<h3>Title</h3>' with the new $markdown_node e.g. '### Title'
         $element->setFinalMarkdown($markdown);
+    }
+
+    /**
+     * @param \League\HTMLToMarkdown\ElementInterface $element
+     */
+    protected function preProcess(ElementInterface $element)
+    {
+        $converter = $this->environment->getConverterByTag($element->getTagName());
+        $converter->openElement($element);
+    }
+
+    /**
+     * @param \League\HTMLToMarkdown\ElementInterface $element
+     */
+    protected function postProcess(ElementInterface $element)
+    {
+        $converter = $this->environment->getConverterByTag($element->getTagName());
+        $converter->closeElement($element);
     }
 
     /**

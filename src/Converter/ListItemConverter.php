@@ -4,7 +4,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class ListItemConverter implements ConverterInterface
+class ListItemConverter extends BaseConverter
 {
     /**
      * @param ElementInterface $element
@@ -24,7 +24,7 @@ class ListItemConverter implements ConverterInterface
             $markdown = $number . '. ' . trim($value) . "\n";
         }
 
-        return $markdown;
+        return str_repeat("\t", ListBlockConverter::$level) . $markdown;
     }
 
     /**

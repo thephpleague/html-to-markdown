@@ -17,4 +17,18 @@ interface ConverterInterface
      * @return string[]
      */
     public function getSupportedTags();
+
+    /**
+     * @param \League\HTMLToMarkdown\ElementInterface $element
+     *
+     * @return void
+     */
+    public function openElement(ElementInterface $element);
+
+    /**
+     * @param \League\HTMLToMarkdown\ElementInterface $element
+     *
+     * @return void
+     */
+    public function closeElement(ElementInterface $element);
 }
