@@ -7,7 +7,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Added new `HtmlConverter::getEnvironment()` method to expose the `Environment` (#42, #43)
 
 ### Changed
- - Made `Environment::addConverter()` public, enable custom converters to be added (#42, #43)
+ - Changed `Environment::addConverter()` from `protected` to `public`, enabling custom converters to be added (#42, #43)
+ - Changed `HtmlConverter::createDOMDocument()` from `protected` to `private`
+ - Changed `Element::nextCached` from `protected` to `private`
+ - Made the `Environment` class `final`
 
 ## [3.1.1]
 ### Fixed

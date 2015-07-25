@@ -12,7 +12,7 @@ class Element implements ElementInterface
     /**
      * @var ElementInterface|null
      */
-    protected $nextCached;
+    private $nextCached;
 
     public function __construct(\DOMNode $node)
     {

@@ -19,7 +19,7 @@ use League\HTMLToMarkdown\Converter\ParagraphConverter;
 use League\HTMLToMarkdown\Converter\PreformattedConverter;
 use League\HTMLToMarkdown\Converter\TextConverter;
 
-class Environment
+final class Environment
 {
     /**
      * @var Configuration
