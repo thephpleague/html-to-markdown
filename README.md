@@ -36,7 +36,7 @@ Require the library in your composer.json:
 
     {
         "require": {
-            "league/html-to-markdown": "~3.0"
+            "league/html-to-markdown": "~4.0"
         }
     }
 

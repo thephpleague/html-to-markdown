@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [4.0.0]
+
+This release changes the visibility of several methods/properties. #42 and #43 brought to light that some visiblities were
+not ideally set, so this releases fixes that. Moving forwards this should reduce the chance of introducing BC-breaking changes.
+
 ### Added
  - Added new `HtmlConverter::getEnvironment()` method to expose the `Environment` (#42, #43)
 
@@ -98,7 +104,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/3.1.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.0.0...master
+[4.0.0]: https://github.com/thephpleague/html-to-markdown/compare/3.1.1...4.0.0
 [3.1.1]: https://github.com/thephpleague/html-to-markdown/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/thephpleague/html-to-markdown/compare/2.2.2...3.0.0
