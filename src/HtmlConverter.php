@@ -43,6 +43,14 @@ class HtmlConverter
     }
 
     /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
      * @return Configuration
      */
     public function getConfig()

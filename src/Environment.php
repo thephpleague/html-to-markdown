@@ -48,7 +48,7 @@ class Environment
     /**
      * @param ConverterInterface $converter
      */
-    protected function addConverter(ConverterInterface $converter)
+    public function addConverter(ConverterInterface $converter)
     {
         if ($converter instanceof ConfigurationAwareInterface) {
             $converter->setConfig($this->config);
