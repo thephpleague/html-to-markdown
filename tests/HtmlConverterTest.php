@@ -23,6 +23,11 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown('test', 'test');
         $this->html_gives_markdown('<p>test</p>', 'test');
+
+        //expected result is in the comment for better readability
+        $this->html_gives_markdown('<p>*test*</p>', '\\*test\\*'); // \*test\*
+        $this->html_gives_markdown('<p>_test_</p>', '\\_test\\_'); // \_test\_
+        $this->html_gives_markdown('<p>\\*test\\*</p>', '\\\\\\*test\\\\\\*'); // \\\*test\\\*
     }
 
     public function test_line_breaks()
