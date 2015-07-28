@@ -4,6 +4,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Fixed
+ - Added escaping to avoid * and _ in a text being rendered as emphasis (#48)
+
 ## [4.0.0]
 
 This release changes the visibility of several methods/properties. #42 and #43 brought to light that some visiblities were
