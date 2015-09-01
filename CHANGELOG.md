@@ -8,6 +8,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Added escaping to avoid * and _ in a text being rendered as emphasis (#48)
 
 ### Removed
+ - Removed the demo (#51)
  - `.styleci.yml` and `CONTRIBUTING.md` are no longer included in distributions (#50)
 
 ## [4.0.0]
