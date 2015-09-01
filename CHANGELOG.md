@@ -4,6 +4,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.0.1]
+
 ### Fixed
  - Added escaping to avoid * and _ in a text being rendered as emphasis (#48)
 
@@ -111,7 +113,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.0.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.0.1...master
+[4.0.1]: https://github.com/thephpleague/html-to-markdown/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/thephpleague/html-to-markdown/compare/3.1.1...4.0.0
 [3.1.1]: https://github.com/thephpleague/html-to-markdown/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/thephpleague/html-to-markdown/compare/3.0.0...3.1.0
