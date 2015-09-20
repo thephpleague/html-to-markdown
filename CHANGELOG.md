@@ -4,6 +4,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Added
+ - Added `bin/html-to-markdown` script
+
 ## [4.0.1]
 
 ### Fixed
