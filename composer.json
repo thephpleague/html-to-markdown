@@ -35,9 +35,11 @@
         "ext-xml": "*"
     },
     "require-dev": {
+        "mikehaertl/php-shellcommand": "~1.1.0",
         "phpunit/phpunit": "4.*",
         "scrutinizer/ocular": "~1.1"
     },
+    "bin": ["bin/html-to-markdown"],
     "extra": {
         "branch-alias": {
             "dev-master": "4.1-dev"
