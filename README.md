@@ -71,7 +71,7 @@ To strip HTML tags that don't have a Markdown equivalent while preserving the co
 Or more explicitly, like this:
 
     $converter = new HtmlConverter();
-    $converter->setOption('strip_tags', true);
+    $converter->getConfig()->setOption('strip_tags', true);
 
     $html = '<span>Turnips!</span>';
     $markdown = $converter->convert($html); // $markdown now contains "Turnips!"
@@ -90,8 +90,8 @@ To strip tags and their content, pass a space-separated list of tags in `remove_
 Bold and italic tags are converted using the asterisk syntax by default. Change this to the underlined syntax using the `bold_style` and `italic_style` options.
 
     $converter = new HtmlConverter();
-    $converter->setOption('italic_style', '_');
-    $converter->setOption('bold_style', '__');
+    $converter->getConfig()->setOption('italic_style', '_');
+    $converter->getConfig()->setOption('bold_style', '__');
 
     $html = '<em>Italic</em> and a <strong>bold</strong>';
     $markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
