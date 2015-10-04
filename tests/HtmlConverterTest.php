@@ -51,18 +51,19 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_spans()
     {
-        $this->html_gives_markdown('<em>Test</em>', '*Test*');
-        $this->html_gives_markdown('<i>Test</i>', '*Test*');
+        $this->html_gives_markdown('<em>Test</em>', '_Test_');
+        $this->html_gives_markdown('<i>Test</i>', '_Test_');
         $this->html_gives_markdown('<strong>Test</strong>', '**Test**');
         $this->html_gives_markdown('<b>Test</b>', '**Test**');
-        $this->html_gives_markdown('<em>Test</em>', '_Test_', array('italic_style' => '_'));
-        $this->html_gives_markdown('<em>Italic</em> and a <strong>bold</strong>', '_Italic_ and a __bold__', array('italic_style' => '_', 'bold_style' => '__'));
+        $this->html_gives_markdown('<em>Test</em>', '*Test*', array('italic_style' => '*'));
+        $this->html_gives_markdown('<em>Italic</em> and a <strong>bold</strong>', '*Italic* and a __bold__', array('italic_style' => '*', 'bold_style' => '__'));
         $this->html_gives_markdown('<i>Test</i>', '_Test_', array('italic_style' => '_'));
         $this->html_gives_markdown('<strong>Test</strong>', '__Test__', array('bold_style' => '__'));
         $this->html_gives_markdown('<b>Test</b>', '__Test__', array('bold_style' => '__'));
         $this->html_gives_markdown('<span>Test</span>', '<span>Test</span>');
-        $this->html_gives_markdown('<b>Bold</b> <i>Italic</i>', '**Bold** *Italic*');
-        $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold***Italic*');
+        $this->html_gives_markdown('<b>Bold</b> <i>Italic</i>', '**Bold** _Italic_');
+        $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold**_Italic_');
+        $this->html_gives_markdown('<em>This is <strong>a test</strong></em>', '_This is **a test**_');
     }
 
     public function test_nesting()
@@ -134,7 +135,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_malformed_html()
     {
         $this->html_gives_markdown('<code><p>Some sample HTML</p></code>', '`<p>Some sample HTML</p>`'); // Invalid HTML, but should still work
-        $this->html_gives_markdown('<strong><em>Strong italic</strong> Regular text', '***Strong italic*** Regular text'); // Missing closing </em>
+        $this->html_gives_markdown('<strong><em>Strong italic</strong> Regular text', '**_Strong italic_** Regular text'); // Missing closing </em>
     }
 
     public function test_html5_tags_are_preserved()

@@ -7,6 +7,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Added
  - Added `bin/html-to-markdown` script
 
+### Changed
+ - Changed default italic character to `_` (#58)
+
 ## [4.0.1]
 
 ### Fixed
