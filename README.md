@@ -32,15 +32,13 @@ Typically you would convert HTML to Markdown if:
 
 ### How to use it
 
-Require the library in your composer.json:
+Require the library by issuing this command:
 
-    {
-        "require": {
-            "league/html-to-markdown": "~4.0"
-        }
-    }
+```bash
+composer require league/html-to-markdown
+```
 
-Then `composer install` and add `require 'vendor/autoload.php';` to the top of your script.
+Add `require 'vendor/autoload.php';` to the top of your script.
 
 Next, create a new HtmlConverter instance, passing in your valid HTML code to its `convert()` function:
 
