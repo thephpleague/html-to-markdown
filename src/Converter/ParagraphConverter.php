@@ -15,7 +15,7 @@ class ParagraphConverter implements ConverterInterface
     {
         $value = $element->getValue();
 
-        return (trim($value) || trim($value) === "0") ? rtrim($value) . "\n\n" : '';
+        return trim($value) !== '' ? rtrim($value) . "\n\n" : '';
     }
 
     /**
