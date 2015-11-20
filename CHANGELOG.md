@@ -4,7 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.1.1]
+
 ### Fixed
+ - Fixed conversion of empty paragraphs (#78)
  - Fixed `preg_replace` so it wouldn't break UTF-8 characters (#79)
 
 ## [4.1.0]
@@ -124,7 +127,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.1.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.1.1...master
+[4.1.1]: https://github.com/thephpleague/html-to-markdown/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/thephpleague/html-to-markdown/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/thephpleague/html-to-markdown/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/thephpleague/html-to-markdown/compare/3.1.1...4.0.0
