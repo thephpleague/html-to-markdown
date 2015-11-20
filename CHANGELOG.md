@@ -6,6 +6,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [4.1.0]
 
+### Fixed
+ - Fixed `preg_replace` so it wouldn't break UTF-8 characters (#79)
+
 ### Added
  - Added `bin/html-to-markdown` script
 
