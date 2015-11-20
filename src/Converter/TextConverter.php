@@ -15,12 +15,12 @@ class TextConverter implements ConverterInterface
     {
         $value = $element->getValue();
 
-        $markdown = preg_replace('~\s+~', ' ', $value);
+        $markdown = preg_replace('~\s+~u', ' ', $value);
 
         //escape the following characters: '*', '_' and '\'
-        $markdown = preg_replace('~([*_\\\\])~', '\\\\$1', $markdown);
+        $markdown = preg_replace('~([*_\\\\])~u', '\\\\$1', $markdown);
 
-        $markdown = preg_replace('~^#~', '\\\\#', $markdown);
+        $markdown = preg_replace('~^#~u', '\\\\#', $markdown);
 
         if ($markdown === ' ') {
             $next = $element->getNext();
