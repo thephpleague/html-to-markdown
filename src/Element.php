@@ -205,6 +205,24 @@ class Element implements ElementInterface
     }
 
     /**
+     * @return int
+     */
+    public function getListItemLevel()
+    {
+        $level = 0;
+        $parent = $this->getParent();
+
+        while ($parent !== null && $parent->node->parentNode) {
+            if ($parent->getTagName() === 'li') {
+                $level++;
+            }
+            $parent = $parent->getParent();
+        }
+
+        return $level;
+    }
+
+    /**
      * @param string $name
      *
      * @return string

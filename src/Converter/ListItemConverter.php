@@ -17,11 +17,19 @@ class ListItemConverter implements ConverterInterface
         $list_type = $element->getParent()->getTagName();
         $value = $element->getValue();
 
+        // Add spaces to start for nested list items
+        $level = $element->getListItemLevel($element);
+        $prefix = str_repeat('  ', $level);
+        // If list item is the first in a nested list, add a newline before it
+        if ($level > 0 && $element->getSiblingPosition() === 1) {
+            $prefix = "\n" . $prefix;
+        }
+
         if ($list_type === 'ul') {
-            $markdown = '- ' . trim($value) . "\n";
+            $markdown = $prefix . '- ' . trim($value) . "\n";
         } else {
             $number = $element->getSiblingPosition();
-            $markdown = $number . '. ' . trim($value) . "\n";
+            $markdown = $prefix . $number . '. ' . trim($value) . "\n";
         }
 
         return $markdown;
