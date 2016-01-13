@@ -64,6 +64,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<b>Bold</b> <i>Italic</i>', '**Bold** _Italic_');
         $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold**_Italic_');
         $this->html_gives_markdown('<em>This is <strong>a test</strong></em>', '_This is **a test**_');
+        $this->html_gives_markdown('<em>This is </em><strong>a </strong>test', '_This is_ **a** test');
     }
 
     public function test_nesting()
