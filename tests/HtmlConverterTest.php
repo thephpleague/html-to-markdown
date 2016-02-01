@@ -190,4 +190,13 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Strip', $result);
     }
+
+    public function test_invoke()
+    {
+        $markdown = new HtmlConverter();
+        $markdown->getConfig()->setOption('strip_tags', true);
+        $result = $markdown('<span>Strip</span>');
+
+        $this->assertEquals('Strip', $result);
+    }
 }

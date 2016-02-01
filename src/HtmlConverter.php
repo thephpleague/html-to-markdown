@@ -61,6 +61,20 @@ class HtmlConverter
     /**
      * Convert
      *
+     * @see HtmlConverter::convert
+     *
+     * @param string $html
+     *
+     * @return string The Markdown version of the html
+     */
+    public function __invoke($html)
+    {
+        return $this->convert($html);
+    }
+
+    /**
+     * Convert
+     *
      * Loads HTML and passes to getMarkdown()
      *
      * @param $html
