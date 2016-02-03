@@ -190,14 +190,30 @@ class HtmlConverter
     }
 
     /**
+     * Recursively decode html entities
+     *
+     * @param string $markdown
+     *
+     * @return string
+     */
+    protected function recursivelyDecode($markdown)
+    {
+        $new_markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
+        if ($new_markdown === $markdown) {
+            return $new_markdown;
+        } else {
+            return $this->recursivelyDecode($new_markdown);
+        }
+    }
+
+    /**
      * @param string $markdown
      *
      * @return string
      */
     protected function sanitize($markdown)
     {
-        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
+        $markdown = $this->recursivelyDecode($markdown);
         $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags

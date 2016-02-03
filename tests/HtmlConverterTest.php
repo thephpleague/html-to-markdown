@@ -22,6 +22,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_plain_text()
     {
         $this->html_gives_markdown('test', 'test');
+        $this->html_gives_markdown('test1&test2&amp;test3&amp;amp;test4&amp;amp;amp;test5', 'test1&test2&test3&test4&test5');
         $this->html_gives_markdown('<p>test</p>', 'test');
 
         //expected result is in the comment for better readability
