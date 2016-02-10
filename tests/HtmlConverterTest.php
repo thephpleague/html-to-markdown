@@ -183,6 +183,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>Hello</p><span>World</span>', '', array('remove_nodes' => 'p span'));
     }
 
+    public function test_html_entities()
+    {
+        $this->html_gives_markdown('<p>&amp;euro;</p>', '&euro;');
+        $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
+    }
+
     public function test_set_option()
     {
         $markdown = new HtmlConverter();

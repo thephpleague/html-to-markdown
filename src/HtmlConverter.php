@@ -197,7 +197,6 @@ class HtmlConverter
     protected function sanitize($markdown)
     {
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-        $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8'); // Double decode to cover cases like &amp;nbsp; http://www.php.net/manual/en/function.htmlentities.php#99984
         $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
         $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
         $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
