@@ -4,6 +4,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Removed
+ - Removed double HTML entity decoding, as this is not desireable (#60)
+
 ## [4.2.0]
 
 ### Added
