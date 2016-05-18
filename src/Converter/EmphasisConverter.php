@@ -30,7 +30,7 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
     {
         $tag = $element->getTagName();
         $value = $element->getValue();
-        
+
         if (!trim($value)) {
             return '';
         }
@@ -44,7 +44,6 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $prefix = ltrim($value) !== $value ? ' ' : '';
         $suffix = rtrim($value) !== $value ? ' ' : '';
 
-        
         return $prefix . $style . trim($value) . $style . $suffix;
     }
 
