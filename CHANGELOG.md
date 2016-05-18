@@ -4,6 +4,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.2.1]
+### Fixed
+ - Fixed path to autoload.php when used as a library (#98)
+ - Fixed edge case for tags containing only whitespace (#99)
+
 ### Removed
  - Removed double HTML entity decoding, as this is not desireable (#60)
 
@@ -139,7 +144,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.2.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.2.1...master
+[4.2.1]: https://github.com/thephpleague/html-to-markdown/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/thephpleague/html-to-markdown/compare/4.1.1...4.2.0
 [4.1.1]: https://github.com/thephpleague/html-to-markdown/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/thephpleague/html-to-markdown/compare/4.0.1...4.1.0
