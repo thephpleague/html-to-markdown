@@ -31,6 +31,10 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $tag = $element->getTagName();
         $value = $element->getValue();
 
+        if (!trim($value)) {
+            return '';
+        }
+
         if ($tag === 'i' || $tag === 'em') {
             $style = $this->config->getOption('italic_style');
         } else {
