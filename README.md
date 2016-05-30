@@ -98,8 +98,8 @@ Bold and italic tags are converted using the asterisk syntax by default. Change 
 
 ### Escape WhiteTags
 
-If you want to keep the attributes for some allowed tags you **MUST** to set an Array into `white_tags` property and we you have to specified a `white_tag_wildcard` with a non common character.
-The `white_tag_wildcard` is for mark just the allowed tags.
+If you want to keep the attributes for some allowed tags you **MUST** to set an Array into `white_tags` property and specify a `white_tag_wildcard` with a non common character.
+The `white_tag_wildcard` is to mark just the allowed tags for return the `$html` as the user has been typed.
 
     $converter = new HtmlConverter();
     $converter->getConfig()->setOption('white_tags', ['a']);
