@@ -16,7 +16,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $whiteTagsData = array(
             'This is a WhiteTag <a href="http://www.google.com" target="_blank">Link</a> `This is code html <a href="http://www.google.com" target="_blank">Link2</a>`',
             'This is a WhiteTag <a href="http://www.google.com" target="_blank">Link</a> `This is code html <a href="http://www.google.com" target="_blank">Link2</a>`',
-            array('white_tags' => array('a'))
+            array('white_tags' => array('a')),
         );
 
         return array(
