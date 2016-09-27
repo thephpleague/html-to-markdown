@@ -206,4 +206,11 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Strip', $result);
     }
+
+    public function test_sanitization()
+    {
+        $html = '<pre><code>&lt;script type = "text/javascript"&gt; function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } &lt;/head&gt; &lt;body&gt;</code></pre>';
+        $markdown = '    <script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>';
+        $this->html_gives_markdown($html, $markdown);
+    }
 }
