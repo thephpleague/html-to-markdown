@@ -198,8 +198,28 @@ class HtmlConverter
     {
         $markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
         $markdown = preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
-        $unwanted = array('<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '<?xml encoding="UTF-8">', '&#xD;');
-        $markdown = str_replace($unwanted, '', $markdown); // Strip unwanted tags
+        $markdown = trim($markdown); // Remove blank spaces at the beggining of the html
+
+        /*
+         * Removing unwanted tags. Tags should be added to the array in the order they are expected.
+         * XML, html and body opening tags should be in that order. Same case with closing tags
+         */
+        $unwanted = array('<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '&#xD;');
+
+        foreach ($unwanted as $tag) {
+            if (strpos($tag, '/') === false) {
+                // Opening tags
+                if (strpos($markdown, $tag) === 0) {
+                    $markdown = substr($markdown, strlen($tag));
+                }
+            } else {
+                // Closing tags
+                if (strpos($markdown, $tag) === strlen($markdown) - strlen($tag)) {
+                    $markdown = substr($markdown, 0, -strlen($tag));
+                }
+            }
+        }
+
         $markdown = trim($markdown, "\n\r\0\x0B");
 
         return $markdown;
