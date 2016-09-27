@@ -5,6 +5,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## [Unreleased][unreleased]
 
 ## [4.2.2]
+### Fixed
  - Fixed sanitization bug which sometimes removes desired content (#63, #101)
 
 ## [4.2.1]
