@@ -4,7 +4,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class PreformattedConverter implements ConverterInterface
+class CodeConverter implements ConverterInterface
 {
     /**
      * @param ElementInterface $element
@@ -13,10 +13,27 @@ class PreformattedConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
+        $language = null;
+
+        // Checking for language class on the code block
+        $classes = $element->getAttribute('class');
+
+        if ($classes) {
+            // Since tags can have more than one class, we need to find the one that starts with 'language-'
+            $classes = explode(' ', $classes);
+            foreach ($classes as $class) {
+                if (strpos($class, 'language-') !== false) {
+                    // Found one, save it as the selected language and stop looping over the classes.
+                    $language = str_replace('language-', '', $class);
+                    break;
+                }
+            }
+        }
+
         // Store the content of the code block in an array, one entry for each line
 
         $markdown = '';
-
+        $element->getNext($element->node);
         $code_content = html_entity_decode($element->getChildrenAsString());
         $code_content = str_replace(array('<code>', '</code>'), '', $code_content);
         $code_content = str_replace(array('<pre>', '</pre>'), '', $code_content);
@@ -56,7 +73,7 @@ class PreformattedConverter implements ConverterInterface
             $markdown .= '`' . $lines[0] . '`';
         }
 
-        if ($element->getTagName() === 'pre') {
+        if ($element->getTagName() === 'code') {
             $markdown = "\n" . $markdown . "\n";
         }
 
@@ -68,6 +85,6 @@ class PreformattedConverter implements ConverterInterface
      */
     public function getSupportedTags()
     {
-        return array('pre');
+        return array('code');
     }
 }
