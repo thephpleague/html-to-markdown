@@ -30,12 +30,15 @@ class CodeConverter implements ConverterInterface
             }
         }
 
-        // Store the content of the code block in an array, one entry for each line
-
         $markdown = '';
-        $code_content = html_entity_decode($element->getValue());
+        $code = html_entity_decode($element->getChildrenAsString());
 
-        $markdown .= '```' . $language . "\n" . $code_content . "\n" . '```';
+        // In order to remove the code tags we need to search for them and, in the case of the opening tag
+        // use a regular expression to find the tag and the other attributes it might have
+        $code = preg_replace('/<code\b[^>]*>/', '', $code);
+        $code = str_replace('</code>', '', $code);
+
+        $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
 
         return $markdown;
     }
