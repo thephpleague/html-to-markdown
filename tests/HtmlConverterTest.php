@@ -212,5 +212,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<pre><code>&lt;script type = "text/javascript"&gt; function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } &lt;/head&gt; &lt;body&gt;</code></pre>';
         $markdown = '    <script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>';
         $this->html_gives_markdown($html, $markdown);
+        $this->html_gives_markdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '\> > Look at me! < <');
+        $this->html_gives_markdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "\\> > **Look** at me! < <  \n\\> Just look at me!");
     }
 }
