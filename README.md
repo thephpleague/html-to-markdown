@@ -96,6 +96,18 @@ Bold and italic tags are converted using the asterisk syntax by default. Change 
     $html = '<em>Italic</em> and a <strong>bold</strong>';
     $markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
 
+### Escape WhiteTags
+
+If you want to keep the attributes for some allowed tags you **MUST** to set an Array into `white_tags` property and specify a `white_tag_wildcard` with a non common character.
+The `white_tag_wildcard` is to mark just the allowed tags for return the `$html` as the user has been typed.
+
+    $converter = new HtmlConverter();
+    $converter->getConfig()->setOption('white_tags', ['a']);
+    $converter->getConfig()->setOption('white_tag_wildcard', '|');
+
+    $html = '<a href="http://www.google.com" target="_blank">New link</a>';
+    $markdown = $converter->convert($html); // $markdown now contains "<a href="http://www.google.com" target="_blank">New link</a>"
+
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
