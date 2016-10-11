@@ -33,6 +33,9 @@ class PreformattedConverter implements ConverterInterface
 
         // If the execution reaches this point it means it's just a pre tag, with no code tag nested
 
+        // Normalizing new lines
+        $pre_content = preg_replace('/\r\n|\r|\n/', PHP_EOL, $pre_content);
+
         // Checking if the string has multiple lines
         $lines = preg_split('/\r\n|\r|\n/', $pre_content);
         if (count($lines) > 1) {

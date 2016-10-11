@@ -24,7 +24,8 @@ class CodeConverter implements ConverterInterface
             foreach ($classes as $class) {
                 if (strpos($class, 'language-') !== false) {
                     // Found one, save it as the selected language and stop looping over the classes.
-                    $language = str_replace('language-', '', $class);
+                    // The space after the language avoids gluing the actual code with the language tag
+                    $language = str_replace('language-', '', $class) . ' ';
                     break;
                 }
             }
@@ -42,10 +43,10 @@ class CodeConverter implements ConverterInterface
         $lines = preg_split('/\r\n|\r|\n/', $code);
         if (count($lines) > 1) {
             // Multiple lines detected, adding three backticks and newlines
-            $markdown .= '```' . $language . "\n" . trim($code) . "\n" . '```';
+            $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
         } else {
             // One line of code, wrapping it on one backtick.
-            $markdown .= '`' . $language . trim($code) . '`';
+            $markdown .= '`' . $language . $code . '`';
         }
 
         return $markdown;
