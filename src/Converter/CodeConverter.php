@@ -39,7 +39,7 @@ class CodeConverter implements ConverterInterface
         $code = str_replace('</code>', '', $code);
 
         // Checking if the code has multiple lines
-        if (count(explode("\n", $code)) > 1) {
+        if (count(preg_split('/\r\n|\r|\n/', $code)) > 1) {
             // Multiple lines detected, adding three backticks and newlines
             $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
         } else {

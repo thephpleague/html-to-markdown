@@ -13,44 +13,39 @@ class PreformattedConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        // Store the content of the code block in an array, one entry for each line
-
         $markdown = '';
 
         $code_content = html_entity_decode($element->getChildrenAsString());
         $code_content = str_replace(array('<pre>', '</pre>'), '', $code_content);
 
+        /*
+         * Checking for the code tag.
+         * Usually pre tags are used along with code tags. This conditional will check for converted code tags,
+         * which use backticks, and if those backticks are at the beginning and at the end of the string it means
+         * there's no more information to convert.
+         */
+
+        $firstBacktick = strpos(trim($code_content), '`');
+        $lastBacktick = strrpos(trim($code_content), '`');
+        if ($firstBacktick === 0 && $lastBacktick === strlen(trim($code_content)) - 1) {
+            return $code_content;
+        }
+
+        /*
+         * If the execution reaches this point it means either the pre tag has more information besides the one inside
+         * the code tag or there's no code tag.
+         */
+
+        // Store the content of the code block in an array, one entry for each line
         $lines = preg_split('/\r\n|\r|\n/', $code_content);
 
-        // Remove the first and last line if they're empty
-        $first_line = trim($lines[0]);
-        $total = count($lines);
-        $last_line = trim($lines[$total - 1]);
-        $first_line = trim($first_line, '&#xD;'); //trim XML style carriage returns too
-        $last_line = trim($last_line, '&#xD;');
-
-        if (empty($first_line)) {
-            array_shift($lines);
-        }
-
-        if (empty($last_line)) {
-            array_pop($lines);
-        }
-
-        $count = 1;
-        foreach ($lines as $line) {
-            $line = str_replace('&#xD;', '', $line);
-            $markdown .= $line;
-            // Add newlines, except final line of the code
-            if ($count !== $total) {
-                $markdown .= "\n";
-            }
-            $count++;
-        }
-        $markdown .= "\n";
-
-        if ($element->getTagName() === 'pre') {
-            $markdown = "\n" . $markdown . "\n";
+        // Checking if the string has multiple lines
+        if (count($lines) > 1) {
+            // Multiple lines detected, adding three backticks and newlines
+            $markdown .= '```' . "\n" . $code_content . "\n" . '```';
+        } else {
+            // One line of code, wrapping it on one backtick.
+            $markdown .= '`' . ' ' . $code_content . '`';
         }
 
         return $markdown;
