@@ -18,16 +18,16 @@ class ParagraphConverter implements ConverterInterface
         $markdown = '';
 
         /*
-         * &gt; ocurrences must be escaped, otherwise instead of rendering p tags as paragraph blocks,
-         * the > will make them appear as a blockquote.
+         * '--' ocurrences must be escaped, otherwise instead of rendering p tags as paragraph blocks,
+         * the -- will make them appear as a header.
          * To achieve this, the content of the paragraph must be exploded and then each line must be check
-         * if the first character (sans blank space) is a >
+         * if the first character (sans blank space) is a --
          */
 
-        $lines = explode("\n", $value);
+        $lines = preg_split('/\r\n|\r|\n/', $value);
         foreach ($lines as $line) {
-            if (strpos(ltrim($line), '>') === 0) {
-                // Found a > char, escaping it
+            if (strpos(ltrim($line), '--') === 0) {
+                // Found a -- structure, escaping it
                 $markdown .= '\\' . ltrim($line);
             } else {
                 $markdown .= $line;
