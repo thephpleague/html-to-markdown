@@ -38,7 +38,14 @@ class CodeConverter implements ConverterInterface
         $code = preg_replace('/<code\b[^>]*>/', '', $code);
         $code = str_replace('</code>', '', $code);
 
-        $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
+        // Checking if the code has multiple lines
+        if (count(explode("\n", $code)) > 1) {
+            // Multiple lines detected, adding three backticks and newlines
+            $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
+        } else {
+            // One line of code, wrapping it on one backtick.
+            $markdown .= '`' . $language . ' ' . $code . '`';
+        }
 
         return $markdown;
     }
