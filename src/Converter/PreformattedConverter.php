@@ -31,21 +31,16 @@ class PreformattedConverter implements ConverterInterface
             return $code_content;
         }
 
-        /*
-         * If the execution reaches this point it means either the pre tag has more information besides the one inside
-         * the code tag or there's no code tag.
-         */
-
-        // Store the content of the code block in an array, one entry for each line
-        $lines = preg_split('/\r\n|\r|\n/', $code_content);
+        // If the execution reaches this point it means it's just a pre tag, with no code tag nested
 
         // Checking if the string has multiple lines
+        $lines = preg_split('/\r\n|\r|\n/', $code_content);
         if (count($lines) > 1) {
             // Multiple lines detected, adding three backticks and newlines
             $markdown .= '```' . "\n" . $code_content . "\n" . '```';
         } else {
             // One line of code, wrapping it on one backtick.
-            $markdown .= '`' . ' ' . $code_content . '`';
+            $markdown .= '`' . $code_content . '`';
         }
 
         return $markdown;
