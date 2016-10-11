@@ -125,7 +125,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "```\n\n<p>Some sample HTML</p>\n<p>And another line</p>\n\n```");
         $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
         $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
-        $this->html_gives_markdown('<pre><code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code></pre>', "`<p>Some sample HTML</p>`");
+        $this->html_gives_markdown('<pre><code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code></pre>', '`<p>Some sample HTML</p>`');
         $this->html_gives_markdown('<pre><code class="language-php">&lt;?php //Some php code ?&gt;</code></pre>', '`php <?php //Some php code ?>`');
         $this->html_gives_markdown("<pre><code class=\"language-php\">&lt;?php //Some multiline php code\n\$myVar = 2; ?&gt;</code></pre>", "```php \n<?php //Some multiline php code\n\$myVar = 2; ?>\n```");
         $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```");
@@ -147,7 +147,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_malformed_html()
     {
-        $this->html_gives_markdown('<code><p>Some sample HTML</p></code>', "`<p>Some sample HTML</p>`"); // Invalid HTML, but should still work
+        $this->html_gives_markdown('<code><p>Some sample HTML</p></code>', '`<p>Some sample HTML</p>`'); // Invalid HTML, but should still work
         $this->html_gives_markdown('<strong><em>Strong italic</strong> Regular text', '**_Strong italic_** Regular text'); // Missing closing </em>
     }
 
@@ -190,7 +190,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_html_entities()
     {
         $this->html_gives_markdown('<p>&amp;euro;</p>', '&euro;');
-        $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', "`<p>Some sample HTML</p>`");
+        $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
     }
 
     public function test_set_option()
