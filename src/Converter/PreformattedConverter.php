@@ -13,51 +13,37 @@ class PreformattedConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        // Store the content of the code block in an array, one entry for each line
-
         $markdown = '';
 
-        $code_content = html_entity_decode($element->getChildrenAsString());
-        $code_content = str_replace(array('<code>', '</code>'), '', $code_content);
-        $code_content = str_replace(array('<pre>', '</pre>'), '', $code_content);
+        $pre_content = html_entity_decode($element->getChildrenAsString());
+        $pre_content = str_replace(array('<pre>', '</pre>'), '', $pre_content);
 
-        $lines = preg_split('/\r\n|\r|\n/', $code_content);
-        $total = count($lines);
+        /*
+         * Checking for the code tag.
+         * Usually pre tags are used along with code tags. This conditional will check for already converted code tags,
+         * which use backticks, and if those backticks are at the beginning and at the end of the string it means
+         * there's no more information to convert.
+         */
 
-        // If there's more than one line of code, prepend each line with four spaces and no backticks.
-        if ($total > 1 || $element->getTagName() === 'pre') {
-            // Remove the first and last line if they're empty
-            $first_line = trim($lines[0]);
-            $last_line = trim($lines[$total - 1]);
-            $first_line = trim($first_line, '&#xD;'); //trim XML style carriage returns too
-            $last_line = trim($last_line, '&#xD;');
-
-            if (empty($first_line)) {
-                array_shift($lines);
-            }
-
-            if (empty($last_line)) {
-                array_pop($lines);
-            }
-
-            $count = 1;
-            foreach ($lines as $line) {
-                $line = str_replace('&#xD;', '', $line);
-                $markdown .= '    ' . $line;
-                // Add newlines, except final line of the code
-                if ($count !== $total) {
-                    $markdown .= "\n";
-                }
-                $count++;
-            }
-            $markdown .= "\n";
-        } else {
-            // There's only one line of code. It's a code span, not a block. Just wrap it with backticks.
-            $markdown .= '`' . $lines[0] . '`';
+        $firstBacktick = strpos(trim($pre_content), '`');
+        $lastBacktick = strrpos(trim($pre_content), '`');
+        if ($firstBacktick === 0 && $lastBacktick === strlen(trim($pre_content)) - 1) {
+            return $pre_content;
         }
 
-        if ($element->getTagName() === 'pre') {
-            $markdown = "\n" . $markdown . "\n";
+        // If the execution reaches this point it means it's just a pre tag, with no code tag nested
+
+        // Normalizing new lines
+        $pre_content = preg_replace('/\r\n|\r|\n/', PHP_EOL, $pre_content);
+
+        // Checking if the string has multiple lines
+        $lines = preg_split('/\r\n|\r|\n/', $pre_content);
+        if (count($lines) > 1) {
+            // Multiple lines detected, adding three backticks and newlines
+            $markdown .= '```' . "\n" . $pre_content . "\n" . '```';
+        } else {
+            // One line of code, wrapping it on one backtick.
+            $markdown .= '`' . $pre_content . '`';
         }
 
         return $markdown;
@@ -68,6 +54,6 @@ class PreformattedConverter implements ConverterInterface
      */
     public function getSupportedTags()
     {
-        return array('pre', 'code');
+        return array('pre');
     }
 }
