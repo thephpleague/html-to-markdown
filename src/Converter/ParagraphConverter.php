@@ -17,21 +17,13 @@ class ParagraphConverter implements ConverterInterface
 
         $markdown = '';
 
-        /*
-         * '--' ocurrences must be escaped, otherwise instead of rendering p tags as paragraph blocks,
-         * the -- will make them appear as a header.
-         * To achieve this, the content of the paragraph must be exploded and then each line must be check
-         * if the first character (sans blank space) is a --
-         */
-
         $lines = preg_split('/\r\n|\r|\n/', $value);
         foreach ($lines as $line) {
-            if (strpos(ltrim($line), '--') === 0) {
-                // Found a -- structure, escaping it
-                $markdown .= '\\' . ltrim($line);
-            } else {
-                $markdown .= $line;
-            }
+            /*
+             * Some special characters need to be escaped based on the position that they appear
+             * The following function will deal with those special cases.
+             */
+            $markdown .= $this->escapeSpecialCharacters($line);
             $markdown .= "\n";
         }
 
@@ -44,5 +36,48 @@ class ParagraphConverter implements ConverterInterface
     public function getSupportedTags()
     {
         return array('p');
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeSpecialCharacters($line)
+    {
+        $line = $this->escapeHeaderlikeCharacters($line);
+        $line = $this->escapeBlockquotelikeCharacters($line);
+
+        return $line;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeBlockquotelikeCharacters($line)
+    {
+        if (strpos(ltrim($line), '>') === 0) {
+            // Found a > char, escaping it
+            return '\\' . ltrim($line);
+        } else {
+            return $line;
+        }
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeHeaderlikeCharacters($line)
+    {
+        if (strpos(ltrim($line), '--') === 0) {
+            // Found a -- structure, escaping it
+            return '\\' . ltrim($line);
+        } else {
+            return $line;
+        }
     }
 }
