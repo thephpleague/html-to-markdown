@@ -3,6 +3,7 @@
 namespace League\HTMLToMarkdown;
 
 use League\HTMLToMarkdown\Converter\BlockquoteConverter;
+use League\HTMLToMarkdown\Converter\CodeConverter;
 use League\HTMLToMarkdown\Converter\CommentConverter;
 use League\HTMLToMarkdown\Converter\ConverterInterface;
 use League\HTMLToMarkdown\Converter\DefaultConverter;
@@ -83,6 +84,7 @@ final class Environment
         $environment = new static($config);
 
         $environment->addConverter(new BlockquoteConverter());
+        $environment->addConverter(new CodeConverter());
         $environment->addConverter(new CommentConverter());
         $environment->addConverter(new DivConverter());
         $environment->addConverter(new EmphasisConverter());

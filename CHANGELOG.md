@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+### Changed
+ - Changed `<pre>` and `<pre><code>` conversions to use backticks instead of indendation (#102)
+
+### Fixed
+ - Fixed issue where specified code language was not preserved (#70, #102)
+ - Fixed issue where `<code>` tags nested in `<pre>` was not converted properly (#70, #102)
 
 ## [4.2.2]
 ### Fixed

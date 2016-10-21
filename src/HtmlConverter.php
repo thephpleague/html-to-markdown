@@ -143,7 +143,8 @@ class HtmlConverter
     private function convertChildren(ElementInterface $element)
     {
         // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
-        if ($element->isDescendantOf(array('pre', 'code'))) {
+        // except if the current node is a code tag, which needs to be converted by the CodeConverter.
+        if ($element->isDescendantOf(array('pre', 'code')) && $element->getTagName() !== 'code') {
             return;
         }
 
