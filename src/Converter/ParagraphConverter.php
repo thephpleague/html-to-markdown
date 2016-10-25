@@ -47,6 +47,7 @@ class ParagraphConverter implements ConverterInterface
     {
         $line = $this->escapeHeaderlikeCharacters($line);
         $line = $this->escapeBlockquotelikeCharacters($line);
+        $line = $this->escapeOrderedListlikeCharacters($line);
 
         return $line;
     }
@@ -76,6 +77,22 @@ class ParagraphConverter implements ConverterInterface
         if (strpos(ltrim($line), '--') === 0) {
             // Found a -- structure, escaping it
             return '\\' . ltrim($line);
+        } else {
+            return $line;
+        }
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeOrderedListlikeCharacters($line)
+    {
+        // This regex will match numbers ending on ')' or '.' that are at the beginning of the line.
+        if (preg_match('/^[0-9]+(?=\)|\.)/', $line, $match)) {
+            // Found an Ordered list like character, escaping it
+            return substr_replace($line, '\\', strlen($match[0]), 0);
         } else {
             return $line;
         }
