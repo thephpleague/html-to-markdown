@@ -218,5 +218,6 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown($html, $markdown);
         $this->html_gives_markdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '\> > Look at me! < <');
         $this->html_gives_markdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "\\> > **Look** at me! < <  \n\\> Just look at me!");
+        $this->html_gives_markdown('<p>Foo<br>--<br>Bar<br>Foo--</p>', "Foo  \n\\--  \nBar  \nFoo--");
     }
 }

@@ -9,6 +9,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Fixed
  - Fixed issue where specified code language was not preserved (#70, #102)
  - Fixed issue where `<code>` tags nested in `<pre>` was not converted properly (#70, #102)
+ - Fixed header-like content not being escaped (#76, #105)
+ - Fixed blockquote-like content not being escaped (#77, #103)
 
 ## [4.2.2]
 ### Fixed
