@@ -11,7 +11,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Fixed issue where `<code>` tags nested in `<pre>` was not converted properly (#70, #102)
  - Fixed header-like content not being escaped (#76, #105)
  - Fixed blockquote-like content not being escaped (#77, #103)
- - Fixed ordered list-like content not being escaped (73, #106)
+ - Fixed ordered list-like content not being escaped (#73, #106)
 
 ## [4.2.2]
 ### Fixed
