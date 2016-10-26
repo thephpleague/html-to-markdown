@@ -12,6 +12,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Fixed header-like content not being escaped (#76, #105)
  - Fixed blockquote-like content not being escaped (#77, #103)
  - Fixed ordered list-like content not being escaped (#73, #106)
+ - Fixed unordered list-like content not being escaped (#71, #107)
 
 ## [4.2.2]
 ### Fixed
