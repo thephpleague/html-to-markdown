@@ -48,6 +48,7 @@ class ParagraphConverter implements ConverterInterface
         $line = $this->escapeHeaderlikeCharacters($line);
         $line = $this->escapeBlockquotelikeCharacters($line);
         $line = $this->escapeOrderedListlikeCharacters($line);
+        $line = $this->escapeListlikeCharacters($line);
 
         return $line;
     }
@@ -93,6 +94,21 @@ class ParagraphConverter implements ConverterInterface
         if (preg_match('/^[0-9]+(?=\)|\.)/', $line, $match)) {
             // Found an Ordered list like character, escaping it
             return substr_replace($line, '\\', strlen($match[0]), 0);
+        } else {
+            return $line;
+        }
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeListlikeCharacters($line)
+    {
+        if (strpos(ltrim($line), '- ') === 0 || strpos(ltrim($line), '+ ') === 0) {
+            // Found an list like character, escaping it
+            return '\\' . ltrim($line);
         } else {
             return $line;
         }
