@@ -4,6 +4,15 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.3.1]
+### Changed
+ - Revised the sanitization implementation (#109)
+
+### Fixed
+ - Fixed tag-like content not being escaped (#67, #109)
+ - Fixed thematic break-like content not being escaped (#65, #109)
+ - Fixed codefence-like content not being escaped (#64, #109)
+
 ## [4.3.0]
 ### Added
  - Added full support for PHP 7.0 and 7.1
@@ -163,7 +172,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.3.1...master
+[4.3.1]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...4.3.0
 [4.2.2]: https://github.com/thephpleague/html-to-markdown/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/thephpleague/html-to-markdown/compare/4.2.0...4.2.1
