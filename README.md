@@ -44,16 +44,20 @@ Add `require 'vendor/autoload.php';` to the top of your script.
 
 Next, create a new HtmlConverter instance, passing in your valid HTML code to its `convert()` function:
 
-    use League\HTMLToMarkdown\HtmlConverter;
+```php
+use League\HTMLToMarkdown\HtmlConverter;
 
-    $converter = new HtmlConverter();
+$converter = new HtmlConverter();
 
-    $html = "<h3>Quick, to the Batpoles!</h3>";
-    $markdown = $converter->convert($html);
+$html = "<h3>Quick, to the Batpoles!</h3>";
+$markdown = $converter->convert($html);
+```
 
 The `$markdown` variable now contains the Markdown version of your HTML as a string:
 
-    echo $markdown; // ==> ### Quick, to the Batpoles!
+```php
+echo $markdown; // ==> ### Quick, to the Batpoles!
+```
 
 The included `demo` directory contains an HTML->Markdown conversion form to try out.
 
@@ -63,38 +67,46 @@ By default, HTML To Markdown preserves HTML tags without Markdown equivalents, l
 
 To strip HTML tags that don't have a Markdown equivalent while preserving the content inside them, set `strip_tags` to true, like this:
 
-    $converter = new HtmlConverter(array('strip_tags' => true));
+```php
+$converter = new HtmlConverter(array('strip_tags' => true));
 
-    $html = '<span>Turnips!</span>';
-    $markdown = $converter->convert($html); // $markdown now contains "Turnips!"
+$html = '<span>Turnips!</span>';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!"
+```
 
 Or more explicitly, like this:
 
-    $converter = new HtmlConverter();
-    $converter->getConfig()->setOption('strip_tags', true);
+```php
+$converter = new HtmlConverter();
+$converter->getConfig()->setOption('strip_tags', true);
 
-    $html = '<span>Turnips!</span>';
-    $markdown = $converter->convert($html); // $markdown now contains "Turnips!"
+$html = '<span>Turnips!</span>';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!"
+```
 
 Note that only the tags themselves are stripped, not the content they hold.
 
 To strip tags and their content, pass a space-separated list of tags in `remove_nodes`, like this:
 
-    $converter = new HtmlConverter(array('remove_nodes' => 'span div'));
+```php
+$converter = new HtmlConverter(array('remove_nodes' => 'span div'));
 
-    $html = '<span>Turnips!</span><div>Monkeys!</div>';
-    $markdown = $converter->convert($html); // $markdown now contains ""
+$html = '<span>Turnips!</span><div>Monkeys!</div>';
+$markdown = $converter->convert($html); // $markdown now contains ""
+```
 
 ### Style options
 
 Bold and italic tags are converted using the asterisk syntax by default. Change this to the underlined syntax using the `bold_style` and `italic_style` options.
 
-    $converter = new HtmlConverter();
-    $converter->getConfig()->setOption('italic_style', '_');
-    $converter->getConfig()->setOption('bold_style', '__');
+```php
+$converter = new HtmlConverter();
+$converter->getConfig()->setOption('italic_style', '_');
+$converter->getConfig()->setOption('bold_style', '__');
 
-    $html = '<em>Italic</em> and a <strong>bold</strong>';
-    $markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
+$html = '<em>Italic</em> and a <strong>bold</strong>';
+$markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
+```
 
 ### Limitations
 

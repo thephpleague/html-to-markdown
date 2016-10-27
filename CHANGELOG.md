@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [4.3.0]
+### Added
+ - Added full support for PHP 7.0 and 7.1
+
 ### Changed
  - Changed `<pre>` and `<pre><code>` conversions to use backticks instead of indendation (#102)
 
@@ -12,6 +17,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Fixed header-like content not being escaped (#76, #105)
  - Fixed blockquote-like content not being escaped (#77, #103)
  - Fixed ordered list-like content not being escaped (#73, #106)
+ - Fixed unordered list-like content not being escaped (#71, #107)
 
 ## [4.2.2]
 ### Fixed
@@ -157,7 +163,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...master
+[4.3.0]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...4.3.0
 [4.2.2]: https://github.com/thephpleague/html-to-markdown/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/thephpleague/html-to-markdown/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/thephpleague/html-to-markdown/compare/4.1.1...4.2.0
