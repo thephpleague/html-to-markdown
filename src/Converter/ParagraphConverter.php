@@ -59,7 +59,7 @@ class ParagraphConverter implements ConverterInterface
      */
     private function escapeFirstCharacters($line)
     {
-        $escapable = [
+        $escapable = array(
             '>',
             '- ',
             '+ ',
@@ -67,7 +67,7 @@ class ParagraphConverter implements ConverterInterface
             '~~~',
             '---',
             '- - -'
-        ];
+        );
 
         foreach ($escapable as $i) {
             if (strpos(ltrim($line), $i) === 0) {
@@ -86,9 +86,9 @@ class ParagraphConverter implements ConverterInterface
      */
     private function escapeOtherCharacters($line)
     {
-        $escapable = [
+        $escapable = array(
             '<!--'
-        ];
+        );
 
         foreach ($escapable as $i) {
             if (strpos($line, $i) !== false) {
@@ -107,10 +107,10 @@ class ParagraphConverter implements ConverterInterface
      */
     private function escapeOtherCharactersRegex($line)
     {
-        $regExs = [
+        $regExs = array(
             // Match numbers ending on ')' or '.' that are at the beginning of the line.
             '/^[0-9]+(?=\)|\.)/'
-        ];
+        );
 
         foreach ($regExs as $i) {
             if (preg_match($i, $line, $match)) {
