@@ -49,6 +49,7 @@ class ParagraphConverter implements ConverterInterface
         $line = $this->escapeBlockquotelikeCharacters($line);
         $line = $this->escapeOrderedListlikeCharacters($line);
         $line = $this->escapeListlikeCharacters($line);
+        $line = $this->escapeTaglikeCharacters($line);
 
         return $line;
     }
@@ -109,6 +110,21 @@ class ParagraphConverter implements ConverterInterface
         if (strpos(ltrim($line), '- ') === 0 || strpos(ltrim($line), '+ ') === 0) {
             // Found an list like character, escaping it
             return '\\' . ltrim($line);
+        } else {
+            return $line;
+        }
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return string
+     */
+    private function escapeTaglikeCharacters($line)
+    {
+        if (strpos($line, '<!--') !== false) {
+            // Found an tag like character, escaping it
+            return substr_replace($line, '\\', strpos($line, '<!--'), 0);
         } else {
             return $line;
         }
