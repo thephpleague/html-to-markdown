@@ -45,10 +45,9 @@ class ParagraphConverter implements ConverterInterface
      */
     private function escapeSpecialCharacters($line)
     {
-        $line = $this->escapeHeaderlikeCharacters($line);
-        $line = $this->escapeBlockquotelikeCharacters($line);
-        $line = $this->escapeOrderedListlikeCharacters($line);
-        $line = $this->escapeListlikeCharacters($line);
+        $line = $this->escapeFirstCharacters($line);
+        $line = $this->escapeOtherCharacters($line);
+        $line = $this->escapeOtherCharactersRegex($line);
 
         return $line;
     }
@@ -58,14 +57,26 @@ class ParagraphConverter implements ConverterInterface
      *
      * @return string
      */
-    private function escapeBlockquotelikeCharacters($line)
+    private function escapeFirstCharacters($line)
     {
-        if (strpos(ltrim($line), '>') === 0) {
-            // Found a > char, escaping it
-            return '\\' . ltrim($line);
-        } else {
-            return $line;
+        $escapable = array(
+            '>',
+            '- ',
+            '+ ',
+            '--',
+            '~~~',
+            '---',
+            '- - -'
+        );
+
+        foreach ($escapable as $i) {
+            if (strpos(ltrim($line), $i) === 0) {
+                // Found a character that must be escaped, adding a backslash before
+                return '\\' . ltrim($line);
+            }
         }
+
+        return $line;
     }
 
     /**
@@ -73,14 +84,20 @@ class ParagraphConverter implements ConverterInterface
      *
      * @return string
      */
-    private function escapeHeaderlikeCharacters($line)
+    private function escapeOtherCharacters($line)
     {
-        if (strpos(ltrim($line), '--') === 0) {
-            // Found a -- structure, escaping it
-            return '\\' . ltrim($line);
-        } else {
-            return $line;
+        $escapable = array(
+            '<!--'
+        );
+
+        foreach ($escapable as $i) {
+            if (strpos($line, $i) !== false) {
+                // Found an escapable character, escaping it
+                $line = substr_replace($line, '\\', strpos($line, $i), 0);
+            }
         }
+
+        return $line;
     }
 
     /**
@@ -88,29 +105,20 @@ class ParagraphConverter implements ConverterInterface
      *
      * @return string
      */
-    private function escapeOrderedListlikeCharacters($line)
+    private function escapeOtherCharactersRegex($line)
     {
-        // This regex will match numbers ending on ')' or '.' that are at the beginning of the line.
-        if (preg_match('/^[0-9]+(?=\)|\.)/', $line, $match)) {
-            // Found an Ordered list like character, escaping it
-            return substr_replace($line, '\\', strlen($match[0]), 0);
-        } else {
-            return $line;
-        }
-    }
+        $regExs = array(
+            // Match numbers ending on ')' or '.' that are at the beginning of the line.
+            '/^[0-9]+(?=\)|\.)/'
+        );
 
-    /**
-     * @param string $line
-     *
-     * @return string
-     */
-    private function escapeListlikeCharacters($line)
-    {
-        if (strpos(ltrim($line), '- ') === 0 || strpos(ltrim($line), '+ ') === 0) {
-            // Found an list like character, escaping it
-            return '\\' . ltrim($line);
-        } else {
-            return $line;
+        foreach ($regExs as $i) {
+            if (preg_match($i, $line, $match)) {
+                // Matched an escapable character, adding a backslash on the string before the offending character
+                $line = substr_replace($line, '\\', strlen($match[0]), 0);
+            }
         }
+
+        return $line;
     }
 }
