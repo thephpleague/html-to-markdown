@@ -4,7 +4,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class PreformattedConverter implements ConverterInterface
+class PreformattedConverter extends BaseConverter
 {
     /**
      * @param ElementInterface $element

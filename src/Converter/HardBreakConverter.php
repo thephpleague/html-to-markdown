@@ -4,7 +4,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class HardBreakConverter implements ConverterInterface
+class HardBreakConverter extends BaseConverter
 {
     /**
      * @param ElementInterface $element

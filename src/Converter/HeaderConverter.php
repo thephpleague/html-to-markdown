@@ -6,7 +6,7 @@ use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
+class HeaderConverter extends BaseConverter implements ConfigurationAwareInterface
 {
     const STYLE_ATX = 'atx';
     const STYLE_SETEXT = 'setext';

@@ -110,6 +110,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<ol><li>Item A</li><li>Item B</li></ol>', "1. Item A\n2. Item B");
         $this->html_gives_markdown("<ol>\n    <li>Item A</li>\n    <li>Item B</li>\n</ol>", "1. Item A\n2. Item B");
         $this->html_gives_markdown('<ol><li>   Item A</li><li>   Item B</li></ol>', "1. Item A\n2. Item B");
+        $this->html_gives_markdown('<ul><li>Item A<ul><li>Item D<ul><li>Item E</li></ul></li><li>Item F</ul></li><li>Item B</li><li>Item C</li></ul>', "- Item A\n\t- Item D\n\t\t- Item E\n\t- Item F\n- Item B\n- Item C");
+        $this->html_gives_markdown('<ul><li>Item A<ol><li>Item D</li></ol></li><li>Item B</li><li>Item C</li></ul>', "- Item A\n\t1. Item D\n- Item B\n- Item C");
     }
 
     public function test_nested_lists()

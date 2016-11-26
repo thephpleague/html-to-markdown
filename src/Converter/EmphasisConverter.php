@@ -6,7 +6,7 @@ use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
+class EmphasisConverter extends BaseConverter implements ConfigurationAwareInterface
 {
     /**
      * @var Configuration

@@ -6,7 +6,7 @@ use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class DivConverter implements ConverterInterface, ConfigurationAwareInterface
+class DivConverter extends BaseConverter implements ConfigurationAwareInterface
 {
     /**
      * @var Configuration
