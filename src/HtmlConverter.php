@@ -35,6 +35,7 @@ class HtmlConverter
             'bold_style'      => '**', // Set to '__' if you prefer the underlined style
             'italic_style'    => '_', // Set to '*' if you prefer the asterisk style
             'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
+            'hard_break'      => false, // Set to true to turn <br> into `\n` instead of `  \n`
         );
 
         $this->environment = Environment::createDefaultEnvironment($defaults);
