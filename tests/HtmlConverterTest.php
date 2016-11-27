@@ -34,6 +34,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown("test\nanother line", 'test another line');
         $this->html_gives_markdown("<p>test\nanother line</p>", 'test another line');
+        $this->html_gives_markdown("<p>test<br>\nanother line</p>", "test  \nanother line");
+        $this->html_gives_markdown("<p>test<br>\n another line</p>", "test  \n another line");
+        $this->html_gives_markdown("<p>test<br>\n<em>another</em> line</p>", "test  \n_another_ line");
         $this->html_gives_markdown('<p>test<br>another line</p>', "test  \nanother line");
         $this->html_gives_markdown('<p>test<br/>another line</p>', "test  \nanother line");
         $this->html_gives_markdown('<p>test<br />another line</p>', "test  \nanother line");
