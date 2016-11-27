@@ -35,7 +35,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("test\nanother line", 'test another line');
         $this->html_gives_markdown("<p>test\nanother line</p>", 'test another line');
         $this->html_gives_markdown('<p>test<br>another line</p>', "test  \nanother line");
+        $this->html_gives_markdown('<p>test<br/>another line</p>', "test  \nanother line");
         $this->html_gives_markdown('<p>test<br />another line</p>', "test  \nanother line");
+        $this->html_gives_markdown('<p>test<br  />another line</p>', "test  \nanother line");
     }
 
     public function test_headers()
@@ -101,6 +103,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_horizontal_rule()
     {
         $this->html_gives_markdown('<hr>', '- - - - - -');
+        $this->html_gives_markdown('<hr/>', '- - - - - -');
+        $this->html_gives_markdown('<hr />', '- - - - - -');
+        $this->html_gives_markdown('<hr  />', '- - - - - -');
     }
 
     public function test_lists()
