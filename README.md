@@ -108,6 +108,21 @@ $html = '<em>Italic</em> and a <strong>bold</strong>';
 $markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
 ```
 
+### Line break options
+
+By default, `br` tags are converted to two spaces followed by a newline character as per [traditional Markdown](https://daringfireball.net/projects/markdown/syntax#p). Set `hard_break` to `true` to omit the two spaces, as per GitHub Flavored Markdown (GFM).
+
+```php
+$converter = new HtmlConverter();
+$html = '<p>test<br>line break</p>';
+
+$converter->getConfig()->setOption('hard_break', true);
+$markdown = $converter->convert($html); // $markdown now contains "test\nline break"
+
+$converter->getConfig()->setOption('hard_break', false); // default
+$markdown = $converter->convert($html); // $markdown now contains "test  \nline break"
+```
+
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
