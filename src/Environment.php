@@ -35,6 +35,13 @@ final class Environment
     public function __construct(array $config = array())
     {
         $this->config = new Configuration($config);
+
+        if (isset($config['converters'])) {
+            foreach ($config['converters'] as $converter) {
+                $this->addConverter($converter);
+            }
+        }
+
         $this->addConverter(new DefaultConverter());
     }
 

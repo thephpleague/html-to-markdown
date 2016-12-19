@@ -2,6 +2,7 @@
 
 namespace League\HTMLToMarkdown\Test;
 
+use League\HTMLToMarkdown\Environment;
 use League\HTMLToMarkdown\HtmlConverter;
 
 class HtmlConverterTest extends \PHPUnit_Framework_TestCase
@@ -236,5 +237,18 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<p>123456789) Foo and 1234567890) Bar!</p>\n<p>1. Platz in 'Das große Backen'</p>", "123456789\\) Foo and 1234567890) Bar!\n\n1\\. Platz in 'Das große Backen'");
         $this->html_gives_markdown("<p>\n+ Siri works well for TV and movies<br>\n- No 4K support\n</p>", "\+ Siri works well for TV and movies  \n\- No 4K support");
         $this->html_gives_markdown('<p>You forgot the &lt;!--more--&gt; tag!</p>', 'You forgot the \<!--more--> tag!');
+    }
+
+    public function test_instatiation_with_environment()
+    {
+        $markdown = new HtmlConverter(new Environment(array()));
+
+        $htmlH3 = '<h3>Test</h3>';
+        $result = $markdown->convert($htmlH3);
+        $this->assertEquals($htmlH3, $result);
+
+        $htmlH4 = '<h4>Test</h4>';
+        $result = $markdown->convert($htmlH4);
+        $this->assertEquals($htmlH4, $result);
     }
 }
