@@ -4,6 +4,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.4.0]
+
+### Added
+ - Added `hard_break` configuration option (#112, #115)
+ - The `HtmlConverter` can now be instantiated with an `Environment` (#118)
+
+### Fixed
+ - Fixed handling of paragraphs in list item elements (#47, #110)
+ - Fixed phantom spaces when newlines follow `br` elements (#116, #117)
+ - Fixed link converter not sanitizing inner spaces properly (#119, #120)
+
 ## [4.3.1]
 ### Changed
  - Revised the sanitization implementation (#109)
@@ -172,7 +183,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.3.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.4.0...master
+[4.4.0]: https://github.com/thephpleague/html-to-markdown/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...4.3.0
 [4.2.2]: https://github.com/thephpleague/html-to-markdown/compare/4.2.1...4.2.2

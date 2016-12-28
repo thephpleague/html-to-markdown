@@ -42,7 +42,7 @@
     "bin": ["bin/html-to-markdown"],
     "extra": {
         "branch-alias": {
-            "dev-master": "4.4-dev"
+            "dev-master": "4.5-dev"
         }
     }
 }
