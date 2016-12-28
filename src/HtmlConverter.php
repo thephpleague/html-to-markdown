@@ -24,23 +24,27 @@ class HtmlConverter
     /**
      * Constructor
      *
-     * @param array $options Configuration options
+     * @param Environment|array $options Environment object or configuration options
      */
-    public function __construct(array $options = array())
+    public function __construct($options = array())
     {
-        $defaults = array(
-            'header_style'    => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
-            'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
-            'strip_tags'      => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-            'bold_style'      => '**', // Set to '__' if you prefer the underlined style
-            'italic_style'    => '_', // Set to '*' if you prefer the asterisk style
-            'remove_nodes'    => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
-            'hard_break'      => false, // Set to true to turn <br> into `\n` instead of `  \n`
-        );
+        if ($options instanceof Environment) {
+            $this->environment = $options;
+        } elseif (is_array($options)) {
+            $defaults = array(
+                'header_style' => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
+                'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
+                'strip_tags' => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+                'bold_style' => '**', // Set to '__' if you prefer the underlined style
+                'italic_style' => '_', // Set to '*' if you prefer the asterisk style
+                'remove_nodes' => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
+                'hard_break' => false,// Set to true to turn <br> into `\n` instead of `  \n`
+            );
 
-        $this->environment = Environment::createDefaultEnvironment($defaults);
+            $this->environment = Environment::createDefaultEnvironment($defaults);
 
-        $this->environment->getConfig()->merge($options);
+            $this->environment->getConfig()->merge($options);
+        }
     }
 
     /**
