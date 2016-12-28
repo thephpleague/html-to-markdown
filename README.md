@@ -129,10 +129,9 @@ You can pass current `Environment` object to customize i.e. which converters sho
 
 ```php
 $environment = new Environment(array(
-    'converters' => array(
-        new HeaderConverter(),
-    ),
+    // your configuration here
 ));
+$environment->addConverter(new HeaderConverter()); // optionally - add converter manually
 
 $converter = new HtmlConverter($environment);
 
