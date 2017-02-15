@@ -84,6 +84,8 @@ class HtmlConverter
      *
      * @param $html
      *
+     * @throws \InvalidArgumentException
+     *
      * @return string The Markdown version of the html
      */
     public function convert($html)
