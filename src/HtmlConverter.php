@@ -105,9 +105,7 @@ class HtmlConverter
         // Store the now-modified DOMDocument as a string
         $markdown = $document->saveHTML();
 
-        $markdown = $this->sanitize($markdown);
-
-        return $markdown;
+        return $this->sanitize($markdown);
     }
 
     /**
@@ -226,8 +224,6 @@ class HtmlConverter
             }
         }
 
-        $markdown = trim($markdown, "\n\r\0\x0B");
-
-        return $markdown;
+        return trim($markdown, "\n\r\0\x0B");
     }
 }
