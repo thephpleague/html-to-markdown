@@ -82,7 +82,7 @@ class HtmlConverter
      *
      * Loads HTML and passes to getMarkdown()
      *
-     * @param $html
+     * @param string $html
      *
      * @return string The Markdown version of the html
      */
