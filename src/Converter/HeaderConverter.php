@@ -57,7 +57,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
      */
     private function createSetextHeader($level, $content)
     {
-        $length = (function_exists('mb_strlen')) ? mb_strlen($content, 'utf-8') : strlen($content);
+        $length = function_exists('mb_strlen') ? mb_strlen($content, 'utf-8') : strlen($content);
         $underline = ($level === 1) ? '=' : '-';
 
         return $content . "\n" . str_repeat($underline, $length) . "\n\n";
