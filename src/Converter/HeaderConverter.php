@@ -36,9 +36,9 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 
         if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
             return $this->createSetextHeader($level, $element->getValue());
-        } else {
-            return $this->createAtxHeader($level, $element->getValue());
         }
+
+        return $this->createAtxHeader($level, $element->getValue());
     }
 
     /**

@@ -134,9 +134,13 @@ class Element implements ElementInterface
     {
         if ($checkChildren && $node->firstChild) {
             return $node->firstChild;
-        } elseif ($node->nextSibling) {
+        }
+
+        if ($node->nextSibling) {
             return $node->nextSibling;
-        } elseif ($node->parentNode) {
+        }
+
+        if ($node->parentNode) {
             return $this->getNextNode($node->parentNode, false);
         }
     }

@@ -29,13 +29,12 @@ class ListItemConverter implements ConverterInterface
         }
 
         if ($list_type === 'ul') {
-            $markdown = $prefix . '- ' . $value . "\n";
-        } else {
-            $number = $element->getSiblingPosition();
-            $markdown = $prefix . $number . '. ' . $value . "\n";
+            return $prefix . '- ' . $value . "\n";
         }
 
-        return $markdown;
+        $number = $element->getSiblingPosition();
+
+        return $prefix . $number . '. ' . $value . "\n";
     }
 
     /**
