@@ -126,6 +126,7 @@ class Element implements ElementInterface
 
     /**
      * @param \DomNode $node
+     * @param bool $checkChildren
      *
      * @return \DomNode|null
      */
