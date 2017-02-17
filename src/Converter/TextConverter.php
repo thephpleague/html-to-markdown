@@ -21,8 +21,8 @@ class TextConverter implements ConverterInterface
         // Replace sequences of invisible characters with spaces
         $markdown = preg_replace('~\s+~u', ' ', $markdown);
 
-        // Escape the following characters: '*', '_' and '\'
-        $markdown = preg_replace('~([*_\\\\])~u', '\\\\$1', $markdown);
+        // Escape the following characters: '*', '_', '[', ']' and '\'
+        $markdown = preg_replace('~([*_\\[\\]\\\\])~u', '\\\\$1', $markdown);
 
         $markdown = preg_replace('~^#~u', '\\\\#', $markdown);
 
