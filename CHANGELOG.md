@@ -4,6 +4,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.4.1]
+
+### Fixed
+ - Fixed autolinking of invalid URLs (#129)
+
 ## [4.4.0]
 
 ### Added
