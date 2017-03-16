@@ -19,7 +19,7 @@ class LinkConverter implements ConverterInterface
 
         if ($title !== '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } elseif ($href === $text) {
+        } elseif ($href === $text && $this->isValidAutolink($href)) {
             $markdown = '<' . $href . '>';
         } else {
             $markdown = '[' . $text . '](' . $href . ')';
@@ -38,5 +38,15 @@ class LinkConverter implements ConverterInterface
     public function getSupportedTags()
     {
         return array('a');
+    }
+
+    /**
+     * @param string $href
+     *
+     * @return bool
+     */
+    private function isValidAutolink($href)
+    {
+        return preg_match('/^[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*/i', $href) === 1;
     }
 }

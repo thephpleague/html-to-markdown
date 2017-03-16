@@ -4,6 +4,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.4.1]
+
+### Fixed
+ - Fixed autolinking of invalid URLs (#129)
+
 ## [4.4.0]
 
 ### Added
@@ -183,7 +188,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.4.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.4.1...master
+[4.4.1]: https://github.com/thephpleague/html-to-markdown/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/thephpleague/html-to-markdown/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/thephpleague/html-to-markdown/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/thephpleague/html-to-markdown/compare/4.2.2...4.3.0
