@@ -196,6 +196,23 @@ class HtmlConverter
     }
 
     /**
+     * Recursively decode html entities
+     *
+     * @param string $markdown
+     *
+     * @return string
+     */
+    public function recursivelyDecode($markdown)
+    {
+        $new_markdown = html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
+        if ($new_markdown === $markdown) {
+            return $new_markdown;
+        } else {
+            return $this->recursivelyDecode($new_markdown);
+        }
+    }
+
+    /**
      * @param string $markdown
      *
      * @return string
