@@ -47,6 +47,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>test<br/>another line</p>', "test\nanother line", array('hard_break' => true));
         $this->html_gives_markdown('<p>test<br />another line</p>', "test\nanother line", array('hard_break' => true));
         $this->html_gives_markdown('<p>test<br  />another line</p>', "test\nanother line", array('hard_break' => true));
+        $this->html_gives_markdown('<p>test breaks <b>inside<br>bold</b> <strong>inside<br>bold</strong> tag</p>', "test breaks **inside bold** **inside bold** tag");
+        $this->html_gives_markdown('<p>test breaks <i>inside<br>emphasis</i> <em>inside<br>emphasis</em> tag</p>', "test breaks _inside emphasis_ _inside emphasis_ tag");
     }
 
     public function test_headers()
@@ -59,6 +61,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<h4>Test</h4>', '#### Test');
         $this->html_gives_markdown('<h5>Test</h5>', '##### Test');
         $this->html_gives_markdown('<h6>Test</h6>', '###### Test');
+        $this->html_gives_markdown('<h1>break in<br>header</h1>', "break in header\n===============");
+        $this->html_gives_markdown('<h2>break in<br>header</h2>', "break in header\n---------------");
+        $this->html_gives_markdown('<h3>break in<br>header</h3>', "### break in header");
+        $this->html_gives_markdown('<h4>break in<br>header</h4>', "#### break in header");
+        $this->html_gives_markdown('<h5>break in<br>header</h5>', "##### break in header");
+        $this->html_gives_markdown('<h6>break in<br>header</h6>', "###### break in header");
     }
 
     public function test_spans()
