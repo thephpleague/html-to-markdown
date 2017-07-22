@@ -38,6 +38,9 @@
         "mikehaertl/php-shellcommand": "~1.1.0",
         "phpunit/phpunit": "4.*",
         "scrutinizer/ocular": "~1.1"
+    },    
+    "scripts": {
+        "test": "phpunit"
     },
     "bin": ["bin/html-to-markdown"],
     "extra": {
