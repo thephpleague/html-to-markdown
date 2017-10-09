@@ -44,7 +44,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         }
 
         if ($list_type === 'ul') {
-            $list_item_style = $this->config->getOption('list_item_style');
+            $list_item_style = $this->config->getOption('list_item_style', '-');
             return $prefix . $list_item_style . ' ' . $value . "\n";
         }
 
