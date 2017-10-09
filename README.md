@@ -13,7 +13,7 @@ HTML To Markdown for PHP
 Library which converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
 
-**Requires**: PHP 5.3+
+**Requires**: PHP 5.3+ or PHP 7.0+
 
 **Lead Developer**: [@colinodell](http://twitter.com/colinodell)
 
