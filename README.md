@@ -97,15 +97,15 @@ $markdown = $converter->convert($html); // $markdown now contains ""
 
 ### Style options
 
-Bold and italic tags are converted using the asterisk syntax by default. Change this to the underlined syntax using the `bold_style` and `italic_style` options.
+By default bold tags are converted using the asterisk syntax, and italic tags are converted using the underlined syntax. Change these by using the `bold_style` and `italic_style` options.
 
 ```php
 $converter = new HtmlConverter();
-$converter->getConfig()->setOption('italic_style', '_');
+$converter->getConfig()->setOption('italic_style', '*');
 $converter->getConfig()->setOption('bold_style', '__');
 
 $html = '<em>Italic</em> and a <strong>bold</strong>';
-$markdown = $converter->convert($html); // $markdown now contains "_Italic_ and a __bold__"
+$markdown = $converter->convert($html); // $markdown now contains "*Italic* and a __bold__"
 ```
 
 ### Line break options
