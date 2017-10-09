@@ -9,6 +9,11 @@ php:
   - "7.1"
   - "hhvm"
 
+matrix:
+  include:
+    - php: 5.3
+      dist: precise
+
 sudo: false
 
 install: travis_retry composer install --no-interaction --prefer-source
