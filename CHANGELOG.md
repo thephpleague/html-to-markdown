@@ -4,6 +4,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Added
+ - Added support for ordered lists starting at numbers other than 1
+
+### Fixed
+ - Fixed overly-eager escaping of list-like text (#141)
+
 ## [4.5.0]
 ### Added
  - Added configuration option for list item style (#135, #136)

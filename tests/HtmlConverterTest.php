@@ -133,6 +133,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<ol>\n    <li>Item A</li>\n    <li>Item B</li>\n</ol>", "1. Item A\n2. Item B");
         $this->html_gives_markdown('<ol><li>   Item A</li><li>   Item B</li></ol>', "1. Item A\n2. Item B");
         $this->html_gives_markdown('<ol><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ol>', "1. ###  Item A\n  \n  Description\n2. Item B");
+        $this->html_gives_markdown('<ol start="120"><li>Item A</li><li>Item B</li></ol>', "120. Item A\n121. Item B");
     }
 
     public function test_nested_lists()
@@ -140,6 +141,14 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<ul><li>Item A</li><li>Item B<ul><li>Nested A</li><li>Nested B</li></ul></li><li>Item C</li></ul>', "- Item A\n- Item B\n  - Nested A\n  - Nested B\n- Item C");
         $this->html_gives_markdown('<ul><li>   Item A<ol><li>Nested A</li></ol></li><li>   Item B</li></ul>', "- Item A\n  1. Nested A\n- Item B");
         $this->html_gives_markdown('<ol><li>Item A<ul><li>Nested A</li></ul></li><li>Item B</li></ol>', "1. Item A\n  - Nested A\n2. Item B");
+    }
+
+    public function test_list_like_things_which_arent_lists()
+    {
+        $this->html_gives_markdown('<p>120.<p>', '120\.');
+        $this->html_gives_markdown('<p>120. <p>', '120\.');
+        $this->html_gives_markdown('<p>120.00<p>', '120.00');
+        $this->html_gives_markdown('<p>120.00 USD<p>', '120.00 USD');
     }
 
     public function test_code_samples()
