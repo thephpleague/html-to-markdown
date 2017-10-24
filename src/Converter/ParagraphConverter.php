@@ -109,7 +109,8 @@ class ParagraphConverter implements ConverterInterface
     {
         $regExs = array(
             // Match numbers ending on ')' or '.' that are at the beginning of the line.
-            '/^[0-9]+(?=\)|\.)/'
+            // They will be escaped if immediately followed by a space or newline.
+            '/^[0-9]+(?=(\)|\.)( |$))/'
         );
 
         foreach ($regExs as $i) {

@@ -142,6 +142,14 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<ol><li>Item A<ul><li>Nested A</li></ul></li><li>Item B</li></ol>', "1. Item A\n  - Nested A\n2. Item B");
     }
 
+    public function test_list_like_things_which_arent_lists()
+    {
+        $this->html_gives_markdown('<p>120.<p>', '120\.');
+        $this->html_gives_markdown('<p>120. <p>', '120\.');
+        $this->html_gives_markdown('<p>120.00<p>', '120.00');
+        $this->html_gives_markdown('<p>120.00 USD<p>', '120.00 USD');
+    }
+
     public function test_code_samples()
     {
         $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
