@@ -165,9 +165,19 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_preformat()
     {
-        $this->html_gives_markdown("<pre>test\ntest\r\ntest</pre>", "```\ntest" . PHP_EOL . 'test' . PHP_EOL . "test\n```");
-        $this->html_gives_markdown("<pre>test\n\ttab\r\n</pre>", "```\ntest" . PHP_EOL . "\ttab" . PHP_EOL . "\n```");
+        $this->html_gives_markdown("<pre>test\ntest\r\ntest</pre>", "```\ntest" . PHP_EOL .'test'. PHP_EOL .'test'. PHP_EOL .'```');
+        $this->html_gives_markdown("<pre>test\ntest\r\ntest\n</pre>", "```\ntest" . PHP_EOL .'test'. PHP_EOL .'test'. PHP_EOL .'```');
+        $this->html_gives_markdown("<pre>test\n\ttab\r\n</pre>", "```\ntest" . PHP_EOL . "\ttab" . PHP_EOL . '```');
         $this->html_gives_markdown('<pre>  one line with spaces  </pre>', '`  one line with spaces  `');
+        $this->html_gives_markdown("<pre></pre>", "```\n```");
+        $this->html_gives_markdown("<pre></pre><pre></pre>", "```\n```\n```\n```");
+        $this->html_gives_markdown("<pre>\n</pre>", "```\n" . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>foo\n</pre>", "```\nfoo" . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\nfoo</pre>", "```\n" . PHP_EOL . 'foo' . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\nfoo\n</pre>", "```\n" . PHP_EOL . 'foo' . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\n\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\n</pre><pre>\n</pre>", "```\n" . PHP_EOL. "```\n```\n" . PHP_EOL . '```');
     }
 
     public function test_blockquotes()

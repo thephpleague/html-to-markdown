@@ -33,20 +33,27 @@ class PreformattedConverter implements ConverterInterface
 
         // If the execution reaches this point it means it's just a pre tag, with no code tag nested
 
+        // Empty lines are a special case
+        if ($pre_content === '') {
+            return "```\n```\n";
+        }
+
         // Normalizing new lines
         $pre_content = preg_replace('/\r\n|\r|\n/', PHP_EOL, $pre_content);
 
-        // Checking if the string has multiple lines
-        $lines = preg_split('/\r\n|\r|\n/', $pre_content);
-        if (count($lines) > 1) {
-            // Multiple lines detected, adding three backticks and newlines
-            $markdown .= '```' . "\n" . $pre_content . "\n" . '```';
-        } else {
+        // Is it a single line?
+        if (strpos($pre_content, PHP_EOL) === false) {
             // One line of code, wrapping it on one backtick.
-            $markdown .= '`' . $pre_content . '`';
+            return '`' . $pre_content . '`';
         }
 
-        return $markdown;
+        // Ensure there's a newline at the end
+        if (strrpos($pre_content, PHP_EOL) !== strlen($pre_content) - 1) {
+            $pre_content .= PHP_EOL;
+        }
+
+        // Use three backticks
+        return "```\n" . $pre_content . "```\n";
     }
 
     /**
