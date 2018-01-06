@@ -32,7 +32,7 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $value = $element->getValue();
 
         if (!trim($value)) {
-            return '';
+            return $value;
         }
 
         if ($tag === 'i' || $tag === 'em') {

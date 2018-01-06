@@ -77,6 +77,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold**_Italic_');
         $this->html_gives_markdown('<em>This is <strong>a test</strong></em>', '_This is **a test**_');
         $this->html_gives_markdown('<em>This is </em><strong>a </strong>test', '_This is_ **a** test');
+        $this->html_gives_markdown('Emphasis with no<em> </em>text<strong> perserves</strong> spaces.', 'Emphasis with no text **perserves** spaces.');
+        $this->html_gives_markdown("Emphasis discards<em> \n</em>line breaks", "Emphasis discards line breaks");
+        $this->html_gives_markdown("Emphasis preserves<em><br/></em>HTML breaks", "Emphasis preserves  \nHTML breaks");
     }
 
     public function test_nesting()
