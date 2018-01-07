@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.6.2]
+### Fixed
+ - Fixed issue with emphasized spaces (#146)
+
 ## [4.6.1]
 ### Fixed
  - Fixed conversion of `<pre>` tags (#145)
@@ -203,7 +207,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.6.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.6.2...master
+[4.6.2]: https://github.com/thephpleague/html-to-markdown/compare/4.6.1...4.6.2
 [4.6.1]: https://github.com/thephpleague/html-to-markdown/compare/4.6.0...4.6.1
 [4.6.0]: https://github.com/thephpleague/html-to-markdown/compare/4.5.0...4.6.0
 [4.5.0]: https://github.com/thephpleague/html-to-markdown/compare/4.4.1...4.5.0
