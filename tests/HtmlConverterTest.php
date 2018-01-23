@@ -158,6 +158,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
         $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "```\n\n<p>Some sample HTML</p>\n<p>And another line</p>\n\n```");
+        $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code><p>Paragraph after code.</p>", "```\n\n<p>Some sample HTML</p>\n<p>And another line</p>\n\n```\n\nParagraph after code.");
         $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
         $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
         $this->html_gives_markdown('<pre><code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code></pre>', '`<p>Some sample HTML</p>`');
