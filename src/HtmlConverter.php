@@ -229,4 +229,23 @@ class HtmlConverter
 
         return trim($markdown, "\n\r\0\x0B");
     }
+    
+    /**
+     * Pass a series of key-value pairs in an array; these will be passed
+     * through the config and set.
+     * The advantage of this is that it can allow for static use (IE in Laravel).
+     * An example being:
+     * 
+     * HtmlConverter::setOptions(['strip_tags' => true])->convert('<h1>test</h1>');
+     */
+    public function setOptions(array $options)
+    {
+        $config = $this->getConfig();
+
+        foreach ($options as $key => $option) {
+            $config->setOption($key, $option);
+        }
+
+        return $this;
+    }
 }
