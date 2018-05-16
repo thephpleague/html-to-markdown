@@ -41,10 +41,9 @@ class HtmlConverter
                 'hard_break' => false, // Set to true to turn <br> into `\n` instead of `  \n`
                 'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
             );
+            $options += $defaults;
 
-            $this->environment = Environment::createDefaultEnvironment($defaults);
-
-            $this->environment->getConfig()->merge($options);
+            $this->environment = Environment::createDefaultEnvironment($options);
         }
     }
 
