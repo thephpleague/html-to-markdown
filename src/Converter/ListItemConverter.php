@@ -14,6 +14,11 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     protected $config;
 
     /**
+     * @var string
+     */
+    protected $listItemStyle;
+
+    /**
      * @param Configuration $config
      */
     public function setConfig(Configuration $config)
@@ -46,15 +51,15 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         if ($list_type === 'ul') {
             $list_item_style = $this->config->getOption('list_item_style', '-');
             $list_item_style_alternate = $this->config->getOption('list_item_style_alternate');
-            if (!isset($this->list_item_style)) {
-                $this->list_item_style = $list_item_style_alternate ? $list_item_style_alternate : $list_item_style;
+            if (!isset($this->listItemStyle)) {
+                $this->listItemStyle = $list_item_style_alternate ? $list_item_style_alternate : $list_item_style;
             }
 
             if ($list_item_style_alternate && $level == 0 && $element->getSiblingPosition() === 1) {
-                $this->list_item_style = $this->list_item_style == $list_item_style ? $list_item_style_alternate : $list_item_style;
+                $this->listItemStyle = $this->listItemStyle == $list_item_style ? $list_item_style_alternate : $list_item_style;
             }
 
-            return $prefix . $this->list_item_style . ' ' . $value . "\n";
+            return $prefix . $this->listItemStyle . ' ' . $value . "\n";
         }
 
         if ($list_type === 'ol' && $start = $element->getParent()->getAttribute('start')) {
