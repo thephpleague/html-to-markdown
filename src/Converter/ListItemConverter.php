@@ -31,13 +31,11 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         // If parent is an ol, use numbers, otherwise, use dashes
         $list_type = $element->getParent()->getTagName();
 
-        $value = $this->escapeSpecialCharacters($element->getValue());
-
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel($element);
 
         $prefixForParagraph = str_repeat('  ', $level + 1);
-        $value = trim(implode("\n" . $prefixForParagraph, explode("\n", trim($value))));
+        $value = trim(implode("\n" . $prefixForParagraph, explode("\n", trim($element->getValue()))));
 
         // If list item is the first in a nested list, add a newline before it
         $prefix = '';
@@ -66,19 +64,4 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     {
         return array('li');
     }
-
-    /**
-     * @param string $line
-     *
-     * @return string
-     */
-    private function escapeSpecialCharacters($line)
-    {
-        return preg_replace(
-            "/(.*)\n([ ]*)(-|\*|\+) (.*)/",
-            "$1\n$2\\\\$3 $4",
-            $line
-        );
-    }
-
 }
