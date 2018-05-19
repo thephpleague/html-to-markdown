@@ -17,14 +17,6 @@ class Configuration
     /**
      * @param array $config
      */
-    public function merge(array $config = array())
-    {
-        $this->config = array_replace_recursive($this->config, $config);
-    }
-
-    /**
-     * @param array $config
-     */
     public function replace(array $config = array())
     {
         $this->config = $config;
