@@ -168,6 +168,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<pre><code class="language-php">&lt;?php //Some php code ?&gt;</code></pre>', '`php <?php //Some php code ?>`');
         $this->html_gives_markdown("<pre><code class=\"language-php\">&lt;?php //Some multiline php code\n\$myVar = 2; ?&gt;</code></pre>", "```php \n<?php //Some multiline php code\n\$myVar = 2; ?>\n```");
         $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```");
+        $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>\n<p>line</p>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```" . PHP_EOL . PHP_EOL . "line");
     }
 
     public function test_preformat()
@@ -184,7 +185,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<pre>\nfoo\n</pre>", "```\n" . PHP_EOL . 'foo' . PHP_EOL . '```');
         $this->html_gives_markdown("<pre>\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . '```');
         $this->html_gives_markdown("<pre>\n\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\n</pre><pre>\n</pre>", "```\n" . PHP_EOL. "```\n```\n" . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>\n</pre><pre>\n</pre>", "```\n" . PHP_EOL. "```\n\n```\n" . PHP_EOL . '```');
+        $this->html_gives_markdown("<pre>one\ntwo\r\nthree</pre>\n<p>line</p>", "```\none" . PHP_EOL . 'two' . PHP_EOL . "three\n```" . PHP_EOL . PHP_EOL . "line");
     }
 
     public function test_blockquotes()

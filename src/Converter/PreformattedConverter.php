@@ -53,7 +53,7 @@ class PreformattedConverter implements ConverterInterface
         }
 
         // Use three backticks
-        return "```\n" . $pre_content . "```\n";
+        return "```\n" . $pre_content . "```\n\n";
     }
 
     /**
