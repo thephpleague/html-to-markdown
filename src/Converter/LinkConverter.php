@@ -15,7 +15,7 @@ class LinkConverter implements ConverterInterface
     {
         $href = $element->getAttribute('href');
         $title = $element->getAttribute('title');
-        $text = trim($element->getValue());
+        $text = trim($element->getValue(), "\t\n\r\0\x0B");
 
         if ($title !== '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
