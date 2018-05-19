@@ -28,7 +28,19 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
      */
     public function convert(ElementInterface $element)
     {
-        return $this->config->getOption('hard_break') ? "\n" : "  \n";
+        $return = $this->config->getOption('hard_break') ? "\n" : "  \n";
+
+        $next = $element->getNext();
+        if ($next) {
+            $next_value = $next->getValue();
+            if ($next_value) {
+                if (in_array(substr($next_value, 0, 2), array('- ', '* ', '+ '))) {
+                    $return .= '\\';
+                }
+            }
+        }
+
+        return $return;
     }
 
     /**
