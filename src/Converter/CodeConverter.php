@@ -43,7 +43,7 @@ class CodeConverter implements ConverterInterface
         $lines = preg_split('/\r\n|\r|\n/', $code);
         if (count($lines) > 1) {
             // Multiple lines detected, adding three backticks and newlines
-            $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
+            $markdown .= '```' . $language . "\n" . $code . "\n" . '```' . "\n\n";
         } else {
             // One line of code, wrapping it on one backtick.
             $markdown .= '`' . $language . $code . '`';
