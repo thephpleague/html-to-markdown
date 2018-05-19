@@ -4,6 +4,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.7.0] - 2018-05-19
+### Added
+ - Added `setOptions()` function for chainable calling (#149)
+ - Added new `list_item_style_alternate` option for converting every-other list with a different character (#155)
+
+### Fixed
+ - Fixed insufficient newlines after code blocks (#144, #148)
+ - Fixed trailing spaces not being preserved in link anchors (#157)
+ - Fixed list-like lines not being escaped inside of lists items (#159)
+
 ## [4.6.2]
 ### Fixed
  - Fixed issue with emphasized spaces (#146)
@@ -207,7 +217,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.6.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.7.0...master
+[4.7.0]: https://github.com/thephpleague/html-to-markdown/compare/4.6.2...4.7.0
 [4.6.2]: https://github.com/thephpleague/html-to-markdown/compare/4.6.1...4.6.2
 [4.6.1]: https://github.com/thephpleague/html-to-markdown/compare/4.6.0...4.6.1
 [4.6.0]: https://github.com/thephpleague/html-to-markdown/compare/4.5.0...4.6.0
