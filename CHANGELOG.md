@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+### Fixed
+ - Fixed single-line language code blocks being wrongly turned into language code spans (#161)
 
 ## [4.7.0] - 2018-05-19
 ### Added

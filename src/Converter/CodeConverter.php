@@ -41,7 +41,7 @@ class CodeConverter implements ConverterInterface
 
         // Checking if the code has multiple lines
         $lines = preg_split('/\r\n|\r|\n/', $code);
-        if (count($lines) > 1) {
+        if ($language || count($lines) > 1) {
             // Multiple lines detected, adding three backticks and newlines
             $markdown .= '```' . $language . "\n" . $code . "\n" . '```' . "\n\n";
         } else {
