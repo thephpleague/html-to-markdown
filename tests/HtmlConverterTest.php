@@ -59,6 +59,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<h4>Test</h4>', '#### Test');
         $this->html_gives_markdown('<h5>Test</h5>', '##### Test');
         $this->html_gives_markdown('<h6>Test</h6>', '###### Test');
+        $this->html_gives_markdown('<h1></h1>', '');
+        $this->html_gives_markdown('<h2></h2>', '');
+        $this->html_gives_markdown('<h3></h3>', '');
+        $this->html_gives_markdown('<h1># Test</h1>', "\# Test\n=======");
+        $this->html_gives_markdown('<h1># Test #</h1>', "\# Test #\n=========");
+        $this->html_gives_markdown('<h3>Mismatched Tags</h4>', '### Mismatched Tags');
     }
 
     public function test_spans()
