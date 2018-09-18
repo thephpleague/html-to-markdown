@@ -173,20 +173,20 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_preformat()
     {
-        $this->html_gives_markdown("<pre>test\ntest\r\ntest</pre>", "```\ntest" . PHP_EOL .'test'. PHP_EOL .'test'. PHP_EOL .'```');
-        $this->html_gives_markdown("<pre>test\ntest\r\ntest\n</pre>", "```\ntest" . PHP_EOL .'test'. PHP_EOL .'test'. PHP_EOL .'```');
-        $this->html_gives_markdown("<pre>test\n\ttab\r\n</pre>", "```\ntest" . PHP_EOL . "\ttab" . PHP_EOL . '```');
-        $this->html_gives_markdown('<pre>  one line with spaces  </pre>', '`  one line with spaces  `');
+        $this->html_gives_markdown("<pre>test\ntest\r\ntest</pre>", "```\ntest\ntest\ntest\n```");
+        $this->html_gives_markdown("<pre>test\ntest\r\ntest\n</pre>", "```\ntest\ntest\ntest\n```");
+        $this->html_gives_markdown("<pre>test\n\ttab\r\n</pre>", "```\ntest\n" . "\ttab\n```");
+        $this->html_gives_markdown('<pre>  one line with spaces  </pre>', "```\n  one line with spaces  \n```");
         $this->html_gives_markdown("<pre></pre>", "```\n```");
-        $this->html_gives_markdown("<pre></pre><pre></pre>", "```\n```\n```\n```");
-        $this->html_gives_markdown("<pre>\n</pre>", "```\n" . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>foo\n</pre>", "```\nfoo" . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\nfoo</pre>", "```\n" . PHP_EOL . 'foo' . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\nfoo\n</pre>", "```\n" . PHP_EOL . 'foo' . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\n\n\n</pre>", "```\n" . PHP_EOL . PHP_EOL . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>\n</pre><pre>\n</pre>", "```\n" . PHP_EOL. "```\n\n```\n" . PHP_EOL . '```');
-        $this->html_gives_markdown("<pre>one\ntwo\r\nthree</pre>\n<p>line</p>", "```\none" . PHP_EOL . 'two' . PHP_EOL . "three\n```" . PHP_EOL . PHP_EOL . "line");
+        $this->html_gives_markdown("<pre></pre><pre></pre>", "```\n```\n\n```\n```");
+        $this->html_gives_markdown("<pre>\n</pre>", "```\n\n```");
+        $this->html_gives_markdown("<pre>foo\n</pre>", "```\nfoo\n```");
+        $this->html_gives_markdown("<pre>\nfoo</pre>", "```\n\nfoo\n```");
+        $this->html_gives_markdown("<pre>\nfoo\n</pre>", "```\n\nfoo\n```");
+        $this->html_gives_markdown("<pre>\n\n</pre>", "```\n\n\n```");
+        $this->html_gives_markdown("<pre>\n\n\n</pre>", "```\n\n\n\n```");
+        $this->html_gives_markdown("<pre>\n</pre><pre>\n</pre>", "```\n\n```\n\n```\n\n```");
+        $this->html_gives_markdown("<pre>one\ntwo\r\nthree</pre>\n<p>line</p>", "```\none\ntwo\nthree\n```\n\nline");
     }
 
     public function test_blockquotes()

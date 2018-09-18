@@ -37,17 +37,17 @@ class PreformattedConverter implements ConverterInterface
         }
 
         // Normalizing new lines
-        $pre_content = preg_replace('/\r\n|\r|\n/', PHP_EOL, $pre_content);
 
         // Is it a single line?
         if (strpos($pre_content, PHP_EOL) === false) {
             // One line of code, wrapping it on one backtick.
             return '`' . $pre_content . '`';
         }
+        $pre_content = preg_replace('/\r\n|\r|\n/', "\n", $pre_content);
 
         // Ensure there's a newline at the end
-        if (strrpos($pre_content, PHP_EOL) !== strlen($pre_content) - 1) {
-            $pre_content .= PHP_EOL;
+        if (strrpos($pre_content, "\n") !== strlen($pre_content) - strlen("\n")) {
+            $pre_content .= "\n";
         }
 
         // Use three backticks
