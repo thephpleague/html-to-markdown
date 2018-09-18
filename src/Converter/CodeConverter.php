@@ -39,7 +39,7 @@ class CodeConverter implements ConverterInterface
         $code = str_replace('</code>', '', $code);
 
         // Checking if it's a code block or span
-        if ($element->getParent()->getTagName() == 'pre') {
+        if ($this->shouldBeBlock($element, $code)) {
             // Code block detected, newlines will be added in parent
             $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
         } else {
@@ -56,5 +56,24 @@ class CodeConverter implements ConverterInterface
     public function getSupportedTags()
     {
         return array('code');
+    }
+
+    /**
+     * @param ElementInterface $element
+     * @param string $code
+     *
+     * @return bool
+     */
+    private function shouldBeBlock(ElementInterface $element, $code)
+    {
+        if ($element->getParent()->getTagName() == 'pre') {
+            return true;
+        }
+
+        if (preg_match('/[^\s]` `/', $code)) {
+            return true;
+        }
+
+        return false;
     }
 }

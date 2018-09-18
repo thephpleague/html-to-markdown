@@ -167,6 +167,10 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
         $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "`<p>Some sample HTML</p><p>And another line</p>`");
+        $this->html_gives_markdown('<code>`</code>', '```');
+        $this->html_gives_markdown('<code>test</code>', '`test`');
+        $this->html_gives_markdown('<code>test `` test</code>', '`test `` test`');
+        $this->html_gives_markdown('<code>test` `test</code>', "```\ntest` `test\n```");
         $this->html_gives_markdown("<p><code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code></p><p>Paragraph after code.</p>", "`<p>Some sample HTML</p><p>And another line</p>`\n\nParagraph after code.");
         $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`");
         $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`");
