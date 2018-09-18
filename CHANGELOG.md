@@ -7,7 +7,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - The `italic_style` option now defaults to `'*'` so that in-word emphasis is handled properly (#75)
 
 ### Fixed
- - Fixed single-line language code blocks being wrongly turned into language code spans (#161)
+ - Fixed several issues of `<code>` and `<pre>` tags not converting to blocks or inlines properly (#26, #70, #102, #140, #161, #162)
  - Fixed in-word emphasis using underscores as delimiter (#75)
 
 ### Deprecated
