@@ -38,7 +38,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("<p>test\nanother line</p>", 'test another line');
         $this->html_gives_markdown("<p>test<br>\nanother line</p>", "test  \nanother line");
         $this->html_gives_markdown("<p>test<br>\n another line</p>", "test  \n another line");
-        $this->html_gives_markdown("<p>test<br>\n<em>another</em> line</p>", "test  \n_another_ line");
+        $this->html_gives_markdown("<p>test<br>\n<em>another</em> line</p>", "test  \n*another* line");
         $this->html_gives_markdown('<p>test<br>another line</p>', "test  \nanother line");
         $this->html_gives_markdown('<p>test<br/>another line</p>', "test  \nanother line");
         $this->html_gives_markdown('<p>test<br />another line</p>', "test  \nanother line");
@@ -63,8 +63,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_spans()
     {
-        $this->html_gives_markdown('<em>Test</em>', '_Test_');
-        $this->html_gives_markdown('<i>Test</i>', '_Test_');
+        $this->html_gives_markdown('<em>Test</em>', '*Test*');
+        $this->html_gives_markdown('<i>Test</i>', '*Test*');
         $this->html_gives_markdown('<strong>Test</strong>', '**Test**');
         $this->html_gives_markdown('<b>Test</b>', '**Test**');
         $this->html_gives_markdown('<em>Test</em>', '*Test*', array('italic_style' => '*'));
@@ -73,10 +73,10 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<strong>Test</strong>', '__Test__', array('bold_style' => '__'));
         $this->html_gives_markdown('<b>Test</b>', '__Test__', array('bold_style' => '__'));
         $this->html_gives_markdown('<span>Test</span>', '<span>Test</span>');
-        $this->html_gives_markdown('<b>Bold</b> <i>Italic</i>', '**Bold** _Italic_');
-        $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold**_Italic_');
-        $this->html_gives_markdown('<em>This is <strong>a test</strong></em>', '_This is **a test**_');
-        $this->html_gives_markdown('<em>This is </em><strong>a </strong>test', '_This is_ **a** test');
+        $this->html_gives_markdown('<b>Bold</b> <i>Italic</i>', '**Bold** *Italic*');
+        $this->html_gives_markdown('<b>Bold</b><i>Italic</i>', '**Bold***Italic*');
+        $this->html_gives_markdown('<em>This is <strong>a test</strong></em>', '*This is **a test***');
+        $this->html_gives_markdown('<em>This is </em><strong>a </strong>test', '*This is* **a** test');
         $this->html_gives_markdown('Emphasis with no<em> </em>text<strong> preserves</strong> spaces.', 'Emphasis with no text **preserves** spaces.');
         $this->html_gives_markdown("Emphasis discards<em> \n</em>line breaks", "Emphasis discards line breaks");
         $this->html_gives_markdown("Emphasis preserves<em><br/></em>HTML breaks", "Emphasis preserves  \nHTML breaks");
@@ -199,7 +199,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_malformed_html()
     {
         $this->html_gives_markdown('<code><p>Some sample HTML</p></code>', '`<p>Some sample HTML</p>`'); // Invalid HTML, but should still work
-        $this->html_gives_markdown('<strong><em>Strong italic</strong> Regular text', '**_Strong italic_** Regular text'); // Missing closing </em>
+        $this->html_gives_markdown('<strong><em>Strong italic</strong> Regular text', '***Strong italic*** Regular text'); // Missing closing </em>
     }
 
     public function test_html5_tags_are_preserved()
