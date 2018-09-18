@@ -3,12 +3,20 @@ All notable changes to this project will be documented in this file.
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
 ## [Unreleased][unreleased]
+
+## [4.8.0] - 2018-09-18
+### Added
+ - Added support for email auto-linking
+ - Added additional test cases (#14)
+
 ### Changed
  - The `italic_style` option now defaults to `'*'` so that in-word emphasis is handled properly (#75)
 
 ### Fixed
  - Fixed several issues of `<code>` and `<pre>` tags not converting to blocks or inlines properly (#26, #70, #102, #140, #161, #162)
  - Fixed in-word emphasis using underscores as delimiter (#75)
+ - Fixed character escaping inside of `<div>` elements
+ - Fixed header edge cases
 
 ### Deprecated
  - The `bold_style` and `italic_style` options have been deprecated (#75)
@@ -226,7 +234,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.7.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.8.0...master
+[4.8.0]: https://github.com/thephpleague/html-to-markdown/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/thephpleague/html-to-markdown/compare/4.6.2...4.7.0
 [4.6.2]: https://github.com/thephpleague/html-to-markdown/compare/4.6.1...4.6.2
 [4.6.1]: https://github.com/thephpleague/html-to-markdown/compare/4.6.0...4.6.1
