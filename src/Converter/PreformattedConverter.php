@@ -26,23 +26,17 @@ class PreformattedConverter implements ConverterInterface
         $firstBacktick = strpos(trim($pre_content), '`');
         $lastBacktick = strrpos(trim($pre_content), '`');
         if ($firstBacktick === 0 && $lastBacktick === strlen(trim($pre_content)) - 1) {
-            return $pre_content;
+            return $pre_content . "\n\n";
         }
 
         // If the execution reaches this point it means it's just a pre tag, with no code tag nested
 
         // Empty lines are a special case
         if ($pre_content === '') {
-            return "```\n```\n";
+            return "```\n```\n\n";
         }
 
         // Normalizing new lines
-
-        // Is it a single line?
-        if (strpos($pre_content, PHP_EOL) === false) {
-            // One line of code, wrapping it on one backtick.
-            return '`' . $pre_content . '`';
-        }
         $pre_content = preg_replace('/\r\n|\r|\n/', "\n", $pre_content);
 
         // Ensure there's a newline at the end

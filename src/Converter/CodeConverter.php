@@ -13,7 +13,7 @@ class CodeConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        $language = null;
+        $language = '';
 
         // Checking for language class on the code block
         $classes = $element->getAttribute('class');
@@ -24,8 +24,7 @@ class CodeConverter implements ConverterInterface
             foreach ($classes as $class) {
                 if (strpos($class, 'language-') !== false) {
                     // Found one, save it as the selected language and stop looping over the classes.
-                    // The space after the language avoids gluing the actual code with the language tag
-                    $language = str_replace('language-', '', $class) . ' ';
+                    $language = str_replace('language-', '', $class);
                     break;
                 }
             }
@@ -39,14 +38,13 @@ class CodeConverter implements ConverterInterface
         $code = preg_replace('/<code\b[^>]*>/', '', $code);
         $code = str_replace('</code>', '', $code);
 
-        // Checking if the code has multiple lines
-        $lines = preg_split('/\r\n|\r|\n/', $code);
-        if ($language || count($lines) > 1) {
-            // Multiple lines detected, adding three backticks and newlines
-            $markdown .= '```' . $language . "\n" . $code . "\n" . '```' . "\n\n";
+        // Checking if it's a code block or span
+        if ($element->getParent()->getTagName() == 'pre') {
+            // Code block detected, newlines will be added in parent
+            $markdown .= '```' . $language . "\n" . $code . "\n" . '```';
         } else {
-            // One line of code, wrapping it on one backtick.
-            $markdown .= '`' . $language . $code . '`';
+            // One line of code, wrapping it on one backtick, removing new lines
+            $markdown .= '`' . preg_replace('/\r\n|\r|\n/', '', $code) . '`';
         }
 
         return $markdown;

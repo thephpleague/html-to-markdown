@@ -160,15 +160,15 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_code_samples()
     {
         $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
-        $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "```\n\n<p>Some sample HTML</p>\n<p>And another line</p>\n\n```");
-        $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code><p>Paragraph after code.</p>", "```\n\n<p>Some sample HTML</p>\n<p>And another line</p>\n\n```\n\nParagraph after code.");
-        $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
-        $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "```\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n\n```");
-        $this->html_gives_markdown('<pre><code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code></pre>', '`<p>Some sample HTML</p>`');
-        $this->html_gives_markdown('<pre><code class="language-php">&lt;?php //Some php code ?&gt;</code></pre>', "```php \n<?php //Some php code ?>\n```");
-        $this->html_gives_markdown("<pre><code class=\"language-php\">&lt;?php //Some multiline php code\n\$myVar = 2; ?&gt;</code></pre>", "```php \n<?php //Some multiline php code\n\$myVar = 2; ?>\n```");
+        $this->html_gives_markdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", "`<p>Some sample HTML</p><p>And another line</p>`");
+        $this->html_gives_markdown("<p><code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code></p><p>Paragraph after code.</p>", "`<p>Some sample HTML</p><p>And another line</p>`\n\nParagraph after code.");
+        $this->html_gives_markdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`");
+        $this->html_gives_markdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", "`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`");
+        $this->html_gives_markdown('<pre><code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code></pre>', "```\n<p>Some sample HTML</p>\n```");
+        $this->html_gives_markdown('<pre><code class="language-php">&lt;?php //Some php code ?&gt;</code></pre>', "```php\n<?php //Some php code ?>\n```");
+        $this->html_gives_markdown("<pre><code class=\"language-php\">&lt;?php //Some multiline php code\n\$myVar = 2; ?&gt;</code></pre>", "```php\n<?php //Some multiline php code\n\$myVar = 2; ?>\n```");
         $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```");
-        $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>\n<p>line</p>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```" . PHP_EOL . PHP_EOL . "line");
+        $this->html_gives_markdown("<pre><code>&lt;p&gt;Multiline HTML&lt;/p&gt;\n&lt;p&gt;Here's the second line&lt;/p&gt;</code></pre>\n<p>line</p>", "```\n<p>Multiline HTML</p>\n<p>Here's the second line</p>\n```\n\nline");
     }
 
     public function test_preformat()
@@ -265,7 +265,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function test_sanitization()
     {
         $html = '<pre><code>&lt;script type = "text/javascript"&gt; function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } &lt;/head&gt; &lt;body&gt;</code></pre>';
-        $markdown = '`<script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>`';
+        $markdown = '```' . "\n" . '<script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>' . "\n```";
         $this->html_gives_markdown($html, $markdown);
         $this->html_gives_markdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '\> > Look at me! < <');
         $this->html_gives_markdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "\\> > **Look** at me! < <  \n\\> Just look at me!");
