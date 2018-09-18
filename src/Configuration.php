@@ -12,6 +12,8 @@ class Configuration
     public function __construct(array $config = array())
     {
         $this->config = $config;
+
+        $this->checkForDeprecatedOptions($config);
     }
 
     /**
@@ -19,6 +21,7 @@ class Configuration
      */
     public function merge(array $config = array())
     {
+        $this->checkForDeprecatedOptions($config);
         $this->config = array_replace_recursive($this->config, $config);
     }
 
@@ -27,6 +30,7 @@ class Configuration
      */
     public function replace(array $config = array())
     {
+        $this->checkForDeprecatedOptions($config);
         $this->config = $config;
     }
 
@@ -36,6 +40,7 @@ class Configuration
      */
     public function setOption($key, $value)
     {
+        $this->checkForDeprecatedOptions(array($key => $value));
         $this->config[$key] = $value;
     }
 
@@ -56,5 +61,16 @@ class Configuration
         }
 
         return $this->config[$key];
+    }
+
+    private function checkForDeprecatedOptions(array $config)
+    {
+        foreach ($config as $key => $value) {
+            if ($key === 'bold_style' && $value !== '**') {
+                @trigger_error('Customizing the bold_style option is deprecated and may be removed in the next major version', E_USER_DEPRECATED);
+            } elseif ($key === 'italic_style' && $value !== '*') {
+                @trigger_error('Customizing the italic_style option is deprecated and may be removed in the next major version', E_USER_DEPRECATED);
+            }
+        }
     }
 }

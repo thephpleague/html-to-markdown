@@ -10,6 +10,9 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
  - Fixed single-line language code blocks being wrongly turned into language code spans (#161)
  - Fixed in-word emphasis using underscores as delimiter (#75)
 
+### Deprecated
+ - The `bold_style` and `italic_style` options have been deprecated (#75)
+
 ## [4.7.0] - 2018-05-19
 ### Added
  - Added `setOptions()` function for chainable calling (#149)
