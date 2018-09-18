@@ -30,6 +30,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>_test_</p>', '\\_test\\_'); // \_test\_
         $this->html_gives_markdown('<p>\\*test\\*</p>', '\\\\\\*test\\\\\\*'); // \\\*test\\\*
         $this->html_gives_markdown('<p>test[test]</p>', 'test\\[test\\]'); // test\[test\]
+
+        // Markdown-like syntax in <div> text should be preserved as-is - no escaping
+        $this->html_gives_markdown('<div>_test_</div>', '<div>_test_</div>');
+        $this->html_gives_markdown('<div>*test*</div>', '<div>*test*</div>');
+
+        $this->html_gives_markdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) > > # + - . !');
     }
 
     public function test_line_breaks()
