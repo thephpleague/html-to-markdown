@@ -14,7 +14,7 @@ namespace League\HTMLToMarkdown;
  *
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  */
-class HtmlConverter
+class HtmlConverter implements HtmlConverterInterface
 {
     /**
      * @var Environment

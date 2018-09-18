@@ -7,6 +7,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## [4.8.0] - 2018-09-18
 ### Added
  - Added support for email auto-linking
+ - Added a new interface (`HtmlConverterInterface`) for the main `HtmlConverter` class
  - Added additional test cases (#14)
 
 ### Changed
