@@ -124,6 +124,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="google.com">google.com</a>', '[google.com](google.com)');
         $this->html_gives_markdown('<a href="https://www.google.com">https://www.google.com</a>', '<https://www.google.com>');
         $this->html_gives_markdown('<a href="ftp://files.example.com">ftp://files.example.com</a>', '<ftp://files.example.com>');
+        $this->html_gives_markdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
+        $this->html_gives_markdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
     }
 
     public function test_horizontal_rule()
