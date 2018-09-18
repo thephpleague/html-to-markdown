@@ -13,8 +13,6 @@ class PreformattedConverter implements ConverterInterface
      */
     public function convert(ElementInterface $element)
     {
-        $markdown = '';
-
         $pre_content = html_entity_decode($element->getChildrenAsString());
         $pre_content = str_replace(array('<pre>', '</pre>'), '', $pre_content);
 
