@@ -53,6 +53,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>test<br/>another line</p>', "test\nanother line", array('hard_break' => true));
         $this->html_gives_markdown('<p>test<br />another line</p>', "test\nanother line", array('hard_break' => true));
         $this->html_gives_markdown('<p>test<br  />another line</p>', "test\nanother line", array('hard_break' => true));
+        $this->html_gives_markdown('<p>foo</p><table><tr><td>bar</td></tr></table><p>baz</p>', "foo\n\n<table><tr><td>bar</td></tr></table>\n\nbaz");
     }
 
     public function test_headers()
