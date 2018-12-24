@@ -35,7 +35,10 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
             $next_value = $next->getValue();
             if ($next_value) {
                 if (in_array(substr($next_value, 0, 2), array('- ', '* ', '+ '))) {
-                    $return .= '\\';
+                    $parent = $element->getParent();
+                    if ($parent && $parent->getTagName() == 'li') {
+                        $return .= '\\';
+                    }
                 }
             }
         }
