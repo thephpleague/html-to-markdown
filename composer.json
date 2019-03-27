@@ -1,5 +1,5 @@
 {
-    "name": "spresnac/html-to-markdown",
+    "name": "league/html-to-markdown",
     "type": "library",
     "description": "An HTML-to-markdown conversion helper for PHP",
     "keywords": ["markdown", "html"],
@@ -17,12 +17,6 @@
             "email": "nick@cern.is",
             "homepage": "http://modernnerd.net",
             "role": "Original Author"
-        },
-        {
-            "name": "Sascha Presnac",
-            "email": "presnac@gmail.com",
-            "homepage": "https://codemercenary.de",
-            "role": "Some-fixes-dude"
         }
     ],
     "autoload": {
