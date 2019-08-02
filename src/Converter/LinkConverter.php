@@ -24,6 +24,9 @@ class LinkConverter implements ConverterInterface
         } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text)) {
             $markdown = '<' . $text . '>';
         } else {
+            if (stristr($href, ' ')) {
+                $href = '<'.$href.'>';
+            }
             $markdown = '[' . $text . '](' . $href . ')';
         }
 
