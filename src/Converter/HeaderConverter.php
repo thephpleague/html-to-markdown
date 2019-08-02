@@ -35,7 +35,7 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
         $style = $this->config->getOption('header_style', self::STYLE_SETEXT);
 
         if (strlen($element->getValue()) === 0) {
-            return '';
+            return "\n";
         }
 
         if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
