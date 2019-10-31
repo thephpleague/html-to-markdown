@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.8.3] - 2019-10-31
+### Fixed
+ - Fixed whitespace preservation around `<code>` tags (#174, #178)
+
 ## [4.8.2] - 2019-08-02
 ### Fixed
  - Fixed headers not being placed onto a new line in some cases (#172)
@@ -251,7 +255,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.8.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.8.3...master
+[4.8.3]: https://github.com/thephpleague/html-to-markdown/compare/4.8.2...4.8.3
 [4.8.2]: https://github.com/thephpleague/html-to-markdown/compare/4.8.1...4.8.2
 [4.8.1]: https://github.com/thephpleague/html-to-markdown/compare/4.8.0...4.8.1
 [4.8.0]: https://github.com/thephpleague/html-to-markdown/compare/4.7.0...4.8.0
