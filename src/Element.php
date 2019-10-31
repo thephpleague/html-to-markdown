@@ -27,7 +27,6 @@ class Element implements ElementInterface
         switch ($this->getTagName()) {
             case 'blockquote':
             case 'body':
-            case 'code':
             case 'div':
             case 'h1':
             case 'h2':

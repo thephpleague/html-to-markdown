@@ -237,6 +237,11 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test', array('strip_tags' => true));
     }
 
+    public function test_preserve_whitespace()
+    {
+        $this->html_gives_markdown('<a href="google.com">google.com</a> <code>test</code>', '[google.com](google.com) `test`');
+    }
+
     public function test_delete_blank_p()
     {
         $this->html_gives_markdown('<p></p>', '');
