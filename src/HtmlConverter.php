@@ -40,6 +40,7 @@ class HtmlConverter implements HtmlConverterInterface
                 'remove_nodes' => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
                 'hard_break' => false, // Set to true to turn <br> into `\n` instead of `  \n`
                 'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
+                'preserve_comments' => false, // Set to true to preserve comments, or set to an array of strings to preserve specific comments
             );
 
             $this->environment = Environment::createDefaultEnvironment($defaults);
@@ -229,13 +230,13 @@ class HtmlConverter implements HtmlConverterInterface
 
         return trim($markdown, "\n\r\0\x0B");
     }
-    
+
     /**
      * Pass a series of key-value pairs in an array; these will be passed
      * through the config and set.
      * The advantage of this is that it can allow for static use (IE in Laravel).
      * An example being:
-     * 
+     *
      * HtmlConverter::setOptions(['strip_tags' => true])->convert('<h1>test</h1>');
      */
     public function setOptions(array $options)
