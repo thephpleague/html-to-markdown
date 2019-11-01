@@ -28,7 +28,7 @@ Typically you would convert HTML to Markdown if:
 
 1. You have an existing HTML document that needs to be edited by people with good taste.
 2. You want to store new content in HTML format but edit it as Markdown.
-3. You want to convert HTML email to plain text email. 
+3. You want to convert HTML email to plain text email.
 4. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
 5. You just really like Markdown.
 
@@ -93,6 +93,24 @@ $converter = new HtmlConverter(array('remove_nodes' => 'span div'));
 
 $html = '<span>Turnips!</span><div>Monkeys!</div>';
 $markdown = $converter->convert($html); // $markdown now contains ""
+```
+
+By default, all comments are stripped from the content. To preserve them, use the `preserve_comments` option, like this:
+
+```php
+$converter = new HtmlConverter(array('preserve_comments' => true));
+
+$html = '<span>Turnips!</span><!-- Monkeys! -->';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!<!-- Monkeys! -->"
+```
+
+To preserve only specific comments, set `preserve_comments` with an array of strings, like this:
+
+```php
+$converter = new HtmlConverter(array('preserve_comments' => array('Eggs!')));
+
+$html = '<span>Turnips!</span><!-- Monkeys! --><!-- Eggs! -->';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!<!-- Eggs! -->"
 ```
 
 ### Style options
@@ -161,7 +179,7 @@ $markdown = $converter->convert($html); // $markdown now contains "### Header" a
 
      Headers of H3 priority and lower always use atx style.
 
-- Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used. 
+- Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used.
 - Blockquotes aren't line wrapped – it makes the converted Markdown easier to edit.
 
 ### Dependencies
@@ -193,4 +211,3 @@ Use one of these great libraries:
  - [Parsedown](https://github.com/erusev/parsedown)
 
 No guarantees about the Elvish, though.
-
