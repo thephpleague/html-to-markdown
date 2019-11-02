@@ -237,6 +237,13 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', 'Test', array('strip_tags' => true));
     }
 
+    public function test_preserve_comments()
+    {
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment -->', "Test\n\n<!-- Test comment -->", array('preserve_comments' => true));
+        $this->html_gives_markdown('<p>Test</p><!-- more -->', "Test\n\n<!-- more -->", array('preserve_comments' => array('more')));
+        $this->html_gives_markdown('<p>Test</p><!-- Test comment --><!-- more -->', "Test\n\n<!-- more -->", array('preserve_comments' => array('more')));
+    }
+
     public function test_preserve_whitespace()
     {
         $this->html_gives_markdown('<a href="google.com">google.com</a> <code>test</code>', '[google.com](google.com) `test`');
