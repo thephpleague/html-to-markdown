@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.9.0] - 2019-11-02
+## Added
+ - Added new option to preserve comments (#177, #179)
+
 ## [4.8.3] - 2019-10-31
 ### Fixed
  - Fixed whitespace preservation around `<code>` tags (#174, #178)
@@ -255,7 +259,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.8.3...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.9.0...master
+[4.9.0]: https://github.com/thephpleague/html-to-markdown/compare/4.8.3...4.9.0
 [4.8.3]: https://github.com/thephpleague/html-to-markdown/compare/4.8.2...4.8.3
 [4.8.2]: https://github.com/thephpleague/html-to-markdown/compare/4.8.1...4.8.2
 [4.8.1]: https://github.com/thephpleague/html-to-markdown/compare/4.8.0...4.8.1
