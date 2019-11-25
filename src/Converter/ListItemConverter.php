@@ -39,7 +39,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel($element);
 
-        $prefixForParagraph = str_repeat('  ', $level + 1);
+        $prefixForParagraph = str_repeat("\t", $level + 1);
         $value = trim(implode("\n" . $prefixForParagraph, explode("\n", trim($element->getValue()))));
 
         // If list item is the first in a nested list, add a newline before it
