@@ -1,11 +1,14 @@
 language: php
 
+dist: bionic
+
 php:
   - "5.6"
   - "7.0"
   - "7.1"
   - "7.2"
   - "7.3"
+  - "7.4"
 
 matrix:
   include:
@@ -16,12 +19,10 @@ matrix:
     - php: 5.5
       dist: trusty
 
-sudo: false
-
 install: travis_retry composer install --no-interaction --prefer-source
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
-  - if [ "$TRAVIS_PHP_VERSION" != "7.0" ]; then vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover; fi
+  - vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
