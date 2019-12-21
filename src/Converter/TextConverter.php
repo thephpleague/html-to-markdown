@@ -35,7 +35,7 @@ class TextConverter implements ConverterInterface
             }
         }
 
-        return $markdown;
+        return htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
     }
 
     /**
