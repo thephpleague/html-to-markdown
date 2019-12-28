@@ -35,7 +35,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<div>_test_</div>', '<div>_test_</div>');
         $this->html_gives_markdown('<div>*test*</div>', '<div>*test*</div>');
 
-        $this->html_gives_markdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) > > # + - . !');
+        $this->html_gives_markdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
     }
 
     public function test_line_breaks()
@@ -271,7 +271,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function test_html_entities()
     {
-        $this->html_gives_markdown('<p>&amp;euro;</p>', '&euro;');
+        $this->html_gives_markdown('<p>&amp;euro;</p>', '&amp;euro;');
         $this->html_gives_markdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
     }
 
@@ -298,14 +298,14 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<pre><code>&lt;script type = "text/javascript"&gt; function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } &lt;/head&gt; &lt;body&gt;</code></pre>';
         $markdown = '```' . "\n" . '<script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>' . "\n```";
         $this->html_gives_markdown($html, $markdown);
-        $this->html_gives_markdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '\> > Look at me! < <');
-        $this->html_gives_markdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "\\> > **Look** at me! < <  \n\\> Just look at me!");
+        $this->html_gives_markdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '&gt; &gt; Look at me! &lt; &lt;');
+        $this->html_gives_markdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "&gt; &gt; **Look** at me! &lt; &lt;  \n&gt; Just look at me!");
         $this->html_gives_markdown('<p>Foo<br>--<br>Bar<br>Foo--</p>', "Foo  \n\\--  \nBar  \nFoo--");
         $this->html_gives_markdown('<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n  \\- Bar");
         $this->html_gives_markdown('Foo<br />* Bar', "Foo  \n\\* Bar");
         $this->html_gives_markdown("<p>123456789) Foo and 1234567890) Bar!</p>\n<p>1. Platz in 'Das große Backen'</p>", "123456789\\) Foo and 1234567890) Bar!\n\n1\\. Platz in 'Das große Backen'");
         $this->html_gives_markdown("<p>\n+ Siri works well for TV and movies<br>\n- No 4K support\n</p>", "\+ Siri works well for TV and movies  \n\- No 4K support");
-        $this->html_gives_markdown('<p>You forgot the &lt;!--more--&gt; tag!</p>', 'You forgot the \<!--more--> tag!');
+        $this->html_gives_markdown('<p>You forgot the &lt;!--more--&gt; tag!</p>', 'You forgot the &lt;!--more--&gt; tag!');
     }
 
     public function test_instatiation_with_environment()
