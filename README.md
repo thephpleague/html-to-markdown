@@ -141,6 +141,21 @@ $converter->getConfig()->setOption('hard_break', false); // default
 $markdown = $converter->convert($html); // $markdown now contains "test  \nline break"
 ```
 
+### Autolinking options
+
+By default, `a` tags are converted to the easiest possible link syntax, i.e. if no text or title is available, then the `<url>` syntax will be used rather than the full `[url](url)` syntax. Set `use_autolinks` to `false` to change this behavior to always use the full link syntax.
+
+```php
+$converter = new HtmlConverter();
+$html = '<p><a href="https://thephpleague.com">https://thephpleague.com</a></p>';
+
+$converter->getConfig()->setOption('use_autolinks', true);
+$markdown = $converter->convert($html); // $markdown now contains "<https://thephpleague.com>"
+
+$converter->getConfig()->setOption('use_autolinks', false); // default
+$markdown = $converter->convert($html); // $markdown now contains "[https://google.com](https://google.com)"
+```
+
 ### Passing custom Environment object
 
 You can pass current `Environment` object to customize i.e. which converters should be used.
