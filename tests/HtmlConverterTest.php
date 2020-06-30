@@ -133,6 +133,16 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="ftp://files.example.com">ftp://files.example.com</a>', '<ftp://files.example.com>');
         $this->html_gives_markdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
         $this->html_gives_markdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
+
+        // Autolinking can be toggled off
+        $markdown = new HtmlConverter();
+        $markdown->getConfig()->setOption('use_autolinks', false);
+        $result = $markdown('<a href="https://www.google.com">https://www.google.com</a>');
+        $this->assertEquals('[https://www.google.com](https://www.google.com)', $result);
+        $result = $markdown('<a href="https://www.google.com">Google</a>');
+        $this->assertEquals('[Google](https://www.google.com)', $result);
+        $result = $markdown('<a href="google.com">google.com</a>');
+        $this->assertEquals('[google.com](google.com)', $result);
     }
 
     public function test_horizontal_rule()
