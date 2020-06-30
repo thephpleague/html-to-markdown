@@ -41,6 +41,7 @@ class HtmlConverter implements HtmlConverterInterface
                 'hard_break' => false, // Set to true to turn <br> into `\n` instead of `  \n`
                 'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
                 'preserve_comments' => false, // Set to true to preserve comments, or set to an array of strings to preserve specific comments
+                'use_autolinks' => true, // Set to true to use simple link syntax if possible. Will always use []() if set to false
             );
 
             $this->environment = Environment::createDefaultEnvironment($defaults);
