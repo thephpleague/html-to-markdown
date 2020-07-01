@@ -2,10 +2,24 @@
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Configuration;
+use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class LinkConverter implements ConverterInterface
+class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 {
+    /**
+     * @var Configuration
+     */
+    protected $config;
+
+    /**
+     * @param Configuration $config
+     */
+    public function setConfig(Configuration $config) {
+        $this->config = $config;
+    }
+
     /**
      * @param ElementInterface $element
      *
@@ -52,7 +66,8 @@ class LinkConverter implements ConverterInterface
      */
     private function isValidAutolink($href)
     {
-        return preg_match('/^[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*/i', $href) === 1;
+        $useAutolinks = $this->config->getOption('use_autolinks');
+        return $useAutolinks && (preg_match('/^[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*/i', $href) === 1);
     }
 
     /**
