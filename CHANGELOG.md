@@ -4,6 +4,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [4.10.0] - 2020-06-30
+### Added
+
+ - Added the ability to disable autolinking with a configuration option (#187, #188)
+
 ## [4.9.1] - 2019-12-27
 ### Fixed
  - Fixed issue with HTML entity escaping in text (#184)
@@ -263,7 +268,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...master
+[4.10.0]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...4.10.0
 [4.9.1]: https://github.com/thephpleague/html-to-markdown/compare/4.9.0...4.9.1
 [4.9.0]: https://github.com/thephpleague/html-to-markdown/compare/4.8.3...4.9.0
 [4.8.3]: https://github.com/thephpleague/html-to-markdown/compare/4.8.2...4.8.3
