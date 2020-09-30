@@ -2,6 +2,7 @@
 
 namespace League\HTMLToMarkdown;
 
+//This is a class named configuration
 class Configuration
 {
     protected $config;
@@ -9,6 +10,8 @@ class Configuration
     /**
      * @param array $config
      */
+    
+    //constructor 
     public function __construct(array $config = array())
     {
         $this->config = $config;
@@ -65,6 +68,7 @@ class Configuration
 
     private function checkForDeprecatedOptions(array $config)
     {
+        //for each loop
         foreach ($config as $key => $value) {
             if ($key === 'bold_style' && $value !== '**') {
                 @trigger_error('Customizing the bold_style option is deprecated and may be removed in the next major version', E_USER_DEPRECATED);
