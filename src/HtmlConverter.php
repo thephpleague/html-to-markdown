@@ -35,6 +35,7 @@ class HtmlConverter implements HtmlConverterInterface
                 'header_style' => 'setext', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
                 'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
                 'strip_tags' => false, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+                'strip_placeholder_links' => false, // Set to true to remove <a> that doesn't have href.
                 'bold_style' => '**', // DEPRECATED: Set to '__' if you prefer the underlined style
                 'italic_style' => '*', // DEPRECATED: Set to '_' if you prefer the underlined style
                 'remove_nodes' => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'

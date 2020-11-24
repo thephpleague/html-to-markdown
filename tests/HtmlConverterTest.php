@@ -126,6 +126,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<a href="#nerd" title="Title">Test</a>', '[Test](#nerd "Title")');
         $this->html_gives_markdown('<a href="#nerd">Test</a>', '[Test](#nerd)');
 
+        // Strip placeholder links
+        $this->html_gives_markdown('<a>Test</a>', 'Test', array('strip_placeholder_links' => true));
+        $this->html_gives_markdown('<a href="">Test</a>', 'Test', array('strip_placeholder_links' => true));
+        $this->html_gives_markdown('<a href="#nerd" title="Title">Test</a>', '[Test](#nerd "Title")', array('strip_placeholder_links' => true));
+        $this->html_gives_markdown('<a href="#nerd">Test</a>', '[Test](#nerd)', array('strip_placeholder_links' => true));
+
         // Autolinking
         $this->html_gives_markdown('<a href="test">test</a>', '[test](test)');
         $this->html_gives_markdown('<a href="google.com">google.com</a>', '[google.com](google.com)');
