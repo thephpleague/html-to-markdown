@@ -174,6 +174,21 @@ $html = '<h3>Header</h3>
 $markdown = $converter->convert($html); // $markdown now contains "### Header" and "<img src="" />"
 ```
 
+### Table support
+
+Support for Markdown tables is not enabled by default because it is not part of the original Markdown syntax. To use tables add the converter explicitly:
+
+```php
+use League\HTMLToMarkdown\HtmlConverter;
+use League\HTMLToMarkdown\Converter\TableConverter;
+
+$converter = new HtmlConverter();
+$converter->getEnvironment()->addConverter(new TableConverter());
+
+$html = "<table><tr><th>A</th></tr><tr><td>a</td></tr></table>";
+$markdown = $converter->convert($html);
+```
+
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.

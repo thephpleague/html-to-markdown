@@ -2,6 +2,8 @@
 
 namespace League\HTMLToMarkdown;
 
+use League\HTMLToMarkdown\Converter\PreConverterInterface;
+
 /**
  * Class HtmlConverter
  *
@@ -42,6 +44,8 @@ class HtmlConverter implements HtmlConverterInterface
                 'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
                 'preserve_comments' => false, // Set to true to preserve comments, or set to an array of strings to preserve specific comments
                 'use_autolinks' => true, // Set to true to use simple link syntax if possible. Will always use []() if set to false
+                'table_pipe_escape' => '\|', // Replacement string for pipe characters inside markdown table cells
+                'table_caption_side' => 'top', // Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
             );
 
             $this->environment = Environment::createDefaultEnvironment($defaults);
@@ -154,6 +158,12 @@ class HtmlConverter implements HtmlConverterInterface
         // except if the current node is a code tag, which needs to be converted by the CodeConverter.
         if ($element->isDescendantOf(array('pre', 'code')) && $element->getTagName() !== 'code') {
             return;
+        }
+
+        // Give converter a chance to inspect/modify the DOM before children are converted
+        $converter = $this->environment->getConverterByTag($element->getTagName());
+        if ($converter instanceof PreConverterInterface) {
+            $converter->preConvert($element);
         }
 
         // If the node has children, convert those to Markdown first

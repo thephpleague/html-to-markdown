@@ -18,3 +18,13 @@ interface ConverterInterface
      */
     public function getSupportedTags();
 }
+
+interface PreConverterInterface
+{
+    /**
+     * @param ElementInterface $element
+     *
+     * @return void
+     */
+    public function preConvert(ElementInterface $element);
+}
