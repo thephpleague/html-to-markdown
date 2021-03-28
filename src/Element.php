@@ -14,9 +14,15 @@ class Element implements ElementInterface
      */
     private $nextCached;
 
+    /**
+     * @var DOMNode|null
+     */
+    private $previousSiblingCached;
+
     public function __construct(\DOMNode $node)
     {
         $this->node = $node;
+        $this->previousSiblingCached = $this->node->previousSibling;
     }
 
     /**
@@ -84,6 +90,22 @@ class Element implements ElementInterface
     public function getParent()
     {
         return new static($this->node->parentNode) ?: null;
+    }
+
+    /**
+     * @return ElementInterface|null
+     */
+    public function getNextSibling()
+    {
+        return $this->node->nextSibling !== null ? new static($this->node->nextSibling) : null;
+    }
+
+    /**
+     * @return ElementInterface|null
+     */
+    public function getPreviousSibling()
+    {
+        return $this->previousSiblingCached !== null ? new static($this->previousSiblingCached) : null;
     }
 
     /**

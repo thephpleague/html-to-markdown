@@ -14,6 +14,24 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
     protected $config;
 
     /**
+     * @param ElementInterface|null $element
+     *
+     * @return string
+     */
+    protected function getNormTag($element)
+    {
+        if ($element !== null && !$element->isText()) {
+            $tag = $element->getTagName();
+            if ($tag === 'i' || $tag === 'em') {
+                return 'em';
+            } else if ($tag === 'b' || $tag === 'strong') {
+                return 'strong';
+            }
+        }
+        return '';
+    }
+
+    /**
      * @param Configuration $config
      */
     public function setConfig(Configuration $config)
@@ -28,14 +46,14 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
      */
     public function convert(ElementInterface $element)
     {
-        $tag = $element->getTagName();
+        $tag = $this->getNormTag($element);
         $value = $element->getValue();
 
         if (!trim($value)) {
             return $value;
         }
 
-        if ($tag === 'i' || $tag === 'em') {
+        if ($tag === 'em') {
             $style = $this->config->getOption('italic_style');
         } else {
             $style = $this->config->getOption('bold_style');
@@ -44,7 +62,14 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $prefix = ltrim($value) !== $value ? ' ' : '';
         $suffix = rtrim($value) !== $value ? ' ' : '';
 
-        return $prefix . $style . trim($value) . $style . $suffix;
+        /* If this node is immediately preceded or followed by one of the same type don't emit
+         * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
+         * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
+         */
+        $pre_style = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
+        $post_style = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
+
+        return $prefix . $pre_style . trim($value) . $post_style . $suffix;
     }
 
     /**

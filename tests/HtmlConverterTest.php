@@ -99,6 +99,19 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown("Emphasis preserves<em><br/></em>HTML breaks", "Emphasis preserves  \nHTML breaks");
     }
 
+    public function test_consecutive_spans()
+    {
+        $this->html_gives_markdown('<em>Foo</em><em>Bar</em>', '*FooBar*');
+        $this->html_gives_markdown('<i>Foo</i><i>Bar</i>', '*FooBar*');
+        $this->html_gives_markdown('<em>Foo</em><i>Bar</i><em>Foo</em>', '*FooBarFoo*');
+        $this->html_gives_markdown('<strong>Foo</strong><strong>Bar</strong>', '**FooBar**');
+        $this->html_gives_markdown('<b>Foo</b><b>Bar</b>', '**FooBar**');
+        $this->html_gives_markdown('<strong>Foo</strong><b>Bar</b><strong>Foo</strong>', '**FooBarFoo**');
+        $this->html_gives_markdown('<em>Foo</em> <em>Bar</em>', '*Foo* *Bar*');
+        $this->html_gives_markdown('<strong>Foo</strong> <strong>Bar</strong>', '**Foo** **Bar**');
+        $this->html_gives_markdown('<strong>Foo</strong><b>Bar</b><em>Foo</em>', '**FooBar***Foo*');
+    }
+
     public function test_nesting()
     {
         $this->html_gives_markdown('<span><span>Test</span></span>', '<span><span>Test</span></span>');

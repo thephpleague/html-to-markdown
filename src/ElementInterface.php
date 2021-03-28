@@ -35,6 +35,16 @@ interface ElementInterface
     public function getParent();
 
     /**
+     * @return ElementInterface|null
+     */
+    public function getNextSibling();
+
+    /**
+     * @return ElementInterface|null
+     */
+    public function getPreviousSibling();
+
+    /**
      * @param string|string[] $tagNames
      *
      * @return bool
