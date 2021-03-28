@@ -1,30 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
 interface ConverterInterface
 {
-    /**
-     * @param ElementInterface $element
-     *
-     * @return string
-     */
-    public function convert(ElementInterface $element);
+    public function convert(ElementInterface $element): string;
 
     /**
      * @return string[]
      */
-    public function getSupportedTags();
-}
-
-interface PreConverterInterface
-{
-    /**
-     * @param ElementInterface $element
-     *
-     * @return void
-     */
-    public function preConvert(ElementInterface $element);
+    public function getSupportedTags(): array;
 }

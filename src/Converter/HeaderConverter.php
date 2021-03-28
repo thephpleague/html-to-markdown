@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
@@ -8,37 +10,27 @@ use League\HTMLToMarkdown\ElementInterface;
 
 class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 {
-    const STYLE_ATX = 'atx';
-    const STYLE_SETEXT = 'setext';
+    public const STYLE_ATX    = 'atx';
+    public const STYLE_SETEXT = 'setext';
 
-    /**
-     * @var Configuration
-     */
+    /** @var Configuration */
     protected $config;
 
-    /**
-     * @param Configuration $config
-     */
-    public function setConfig(Configuration $config)
+    public function setConfig(Configuration $config): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @param ElementInterface $element
-     *
-     * @return string
-     */
-    public function convert(ElementInterface $element)
+    public function convert(ElementInterface $element): string
     {
-        $level = (int) substr($element->getTagName(), 1, 1);
+        $level = (int) \substr($element->getTagName(), 1, 1);
         $style = $this->config->getOption('header_style', self::STYLE_SETEXT);
 
-        if (strlen($element->getValue()) === 0) {
+        if (\strlen($element->getValue()) === 0) {
             return "\n";
         }
 
-        if (($level === 1 || $level === 2) && !$element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
+        if (($level === 1 || $level === 2) && ! $element->isDescendantOf('blockquote') && $style === self::STYLE_SETEXT) {
             return $this->createSetextHeader($level, $element->getValue());
         }
 
@@ -48,34 +40,22 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
     /**
      * @return string[]
      */
-    public function getSupportedTags()
+    public function getSupportedTags(): array
     {
-        return array('h1', 'h2', 'h3', 'h4', 'h5', 'h6');
+        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
     }
 
-    /**
-     * @param int    $level
-     * @param string $content
-     *
-     * @return string
-     */
-    private function createSetextHeader($level, $content)
+    private function createSetextHeader(int $level, string $content): string
     {
-        $length = function_exists('mb_strlen') ? mb_strlen($content, 'utf-8') : strlen($content);
-        $underline = ($level === 1) ? '=' : '-';
+        $length    = \function_exists('mb_strlen') ? \mb_strlen($content, 'utf-8') : \strlen($content);
+        $underline = $level === 1 ? '=' : '-';
 
-        return $content . "\n" . str_repeat($underline, $length) . "\n\n";
+        return $content . "\n" . \str_repeat($underline, $length) . "\n\n";
     }
 
-    /**
-     * @param int    $level
-     * @param string $content
-     *
-     * @return string
-     */
-    private function createAtxHeader($level, $content)
+    private function createAtxHeader(int $level, string $content): string
     {
-        $prefix = str_repeat('#', $level) . ' ';
+        $prefix = \str_repeat('#', $level) . ' ';
 
         return $prefix . $content . "\n\n";
     }

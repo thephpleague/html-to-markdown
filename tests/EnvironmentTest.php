@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Environment;
@@ -7,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
 {
-    public function test_creation()
+    public function testCreation(): void
     {
         $environment = Environment::createDefaultEnvironment();
 

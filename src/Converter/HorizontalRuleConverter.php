@@ -1,17 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
 class HorizontalRuleConverter implements ConverterInterface
 {
-    /**
-     * @param ElementInterface $element
-     *
-     * @return string
-     */
-    public function convert(ElementInterface $element)
+    public function convert(ElementInterface $element): string
     {
         return "- - - - - -\n\n";
     }
@@ -19,8 +16,8 @@ class HorizontalRuleConverter implements ConverterInterface
     /**
      * @return string[]
      */
-    public function getSupportedTags()
+    public function getSupportedTags(): array
     {
-        return array('hr');
+        return ['hr'];
     }
 }

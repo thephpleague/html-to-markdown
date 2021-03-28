@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Test;
 
-use mikehaertl\shellcommand\Command;
 use PHPUnit\Framework\TestCase;
+use mikehaertl\shellcommand\Command;
 
 class BinTest extends TestCase
 {
     /**
      * Tests the behavior of not providing any HTML input
      */
-    public function testNoArgsOrStdin()
+    public function testNoArgsOrStdin(): void
     {
         $cmd = new Command($this->getPathToCommonmark());
         $cmd->execute();
@@ -23,7 +25,7 @@ class BinTest extends TestCase
     /**
      * Tests the -h flag
      */
-    public function testHelpShortFlag()
+    public function testHelpShortFlag(): void
     {
         $cmd = new Command($this->getPathToCommonmark());
         $cmd->addArg('-h');
@@ -36,7 +38,7 @@ class BinTest extends TestCase
     /**
      * Tests the --help option
      */
-    public function testHelpOption()
+    public function testHelpOption(): void
     {
         $cmd = new Command($this->getPathToCommonmark());
         $cmd->addArg('--help');
@@ -49,7 +51,7 @@ class BinTest extends TestCase
     /**
      * Tests the behavior of using unknown options
      */
-    public function testUnknownOption()
+    public function testUnknownOption(): void
     {
         $cmd = new Command($this->getPathToCommonmark());
         $cmd->addArg('--foo');
@@ -62,49 +64,43 @@ class BinTest extends TestCase
     /**
      * Tests converting a file by filename
      */
-    public function testFileArgument()
+    public function testFileArgument(): void
     {
         $cmd = new Command($this->getPathToCommonmark());
         $cmd->addArg($this->getPathToData('header.html'));
         $cmd->execute();
 
         $this->assertEquals(0, $cmd->getExitCode());
-        $expectedContents = trim(file_get_contents($this->getPathToData('header.md')));
-        $this->assertEquals($expectedContents, trim($cmd->getOutput()));
+        $expectedContents = \trim(\file_get_contents($this->getPathToData('header.md')));
+        $this->assertEquals($expectedContents, \trim($cmd->getOutput()));
     }
 
     /**
      * Tests converting HTML from STDIN
      */
-    public function testStdin()
+    public function testStdin(): void
     {
-        $cmd = new Command(sprintf('cat %s | %s ', $this->getPathToData('header.html'), $this->getPathToCommonmark()));
+        $cmd = new Command(\sprintf('cat %s | %s ', $this->getPathToData('header.html'), $this->getPathToCommonmark()));
         $cmd->execute();
 
         $this->assertEquals(0, $cmd->getExitCode());
-        $expectedContents = trim(file_get_contents($this->getPathToData('header.md')));
-        $this->assertEquals($expectedContents, trim($cmd->getOutput()));
+        $expectedContents = \trim(\file_get_contents($this->getPathToData('header.md')));
+        $this->assertEquals($expectedContents, \trim($cmd->getOutput()));
     }
 
     /**
      * Returns the full path the html-to-markdown "binary"
-     *
-     * @return string
      */
-    protected function getPathToCommonmark()
+    protected function getPathToCommonmark(): string
     {
-        return realpath(__DIR__ . '/../bin/html-to-markdown');
+        return \realpath(__DIR__ . '/../bin/html-to-markdown');
     }
 
     /**
      * Returns the full path to the test data file
-     *
-     * @param string $file
-     *
-     * @return string
      */
-    protected function getPathToData($file)
+    protected function getPathToData(string $file): string
     {
-        return realpath(__DIR__ . '/data/' . $file);
+        return \realpath(__DIR__ . '/data/' . $file);
     }
 }

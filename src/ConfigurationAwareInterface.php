@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown;
 
 interface ConfigurationAwareInterface
 {
-    /**
-     * @param Configuration $config
-     */
-    public function setConfig(Configuration $config);
+    public function setConfig(Configuration $config): void;
 }

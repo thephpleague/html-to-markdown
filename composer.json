@@ -37,7 +37,8 @@
     "require-dev": {
         "mikehaertl/php-shellcommand": "^1.1.0",
         "phpunit/phpunit": "^8.5 || ^9.2",
-        "scrutinizer/ocular": "^1.6"
+        "scrutinizer/ocular": "^1.6",
+        "unleashedtech/php-coding-standard": "^2.7"
     },
     "bin": ["bin/html-to-markdown"],
     "extra": {

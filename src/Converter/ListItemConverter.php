@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
@@ -8,38 +10,26 @@ use League\HTMLToMarkdown\ElementInterface;
 
 class ListItemConverter implements ConverterInterface, ConfigurationAwareInterface
 {
-    /**
-     * @var Configuration
-     */
+    /** @var Configuration */
     protected $config;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $listItemStyle;
 
-    /**
-     * @param  Configuration  $config
-     */
-    public function setConfig(Configuration $config)
+    public function setConfig(Configuration $config): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @param  ElementInterface  $element
-     *
-     * @return string
-     */
-    public function convert(ElementInterface $element)
+    public function convert(ElementInterface $element): string
     {
         // If parent is an ol, use numbers, otherwise, use dashes
-        $list_type = $element->getParent()->getTagName();
+        $listType = $element->getParent()->getTagName();
 
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel();
 
-        $value = trim(implode("\n".'  ', explode("\n", trim($element->getValue()))));
+        $value = \trim(\implode("\n" . '  ', \explode("\n", \trim($element->getValue()))));
 
         // If list item is the first in a nested list, add a newline before it
         $prefix = '';
@@ -47,34 +37,34 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
             $prefix = "\n";
         }
 
-        if ($list_type === 'ul') {
-            $list_item_style = $this->config->getOption('list_item_style', '-');
-            $list_item_style_alternate = $this->config->getOption('list_item_style_alternate');
-            if (!isset($this->listItemStyle)) {
-                $this->listItemStyle = $list_item_style_alternate ? $list_item_style_alternate : $list_item_style;
+        if ($listType === 'ul') {
+            $listItemStyle          = $this->config->getOption('list_item_style', '-');
+            $listItemStyleAlternate = $this->config->getOption('list_item_style_alternate');
+            if (! isset($this->listItemStyle)) {
+                $this->listItemStyle = $listItemStyleAlternate ?: $listItemStyle;
             }
 
-            if ($list_item_style_alternate && $level == 0 && $element->getSiblingPosition() === 1) {
-                $this->listItemStyle = $this->listItemStyle == $list_item_style ? $list_item_style_alternate : $list_item_style;
+            if ($listItemStyleAlternate && $level === 0 && $element->getSiblingPosition() === 1) {
+                $this->listItemStyle = $this->listItemStyle === $listItemStyle ? $listItemStyleAlternate : $listItemStyle;
             }
 
-            return $prefix.$this->listItemStyle.' '.$value."\n";
+            return $prefix . $this->listItemStyle . ' ' . $value . "\n";
         }
 
-        if ($list_type === 'ol' && $start = intval($element->getParent()->getAttribute('start'))) {
+        if ($listType === 'ol' && $start = \intval($element->getParent()->getAttribute('start'))) {
             $number = $start + $element->getSiblingPosition() - 1;
         } else {
             $number = $element->getSiblingPosition();
         }
 
-        return $prefix.$number.'. '.$value."\n";
+        return $prefix . $number . '. ' . $value . "\n";
     }
 
     /**
      * @return string[]
      */
-    public function getSupportedTags()
+    public function getSupportedTags(): array
     {
-        return array('li');
+        return ['li'];
     }
 }

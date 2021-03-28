@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown;
 
 use League\HTMLToMarkdown\Converter\BlockquoteConverter;
@@ -22,34 +24,27 @@ use League\HTMLToMarkdown\Converter\TextConverter;
 
 final class Environment
 {
-    /**
-     * @var Configuration
-     */
+    /** @var Configuration */
     protected $config;
 
-    /**
-     * @var ConverterInterface[]
-     */
-    protected $converters = array();
+    /** @var ConverterInterface[] */
+    protected $converters = [];
 
-    public function __construct(array $config = array())
+    /**
+     * @param array<string, mixed> $config
+     */
+    public function __construct(array $config = [])
     {
         $this->config = new Configuration($config);
         $this->addConverter(new DefaultConverter());
     }
 
-    /**
-     * @return Configuration
-     */
-    public function getConfig()
+    public function getConfig(): Configuration
     {
         return $this->config;
     }
 
-    /**
-     * @param ConverterInterface $converter
-     */
-    public function addConverter(ConverterInterface $converter)
+    public function addConverter(ConverterInterface $converter): void
     {
         if ($converter instanceof ConfigurationAwareInterface) {
             $converter->setConfig($this->config);
@@ -60,12 +55,7 @@ final class Environment
         }
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return ConverterInterface
-     */
-    public function getConverterByTag($tag)
+    public function getConverterByTag(string $tag): ConverterInterface
     {
         if (isset($this->converters[$tag])) {
             return $this->converters[$tag];
@@ -75,11 +65,9 @@ final class Environment
     }
 
     /**
-     * @param array $config
-     *
-     * @return Environment
+     * @param array<string, mixed> $config
      */
-    public static function createDefaultEnvironment(array $config = array())
+    public static function createDefaultEnvironment(array $config = []): Environment
     {
         $environment = new static($config);
 
