@@ -30,14 +30,14 @@
         }
     },
     "require": {
-        "php": ">=5.3.3",
+        "php": "^7.2.5 || ^8.0",
         "ext-dom": "*",
         "ext-xml": "*"
     },
     "require-dev": {
-        "mikehaertl/php-shellcommand": "~1.1.0",
-        "phpunit/phpunit": "^4.8|^5.7",
-        "scrutinizer/ocular": "~1.1"
+        "mikehaertl/php-shellcommand": "^1.1.0",
+        "phpunit/phpunit": "^8.5 || ^9.2",
+        "scrutinizer/ocular": "^1.6"
     },
     "bin": ["bin/html-to-markdown"],
     "extra": {

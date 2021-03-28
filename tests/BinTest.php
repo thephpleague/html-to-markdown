@@ -3,8 +3,9 @@
 namespace League\HTMLToMarkdown\Test;
 
 use mikehaertl\shellcommand\Command;
+use PHPUnit\Framework\TestCase;
 
-class BinTest extends \PHPUnit_Framework_TestCase
+class BinTest extends TestCase
 {
     /**
      * Tests the behavior of not providing any HTML input
@@ -16,7 +17,7 @@ class BinTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, $cmd->getExitCode());
         $this->assertEmpty($cmd->getOutput());
-        $this->assertContains('Usage:', $cmd->getError());
+        $this->assertStringContainsString('Usage:', $cmd->getError());
     }
 
     /**
@@ -29,7 +30,7 @@ class BinTest extends \PHPUnit_Framework_TestCase
         $cmd->execute();
 
         $this->assertEquals(0, $cmd->getExitCode());
-        $this->assertContains('Usage:', $cmd->getOutput());
+        $this->assertStringContainsString('Usage:', $cmd->getOutput());
     }
 
     /**
@@ -42,7 +43,7 @@ class BinTest extends \PHPUnit_Framework_TestCase
         $cmd->execute();
 
         $this->assertEquals(0, $cmd->getExitCode());
-        $this->assertContains('Usage:', $cmd->getOutput());
+        $this->assertStringContainsString('Usage:', $cmd->getOutput());
     }
 
     /**
@@ -55,7 +56,7 @@ class BinTest extends \PHPUnit_Framework_TestCase
         $cmd->execute();
 
         $this->assertEquals(1, $cmd->getExitCode());
-        $this->assertContains('Unknown option', $cmd->getError());
+        $this->assertStringContainsString('Unknown option', $cmd->getError());
     }
 
     /**

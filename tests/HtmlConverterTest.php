@@ -5,8 +5,9 @@ namespace League\HTMLToMarkdown\Test;
 use League\HTMLToMarkdown\Environment;
 use League\HTMLToMarkdown\HtmlConverter;
 use League\HTMLToMarkdown\Converter\TableConverter;
+use PHPUnit\Framework\TestCase;
 
-class HtmlConverterTest extends \PHPUnit_Framework_TestCase
+class HtmlConverterTest extends TestCase
 {
     private function html_gives_markdown($html, $expected_markdown, $options = array(), $converters = array())
     {
@@ -15,7 +16,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             $markdown->getEnvironment()->addConverter($converter);
         }
         $result = $markdown->convert($html);
-        $this->assertEquals($expected_markdown, $result);
+        $this->assertSame($expected_markdown, $result);
     }
 
     public function test_empty_input()

@@ -3,8 +3,9 @@
 namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Environment;
+use PHPUnit\Framework\TestCase;
 
-class EnvironmentTest extends \PHPUnit_Framework_TestCase
+class EnvironmentTest extends TestCase
 {
     public function test_creation()
     {
