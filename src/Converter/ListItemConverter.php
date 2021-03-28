@@ -19,7 +19,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     protected $listItemStyle;
 
     /**
-     * @param Configuration $config
+     * @param  Configuration  $config
      */
     public function setConfig(Configuration $config)
     {
@@ -27,7 +27,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     }
 
     /**
-     * @param ElementInterface $element
+     * @param  ElementInterface  $element
      *
      * @return string
      */
@@ -37,10 +37,9 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         $list_type = $element->getParent()->getTagName();
 
         // Add spaces to start for nested list items
-        $level = $element->getListItemLevel($element);
+        $level = $element->getListItemLevel();
 
-        $prefixForParagraph = str_repeat('  ', $level + 1);
-        $value = trim(implode("\n" . $prefixForParagraph, explode("\n", trim($element->getValue()))));
+        $value = trim(implode("\n".'  ', explode("\n", trim($element->getValue()))));
 
         // If list item is the first in a nested list, add a newline before it
         $prefix = '';
@@ -59,16 +58,16 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
                 $this->listItemStyle = $this->listItemStyle == $list_item_style ? $list_item_style_alternate : $list_item_style;
             }
 
-            return $prefix . $this->listItemStyle . ' ' . $value . "\n";
+            return $prefix.$this->listItemStyle.' '.$value."\n";
         }
 
-        if ($list_type === 'ol' && $start = $element->getParent()->getAttribute('start')) {
+        if ($list_type === 'ol' && $start = intval($element->getParent()->getAttribute('start'))) {
             $number = $start + $element->getSiblingPosition() - 1;
         } else {
             $number = $element->getSiblingPosition();
         }
 
-        return $prefix . $number . '. ' . $value . "\n";
+        return $prefix.$number.'. '.$value."\n";
     }
 
     /**
