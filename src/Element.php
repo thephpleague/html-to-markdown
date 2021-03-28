@@ -15,7 +15,7 @@ class Element implements ElementInterface
     private $nextCached;
 
     /**
-     * @var ElementInterface|null
+     * @var DOMNode|null
      */
     private $previousSiblingCached;
 
