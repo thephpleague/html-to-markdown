@@ -4,12 +4,16 @@ namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Environment;
 use League\HTMLToMarkdown\HtmlConverter;
+use League\HTMLToMarkdown\Converter\TableConverter;
 
 class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 {
-    private function html_gives_markdown($html, $expected_markdown, array $options = array())
+    private function html_gives_markdown($html, $expected_markdown, $options = array(), $converters = array())
     {
         $markdown = new HtmlConverter($options);
+        foreach ($converters as $converter) {
+            $markdown->getEnvironment()->addConverter($converter);
+        }
         $result = $markdown->convert($html);
         $this->assertEquals($expected_markdown, $result);
     }
@@ -175,6 +179,54 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->html_gives_markdown('<p>120. <p>', '120\.');
         $this->html_gives_markdown('<p>120.00<p>', '120.00');
         $this->html_gives_markdown('<p>120.00 USD<p>', '120.00 USD');
+    }
+
+    public function test_tables()
+    {
+        $opt = array();
+        $conv = array(new TableConverter());
+        $this->html_gives_markdown('<table><tr><th>A</th></tr></table>', "| A |\n|---|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><td>A</td></tr></table>', "| A |\n|---|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th><th>B</th></tr><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>', "| A | B |\n|---|---|\n| a | b |\n| c | d |", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th><th>B</th></tr><tr><td>a</td><td><code>foo</code></td></tr></table>', "| A | B |\n|---|---|\n| a | `foo` |", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th><th>B</th></tr><tr><td>a</td><td><em>foo</em>bar</td></tr></table>', "| A | B |\n|---|---|\n| a | *foo*bar |", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th><th>B</th></tr><tr><td>a</td><td><p>foo</p>bar</td></tr></table>', "| A | B |\n|---|---|\n| a | foo  bar |", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><td><a href="http://example.com">link</a></td></tr></table>', "| [link](http://example.com) |\n|---|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a \\| b |", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a ][ b |", array('table_pipe_escape' => ']['), $conv);
+        $this->html_gives_markdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "Cap\n| A |\n|---|", array('table_caption_side' => 'top'), $conv);
+        $this->html_gives_markdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|\nCap", array('table_caption_side' => 'bottom'), $conv);
+        $this->html_gives_markdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|", array('table_caption_side' => null), $conv);
+        $this->html_gives_markdown('<table><tr><th align="left">A</th></tr></table>', "| A |\n|:--|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th align="right">A</th></tr></table>', "| A |\n|--:|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th align="center">A</th></tr></table>', "| A |\n|:-:|", $opt, $conv);
+        $this->html_gives_markdown('<table><tr><th align="wrong">A</th></tr></table>', "| A |\n|---|", $opt, $conv);
+        $html = <<<'EOT'
+<table>
+    <colgroup>
+        <col>
+        <col span="2" class="batman">
+        <col span="2" class="flash">
+    </colgroup>
+    <thead>
+        <tr>
+            <td> </td>
+            <th scope="col">Batman</th>
+            <th scope="col">Robin</th>
+            <th scope="col">The Flash</th>
+            <th scope="col">Kid Flash</th>
+        </tr>
+    </thead>
+    <tr>
+        <th scope="row">Skill</th>
+        <td>Smarts</td>
+        <td>Dex, acrobat</td>
+        <td>Super speed</td>
+        <td>Super speed</td>
+    </tr>
+</table>
+EOT;
+        $this->html_gives_markdown($html, "|  | Batman | Robin | The Flash | Kid Flash |\n|---|---|---|---|---|\n| Skill | Smarts | Dex, acrobat | Super speed | Super speed |", $opt, $conv);
     }
 
     public function test_code_samples()

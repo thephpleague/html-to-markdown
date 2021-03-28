@@ -39,6 +39,7 @@ class DefaultConverter implements ConverterInterface, ConfigurationAwareInterfac
 
         $markdown = html_entity_decode($element->getChildrenAsString());
 
+        // Tables are only handled here if TableConverter is not used
         if ($element->getTagName() === 'table') {
             $markdown .= "\n\n";
         }
