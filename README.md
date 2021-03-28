@@ -113,6 +113,15 @@ $html = '<span>Turnips!</span><!-- Monkeys! --><!-- Eggs! -->';
 $markdown = $converter->convert($html); // $markdown now contains "Turnips!<!-- Eggs! -->"
 ```
 
+By default, placeholder links are preserved. To strip the placeholder links, use the `strip_placeholder_links` option, like this:
+
+```php
+$converter = new HtmlConverter(array('strip_placeholder_links' => true));
+
+$html = '<a>Github</a>';
+$markdown = $converter->convert($html); // $markdown now contains "Github"
+```
+
 ### Style options
 
 By default bold tags are converted using the asterisk syntax, and italic tags are converted using the underlined syntax. Change these by using the `bold_style` and `italic_style` options.

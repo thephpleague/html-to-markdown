@@ -45,7 +45,11 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
         }
 
         if (!$href) {
-            $markdown = html_entity_decode($element->getChildrenAsString());
+            if ($this->shouldStrip()) {
+                $markdown = $text;
+            } else {
+                $markdown = html_entity_decode($element->getChildrenAsString());
+            }
         }
 
         return $markdown;
@@ -79,5 +83,13 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
     {
         // Email validation is messy business, but this should cover most cases
         return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldStrip()
+    {
+        return $this->config->getOption('strip_placeholder_links');
     }
 }
