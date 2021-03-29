@@ -4,6 +4,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.0.0] - 2021-03-28
+
 ### Added
 
  - Added support for tables (#203)
@@ -291,7 +293,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...master
+[5.0.0]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...5.0.0
 [4.10.0]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...4.10.0
 [4.9.1]: https://github.com/thephpleague/html-to-markdown/compare/4.9.0...4.9.1
 [4.9.0]: https://github.com/thephpleague/html-to-markdown/compare/4.8.3...4.9.0
