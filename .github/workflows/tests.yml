@@ -66,3 +66,39 @@ jobs:
             - run: php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
               if: ${{ matrix.coverage }}
               continue-on-error: true
+
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 7.2
+                  extensions: curl, mbstring
+                  coverage: none
+                  tools: composer:v2
+
+            - run: composer update --no-progress
+
+            - run: vendor/bin/phpstan analyse --no-progress
+
+    psalm:
+        name: Psalm
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 7.2
+                  extensions: curl, mbstring
+                  coverage: none
+                  tools: composer:v2
+
+            - run: composer update --no-progress
+
+            - run: vendor/bin/psalm --no-progress --output-format=github

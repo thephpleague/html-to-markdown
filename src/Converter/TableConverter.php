@@ -26,7 +26,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
         'center' => ':-:',
     ];
 
-    /** @var array<int, string> */
+    /** @var array<int, string>|null */
     private $columnAlignments = [];
 
     /** @var string|null */
@@ -89,7 +89,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
                 }
 
                 $value = \str_replace("\n", ' ', $value);
-                $value = \str_replace('|', $this->config->getOption('table_pipe_escape'), $value);
+                $value = \str_replace('|', $this->config->getOption('table_pipe_escape') ?? '\|', $value);
 
                 return '| ' . \trim($value) . ' ';
             case 'thead':
@@ -98,6 +98,8 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
             case 'colgroup':
             case 'col':
                 return $value;
+            default:
+                return '';
         }
     }
 

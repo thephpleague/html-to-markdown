@@ -13,7 +13,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     /** @var Configuration */
     protected $config;
 
-    /** @var string */
+    /** @var string|null */
     protected $listItemStyle;
 
     public function setConfig(Configuration $config): void
@@ -24,7 +24,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
     public function convert(ElementInterface $element): string
     {
         // If parent is an ol, use numbers, otherwise, use dashes
-        $listType = $element->getParent()->getTagName();
+        $listType = ($parent = $element->getParent()) ? $parent->getTagName() : 'ul';
 
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel();
@@ -51,7 +51,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
             return $prefix . $this->listItemStyle . ' ' . $value . "\n";
         }
 
-        if ($listType === 'ol' && $start = \intval($element->getParent()->getAttribute('start'))) {
+        if ($listType === 'ol' && ($parent = $element->getParent()) && ($start = \intval($parent->getAttribute('start')))) {
             $number = $start + $element->getSiblingPosition() - 1;
         } else {
             $number = $element->getSiblingPosition();

@@ -33,6 +33,7 @@ class CodeConverter implements ConverterInterface
         // In order to remove the code tags we need to search for them and, in the case of the opening tag
         // use a regular expression to find the tag and the other attributes it might have
         $code = \preg_replace('/<code\b[^>]*>/', '', $code);
+        \assert($code !== null);
         $code = \str_replace('</code>', '', $code);
 
         // Checking if it's a code block or span
@@ -57,7 +58,8 @@ class CodeConverter implements ConverterInterface
 
     private function shouldBeBlock(ElementInterface $element, string $code): bool
     {
-        if ($element->getParent()->getTagName() === 'pre') {
+        $parent = $element->getParent();
+        if ($parent !== null && $parent->getTagName() === 'pre') {
             return true;
         }
 

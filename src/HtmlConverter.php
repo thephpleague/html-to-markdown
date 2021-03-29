@@ -80,7 +80,7 @@ class HtmlConverter implements HtmlConverterInterface
      *
      * @return string The Markdown version of the html
      *
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException|\RuntimeException
      */
     public function convert(string $html): string
     {
@@ -100,6 +100,10 @@ class HtmlConverter implements HtmlConverterInterface
 
         // Store the now-modified DOMDocument as a string
         $markdown = $document->saveHTML();
+
+        if ($markdown === false) {
+            throw new \RuntimeException('Unknown error occurred during HTML to Markdown conversion');
+        }
 
         return $this->sanitize($markdown);
     }
@@ -190,6 +194,7 @@ class HtmlConverter implements HtmlConverterInterface
     {
         $markdown = \html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
         $markdown = \preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
+        \assert($markdown !== null);
         $markdown = \trim($markdown); // Remove blank spaces at the beggining of the html
 
         /*

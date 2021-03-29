@@ -16,6 +16,8 @@ interface ElementInterface
 
     public function getValue(): string;
 
+    public function hasParent(): bool;
+
     public function getParent(): ?ElementInterface;
 
     public function getNextSibling(): ?ElementInterface;
@@ -41,6 +43,8 @@ interface ElementInterface
     public function getChildrenAsString(): string;
 
     public function setFinalMarkdown(string $markdown): void;
+
+    public function getListItemLevel(): int;
 
     public function getAttribute(string $name): string;
 }

@@ -12,7 +12,7 @@ class Element implements ElementInterface
     /** @var ElementInterface|null */
     private $nextCached;
 
-    /** @var DOMNode|null */
+    /** @var \DOMNode|null */
     private $previousSiblingCached;
 
     public function __construct(\DOMNode $node)
@@ -66,19 +66,24 @@ class Element implements ElementInterface
         return $this->node->nodeValue;
     }
 
+    public function hasParent(): bool
+    {
+        return $this->node->parentNode !== null;
+    }
+
     public function getParent(): ?ElementInterface
     {
-        return new static($this->node->parentNode) ?: null;
+        return $this->node->parentNode ? new self($this->node->parentNode) : null;
     }
 
     public function getNextSibling(): ?ElementInterface
     {
-        return $this->node->nextSibling !== null ? new static($this->node->nextSibling) : null;
+        return $this->node->nextSibling !== null ? new self($this->node->nextSibling) : null;
     }
 
     public function getPreviousSibling(): ?ElementInterface
     {
-        return $this->previousSiblingCached !== null ? new static($this->previousSiblingCached) : null;
+        return $this->previousSiblingCached !== null ? new self($this->previousSiblingCached) : null;
     }
 
     public function hasChildren(): bool
@@ -93,8 +98,7 @@ class Element implements ElementInterface
     {
         $ret = [];
         foreach ($this->node->childNodes as $node) {
-            \assert($node instanceof \DOMNode);
-            $ret[] = new static($node);
+            $ret[] = new self($node);
         }
 
         return $ret;
@@ -105,7 +109,7 @@ class Element implements ElementInterface
         if ($this->nextCached === null) {
             $nextNode = $this->getNextNode($this->node);
             if ($nextNode !== null) {
-                $this->nextCached = new static($nextNode);
+                $this->nextCached = new self($nextNode);
             }
         }
 
@@ -125,6 +129,8 @@ class Element implements ElementInterface
         if ($node->parentNode) {
             return $this->getNextNode($node->parentNode, false);
         }
+
+        return null;
     }
 
     /**
@@ -151,6 +157,14 @@ class Element implements ElementInterface
 
     public function setFinalMarkdown(string $markdown): void
     {
+        if ($this->node->ownerDocument === null) {
+            throw new \RuntimeException('Unowned node');
+        }
+
+        if ($this->node->parentNode === null) {
+            throw new \RuntimeException('Cannot setFinalMarkdown() on a node without a parent');
+        }
+
         $markdownNode = $this->node->ownerDocument->createTextNode($markdown);
         $this->node->parentNode->replaceChild($markdownNode, $this->node);
     }
@@ -164,8 +178,13 @@ class Element implements ElementInterface
     {
         $position = 0;
 
+        $parent = $this->getParent();
+        if ($parent === null) {
+            return $position;
+        }
+
         // Loop through all nodes and find the given $node
-        foreach ($this->getParent()->getChildren() as $currentNode) {
+        foreach ($parent->getChildren() as $currentNode) {
             if (! $currentNode->isWhitespace()) {
                 $position++;
             }
@@ -185,7 +204,7 @@ class Element implements ElementInterface
         $level  = 0;
         $parent = $this->getParent();
 
-        while ($parent !== null && $parent->node->parentNode) {
+        while ($parent !== null && $parent->hasParent()) {
             if ($parent->getTagName() === 'li') {
                 $level++;
             }
@@ -211,6 +230,6 @@ class Element implements ElementInterface
             return $element->node === $this->node;
         }
 
-        return $element === $this;
+        return false;
     }
 }

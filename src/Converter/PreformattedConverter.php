@@ -35,6 +35,7 @@ class PreformattedConverter implements ConverterInterface
 
         // Normalizing new lines
         $preContent = \preg_replace('/\r\n|\r|\n/', "\n", $preContent);
+        \assert(\is_string($preContent));
 
         // Ensure there's a newline at the end
         if (\strrpos($preContent, "\n") !== \strlen($preContent) - \strlen("\n")) {

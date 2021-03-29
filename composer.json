@@ -36,9 +36,11 @@
     },
     "require-dev": {
         "mikehaertl/php-shellcommand": "^1.1.0",
+        "phpstan/phpstan": "^0.12.82",
         "phpunit/phpunit": "^8.5 || ^9.2",
         "scrutinizer/ocular": "^1.6",
-        "unleashedtech/php-coding-standard": "^2.7"
+        "unleashedtech/php-coding-standard": "^2.7",
+        "vimeo/psalm": "^4.6"
     },
     "bin": ["bin/html-to-markdown"],
     "extra": {

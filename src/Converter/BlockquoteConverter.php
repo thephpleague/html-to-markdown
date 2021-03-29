@@ -18,6 +18,7 @@ class BlockquoteConverter implements ConverterInterface
         $quoteContent = \trim($element->getValue());
 
         $lines = \preg_split('/\r\n|\r|\n/', $quoteContent);
+        \assert(\is_array($lines));
 
         $totalLines = \count($lines);
 

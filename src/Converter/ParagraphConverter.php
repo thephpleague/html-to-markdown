@@ -15,6 +15,8 @@ class ParagraphConverter implements ConverterInterface
         $markdown = '';
 
         $lines = \preg_split('/\r\n|\r|\n/', $value);
+        \assert($lines !== false);
+
         foreach ($lines as $line) {
             /*
              * Some special characters need to be escaped based on the position that they appear
@@ -73,12 +75,12 @@ class ParagraphConverter implements ConverterInterface
         ];
 
         foreach ($escapable as $i) {
-            if (\strpos($line, $i) === false) {
+            if (($pos = \strpos($line, $i)) === false) {
                 continue;
             }
 
             // Found an escapable character, escaping it
-            $line = \substr_replace($line, '\\', \strpos($line, $i), 0);
+            $line = \substr_replace($line, '\\', $pos, 0);
         }
 
         return $line;

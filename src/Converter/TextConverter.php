@@ -17,13 +17,16 @@ class TextConverter implements ConverterInterface
 
         // Replace sequences of invisible characters with spaces
         $markdown = \preg_replace('~\s+~u', ' ', $markdown);
+        \assert(\is_string($markdown));
 
         // Escape the following characters: '*', '_', '[', ']' and '\'
-        if ($element->getParent() && $element->getParent()->getTagName() !== 'div') {
+        if (($parent = $element->getParent()) && $parent->getTagName() !== 'div') {
             $markdown = \preg_replace('~([*_\\[\\]\\\\])~u', '\\\\$1', $markdown);
+            \assert(\is_string($markdown));
         }
 
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
+        \assert(\is_string($markdown));
 
         if ($markdown === ' ') {
             $next = $element->getNext();

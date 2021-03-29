@@ -72,6 +72,6 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 
     private function shouldStrip(): bool
     {
-        return $this->config->getOption('strip_placeholder_links');
+        return $this->config->getOption('strip_placeholder_links') ?? false;
     }
 }
