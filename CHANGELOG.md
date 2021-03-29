@@ -4,6 +4,29 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Added
+
+ - Added support for tables (#203)
+    - This feature is disable by default - see README for how to enable it
+ - Added new `strip_placeholder_links` option to strip `<a>` tags without `href` attributes (#196)
+ - Added new methods to `ElementInterface`:
+    - `hasParent()`
+    - `getNextSibling()`
+    - `getPreviousSibling()`
+    - `getListItemLevel()`
+ - Added several parameter and return types across all classes
+ - Added new `PreConverterInterface` to allow converters to perform any necessary pre-parsing
+
+### Changed
+
+ - Supported PHP versions increased to PHP 7.2 - 8.0
+ - `HtmlConverter::convert()` may now throw a `\RuntimeException` when unexpected `DOMDocument`-related errors occur
+
+### Fixed
+
+ - Fixed complex nested lists containing heading and paragraphs (#198)
+ - Fixed consecutive emphasis producing incorrect markdown (#202)
+
 ## [4.10.0] - 2020-06-30
 ### Added
 
