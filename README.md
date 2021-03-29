@@ -5,7 +5,7 @@ HTML To Markdown for PHP
 
 [![Latest Version](https://img.shields.io/packagist/v/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
 [![Software License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/travis/thephpleague/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/html-to-markdown)
+[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/html-to-markdown/Tests/master.svg?style=flat-square)](https://github.com/thephpleague/html-to-markdown/actions?query=workflow%3ATests+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
@@ -13,7 +13,7 @@ HTML To Markdown for PHP
 Library which converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
 
-**Requires**: PHP 5.3+ or PHP 7.0+
+**Requires**: PHP 7.2+
 
 **Lead Developer**: [@colinodell](http://twitter.com/colinodell)
 
@@ -201,14 +201,6 @@ $markdown = $converter->convert($html);
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
-
-### Known issues
-
-- Nested lists and lists containing multiple paragraphs aren't converted correctly.
-- Lists inside blockquotes aren't converted correctly.
-- Any reported [open issues here](https://github.com/thephpleague/html-to-markdown/issues?state=open).
-
-[Report your issue or request a feature here.](https://github.com/thephpleague/html-to-markdown/issues/new) Issues with patches or failing tests are especially welcome.
 
 ### Style notes
 
