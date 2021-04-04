@@ -36,6 +36,9 @@ class HtmlConverterTest extends TestCase
     public function testPlainText(): void
     {
         $this->assertHtmlGivesMarkdown('test', 'test');
+
+        $this->assertHtmlGivesMarkdown('https://www.example.com/test_test.jpg', 'https://www.example.com/test_test.jpg');
+
         $this->assertHtmlGivesMarkdown('<p>test</p>', 'test');
 
         //expected result is in the comment for better readability

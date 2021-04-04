@@ -21,7 +21,13 @@ class TextConverter implements ConverterInterface
 
         // Escape the following characters: '*', '_', '[', ']' and '\'
         if (($parent = $element->getParent()) && $parent->getTagName() !== 'div') {
-            $markdown = \preg_replace('~([*_\\[\\]\\\\])~u', '\\\\$1', $markdown);
+
+            if (preg_match("/(?i)\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|(([^\s()<>]+|(([^\s()<>]+)))*))+(?:(([^\s()<>]+|(([^\s()<>]+)))*)|[^\s`!()[]{};:'\".,<>?«»“”‘’]))/", $markdown)) {
+                $markdown = \preg_replace('~([*\\[\\]\\\\])~u', '\\\\$1', $markdown);
+            } else {
+                $markdown = \preg_replace('~([_*\\[\\]\\\\])~u', '\\\\$1', $markdown);
+            }
+
             \assert(\is_string($markdown));
         }
 
@@ -30,7 +36,7 @@ class TextConverter implements ConverterInterface
 
         if ($markdown === ' ') {
             $next = $element->getNext();
-            if (! $next || $next->isBlock()) {
+            if (!$next || $next->isBlock()) {
                 $markdown = '';
             }
         }
