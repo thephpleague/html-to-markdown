@@ -48,7 +48,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<div>_test_</div>', '<div>_test_</div>');
         $this->assertHtmlGivesMarkdown('<div>*test*</div>', '<div>*test*</div>');
 
-        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
+        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ \` \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
     }
 
     public function testLineBreaks(): void
