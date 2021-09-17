@@ -29,7 +29,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel();
 
-        $value = \trim(\implode("\n" . '  ', \explode("\n", \trim($element->getValue()))));
+        $value = \trim(\implode("\n" . '    ', \explode("\n", \trim($element->getValue()))));
 
         // If list item is the first in a nested list, add a newline before it
         $prefix = '';
