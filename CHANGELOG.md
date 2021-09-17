@@ -4,6 +4,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.0.1] - 2021-09-17
+
+### Fixed
+
+ - Fixed lists not using the correct amount of indentation (#211)
+
 ## [5.0.0] - 2021-03-28
 
 ### Added
@@ -293,7 +299,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.1...master
+[5.0.1]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...5.0.0
 [4.10.0]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...4.10.0
 [4.9.1]: https://github.com/thephpleague/html-to-markdown/compare/4.9.0...4.9.1
