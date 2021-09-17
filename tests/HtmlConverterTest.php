@@ -184,29 +184,29 @@ class HtmlConverterTest extends TestCase
     {
         $this->assertHtmlGivesMarkdown('<ul><li>Item A</li><li>Item B</li><li>Item C</li></ul>', "- Item A\n- Item B\n- Item C");
         $this->assertHtmlGivesMarkdown('<ul><li>   Item A</li><li>   Item B</li></ul>', "- Item A\n- Item B");
-        $this->assertHtmlGivesMarkdown('<ul><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ul>', "- ###  Item A\n  \n  Description\n- Item B");
+        $this->assertHtmlGivesMarkdown('<ul><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ul>', "- ###  Item A\n    \n    Description\n- Item B");
         $this->assertHtmlGivesMarkdown('<ul><li>First</li><li>Second</li></ul>', "* First\n* Second", ['list_item_style' => '*']);
         $this->assertHtmlGivesMarkdown('<ol><li>Item A</li><li>Item B</li></ol>', "1. Item A\n2. Item B");
         $this->assertHtmlGivesMarkdown("<ol>\n    <li>Item A</li>\n    <li>Item B</li>\n</ol>", "1. Item A\n2. Item B");
         $this->assertHtmlGivesMarkdown('<ol><li>   Item A</li><li>   Item B</li></ol>', "1. Item A\n2. Item B");
-        $this->assertHtmlGivesMarkdown('<ol><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ol>', "1. ###  Item A\n  \n  Description\n2. Item B");
+        $this->assertHtmlGivesMarkdown('<ol><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ol>', "1. ###  Item A\n    \n    Description\n2. Item B");
         $this->assertHtmlGivesMarkdown('<ol start="120"><li>Item A</li><li>Item B</li></ol>', "120. Item A\n121. Item B");
         $this->assertHtmlGivesMarkdown('<ul><li>first item of first list</li><li>second item of first list</li></ul><ul><li>first item of second list</li></ul>', "- first item of first list\n- second item of first list\n\n* first item of second list", ['list_item_style_alternate' => '*']);
     }
 
     public function testNestedLists(): void
     {
-        $this->assertHtmlGivesMarkdown('<ul><li>Item A</li><li>Item B<ul><li>Nested A</li><li>Nested B</li></ul></li><li>Item C</li></ul>', "- Item A\n- Item B\n  - Nested A\n  - Nested B\n- Item C");
-        $this->assertHtmlGivesMarkdown('<ul><li>   Item A<ol><li>Nested A</li></ol></li><li>   Item B</li></ul>', "- Item A\n  1. Nested A\n- Item B");
-        $this->assertHtmlGivesMarkdown('<ol><li>Item A<ul><li>Nested A</li></ul></li><li>Item B</li></ol>', "1. Item A\n  - Nested A\n2. Item B");
+        $this->assertHtmlGivesMarkdown('<ul><li>Item A</li><li>Item B<ul><li>Nested A</li><li>Nested B</li></ul></li><li>Item C</li></ul>', "- Item A\n- Item B\n    - Nested A\n    - Nested B\n- Item C");
+        $this->assertHtmlGivesMarkdown('<ul><li>   Item A<ol><li>Nested A</li></ol></li><li>   Item B</li></ul>', "- Item A\n    1. Nested A\n- Item B");
+        $this->assertHtmlGivesMarkdown('<ol><li>Item A<ul><li>Nested A</li></ul></li><li>Item B</li></ol>', "1. Item A\n    - Nested A\n2. Item B");
     }
 
     public function testComplexNestedLists(): void
     {
-        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "- Item A\n- Item B \n  - Nested A\n  - Nested B \n    - Subnested A\n    - Subnested B\n- Item C");
-        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n  \n  Paragraph Item B\n  \n  \n  * Nested A\n  * Nested B \n    * Subnested A\n    * Subnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
-        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li><h2>Nested B</h2>\n<p>Paragraph Nested B</p>\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li><h2>Subsubnested B</h2>\n<p>Paragraph Subsubnested B</p>\n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n  \n  Paragraph Item B\n  \n  \n  * Nested A\n  * ## Nested B\n    \n    Paragraph Nested B\n    \n    \n    * Subnested A\n    * Subnested B \n      * Subsubnested A\n      * ## Subsubnested B\n        \n        Paragraph Subsubnested B\n        \n        \n        * Subsubsubnested A\n        * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
-        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li>Subsubnested B                                            \n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* Item B \n  * Nested A\n  * Nested B \n    * Subnested A\n    * Subnested B \n      * Subsubnested A\n      * Subsubnested B \n        * Subsubsubnested A\n        * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
+        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "- Item A\n- Item B \n    - Nested A\n    - Nested B \n        - Subnested A\n        - Subnested B\n- Item C");
+        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n    \n    Paragraph Item B\n    \n    \n    * Nested A\n    * Nested B \n        * Subnested A\n        * Subnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
+        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li><h2>Nested B</h2>\n<p>Paragraph Nested B</p>\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li><h2>Subsubnested B</h2>\n<p>Paragraph Subsubnested B</p>\n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n    \n    Paragraph Item B\n    \n    \n    * Nested A\n    * ## Nested B\n        \n        Paragraph Nested B\n        \n        \n        * Subnested A\n        * Subnested B \n            * Subsubnested A\n            * ## Subsubnested B\n                \n                Paragraph Subsubnested B\n                \n                \n                * Subsubsubnested A\n                * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
+        $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li>Subsubnested B                                            \n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* Item B \n    * Nested A\n    * Nested B \n        * Subnested A\n        * Subnested B \n            * Subsubnested A\n            * Subsubnested B \n                * Subsubsubnested A\n                * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
     }
 
     public function testListLikeThingsWhichArentLists(): void
@@ -394,7 +394,7 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '&gt; &gt; Look at me! &lt; &lt;');
         $this->assertHtmlGivesMarkdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "&gt; &gt; **Look** at me! &lt; &lt;  \n&gt; Just look at me!");
         $this->assertHtmlGivesMarkdown('<p>Foo<br>--<br>Bar<br>Foo--</p>', "Foo  \n\\--  \nBar  \nFoo--");
-        $this->assertHtmlGivesMarkdown('<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n  \\- Bar");
+        $this->assertHtmlGivesMarkdown('<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n    \\- Bar");
         $this->assertHtmlGivesMarkdown('Foo<br />* Bar', "Foo  \n\\* Bar");
         $this->assertHtmlGivesMarkdown("<p>123456789) Foo and 1234567890) Bar!</p>\n<p>1. Platz in 'Das große Backen'</p>", "123456789\\) Foo and 1234567890) Bar!\n\n1\\. Platz in 'Das große Backen'");
         $this->assertHtmlGivesMarkdown("<p>\n+ Siri works well for TV and movies<br>\n- No 4K support\n</p>", "\+ Siri works well for TV and movies  \n\- No 4K support");
