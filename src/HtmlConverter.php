@@ -121,11 +121,43 @@ class HtmlConverter implements HtmlConverterInterface
         $document->loadHTML('<?xml encoding="UTF-8">' . $html);
         $document->encoding = 'UTF-8';
 
+        $this->replaceMisplacedComments($document);
+
         if ($this->getConfig()->getOption('suppress_errors')) {
             \libxml_clear_errors();
         }
 
         return $document;
+    }
+
+    /**
+     * Finds any comment nodes outside <html> element and moves them into <body>.
+     *
+     * @see https://github.com/thephpleague/html-to-markdown/issues/212
+     * @see https://3v4l.org/7bC33
+     */
+    private function replaceMisplacedComments(\DOMDocument $document): void
+    {
+        // Find ny comment nodes at the root of the document.
+        $misplacedComments = (new \DOMXPath($document))->query('/comment()');
+        if ($misplacedComments === false) {
+            return;
+        }
+
+        $body = $document->getElementsByTagName('body')->item(0);
+        if ($body === null) {
+            return;
+        }
+
+        // Loop over comment nodes in reverse so we put them inside <body> in
+        // their original order.
+        for ($index = $misplacedComments->length - 1; $index >= 0; $index--) {
+            if ($body->firstChild === null) {
+                $body->insertBefore($misplacedComments[$index]);
+            } else {
+                $body->insertBefore($misplacedComments[$index], $body->firstChild);
+            }
+        }
     }
 
     /**

@@ -327,14 +327,21 @@ EOT;
     public function testStripComments(): void
     {
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- Test comment -->', 'Test');
+        $this->assertHtmlGivesMarkdown('<!-- Test comment --><p>Test</p>', 'Test');
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- Test comment -->', 'Test', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<!-- Test comment --><p>Test</p>', 'Test', ['strip_tags' => true]);
     }
 
     public function testPreserveComments(): void
     {
-        $this->assertHtmlGivesMarkdown('<p>Test</p><!-- Test comment -->', "Test\n\n<!-- Test comment -->", ['preserve_comments' => true]);
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- more -->', "Test\n\n<!-- more -->", ['preserve_comments' => ['more']]);
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- Test comment --><!-- more -->', "Test\n\n<!-- more -->", ['preserve_comments' => ['more']]);
+        $this->assertHtmlGivesMarkdown('<!-- Test comment --><p>Test</p><!-- Test comment -->', "<!-- Test comment -->Test\n\n<!-- Test comment -->", ['preserve_comments' => true]);
+    }
+
+    public function testPreserveCommentOrder(): void
+    {
+        $this->assertHtmlGivesMarkdown('<!-- 1 --><!-- 2 --><p>Test</p><!-- 3 -->', "<!-- 1 --><!-- 2 -->Test\n\n<!-- 3 -->", ['preserve_comments' => true]);
     }
 
     public function testPreserveWhitespace(): void
