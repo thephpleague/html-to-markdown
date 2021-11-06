@@ -4,6 +4,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.0.2] - 2021-11-06
+
+### Fixed
+
+ - Fixed missplaced comment nodes appearing at the start of the HTML input (#212)
+
 ## [5.0.1] - 2021-09-17
 
 ### Fixed
@@ -299,7 +305,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.1...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.2...master
+[5.0.2]: https://github.com/thephpleague/html-to-markdown/compare/5.0.1...5.0.2
 [5.0.1]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...5.0.0
 [4.10.0]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...4.10.0
