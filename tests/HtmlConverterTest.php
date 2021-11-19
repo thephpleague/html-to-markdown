@@ -174,10 +174,10 @@ class HtmlConverterTest extends TestCase
 
     public function testHorizontalRule(): void
     {
-        $this->assertHtmlGivesMarkdown('<hr>', '- - - - - -');
-        $this->assertHtmlGivesMarkdown('<hr/>', '- - - - - -');
-        $this->assertHtmlGivesMarkdown('<hr />', '- - - - - -');
-        $this->assertHtmlGivesMarkdown('<hr  />', '- - - - - -');
+        $this->assertHtmlGivesMarkdown('<hr>', '---');
+        $this->assertHtmlGivesMarkdown('<hr/>', '---');
+        $this->assertHtmlGivesMarkdown('<hr />', '---');
+        $this->assertHtmlGivesMarkdown('<hr  />', '---');
     }
 
     public function testLists(): void
