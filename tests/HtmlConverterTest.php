@@ -142,7 +142,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net" title="Title">Modern Nerd</a>', '[Modern Nerd](http://modernnerd.net "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net" title="Title">Modern Nerd</a> <a href="http://modernnerd.net" title="Title">Modern Nerd</a>', '[Modern Nerd](http://modernnerd.net "Title") [Modern Nerd](http://modernnerd.net "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net"><h3>Modern Nerd</h3></a>', '[### Modern Nerd](http://modernnerd.net)');
-        $this->assertHtmlGivesMarkdown('The <a href="http://modernnerd.net">Modern Nerd </a>(MN)', 'The [Modern Nerd ](http://modernnerd.net)(MN)');
+        $this->assertHtmlGivesMarkdown('The <a href="http://modernnerd.net">Modern Nerd </a>(MN)', 'The [Modern Nerd](http://modernnerd.net)(MN)');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/></a>', '[![alt text](/path/img.jpg "Title")](http://modernnerd.net/ "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/> Test</a>', '[![alt text](/path/img.jpg "Title") Test](http://modernnerd.net/ "Title")');
 
