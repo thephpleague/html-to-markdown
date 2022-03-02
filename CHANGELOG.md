@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Changed
+
+ - Changed horizontal rule style (#218, #219)
+
 ## [5.0.2] - 2021-11-06
 
 ### Fixed
