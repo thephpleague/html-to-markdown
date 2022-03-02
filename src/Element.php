@@ -63,7 +63,7 @@ class Element implements ElementInterface
 
     public function getValue(): string
     {
-        return $this->node->nodeValue;
+        return $this->node->nodeValue ?? '';
     }
 
     public function hasParent(): bool

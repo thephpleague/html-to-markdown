@@ -8,6 +8,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
  - Changed horizontal rule style (#218, #219)
 
+### Fixed
+
+ - Fixed `Element::getValue()` not handling possible nulls
+
 ## [5.0.2] - 2021-11-06
 
 ### Fixed
