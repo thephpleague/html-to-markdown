@@ -212,7 +212,7 @@ class HtmlConverter implements HtmlConverterInterface
         $tag = $element->getTagName();
 
         // Strip nodes named in remove_nodes
-        $tagsToRemove = \explode(' ', $this->getConfig()->getOption('remove_nodes') ?? '');
+        $tagsToRemove = \explode(' ', \strval($this->getConfig()->getOption('remove_nodes') ?? ''));
         if (\in_array($tag, $tagsToRemove, true)) {
             return '';
         }

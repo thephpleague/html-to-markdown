@@ -98,6 +98,8 @@ class Element implements ElementInterface
     {
         $ret = [];
         foreach ($this->node->childNodes as $node) {
+            /** @psalm-suppress RedundantCondition */
+            \assert($node instanceof \DOMNode);
             $ret[] = new self($node);
         }
 

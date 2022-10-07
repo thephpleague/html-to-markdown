@@ -89,7 +89,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
                 }
 
                 $value = \str_replace("\n", ' ', $value);
-                $value = \str_replace('|', $this->config->getOption('table_pipe_escape') ?? '\|', $value);
+                $value = \str_replace('|', \strval($this->config->getOption('table_pipe_escape') ?? '\|'), $value);
 
                 return '| ' . \trim($value) . ' ';
             case 'thead':
