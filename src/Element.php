@@ -116,7 +116,7 @@ class Element implements ElementInterface
         return $this->nextCached;
     }
 
-    private function getNextNode(\DOMNode $node, bool $checkChildren = true): ?\DomNode
+    private function getNextNode(\DOMNode $node, bool $checkChildren = true): ?\DOMNode
     {
         if ($checkChildren && $node->firstChild) {
             return $node->firstChild;
