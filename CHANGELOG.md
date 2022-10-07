@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Fixed
+
+- Fixed missing type checks and coercions
+
 ## [5.1.0] - 2022-03-02
 
 ### Changed
