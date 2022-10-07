@@ -4,10 +4,10 @@
         "config:base",
         ":disableDependencyDashboard"
     ],
-    "enabledManagers": ["bundler", "github-actions", "composer"],
+    "enabledManagers": ["github-actions", "composer"],
     "packageRules": [
         {
-            "matchManagers": ["bundler", "github-actions"],
+            "matchManagers": ["github-actions"],
             "extends": ["schedule:weekly"],
             "automerge": true
         },
