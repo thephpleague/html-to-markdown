@@ -211,12 +211,17 @@ class HtmlConverter implements HtmlConverterInterface
     {
         $tag = $element->getTagName();
 
+        $parentTag = $element->getParent()->getTagName();
+        //If this is text from a URL, we don't need to run it through the textConverter.
+        if ($parentTag === 'a' && $tag === '#text') {
+            return $element->getValue();
+        }
+
         // Strip nodes named in remove_nodes
         $tagsToRemove = \explode(' ', \strval($this->getConfig()->getOption('remove_nodes') ?? ''));
         if (\in_array($tag, $tagsToRemove, true)) {
             return '';
         }
-
         $converter = $this->environment->getConverterByTag($tag);
 
         return $converter->convert($element);

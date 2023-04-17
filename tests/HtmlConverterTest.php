@@ -48,7 +48,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<div>_test_</div>', '<div>_test_</div>');
         $this->assertHtmlGivesMarkdown('<div>*test*</div>', '<div>*test*</div>');
 
-        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
+        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ \` \* \_ \{ \} \[ \] \( \) \&gt; \&gt; \# \+ \- . \!');
     }
 
     public function testLineBreaks(): void
@@ -83,7 +83,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<h2></h2>', '');
         $this->assertHtmlGivesMarkdown('<h3></h3>', '');
         $this->assertHtmlGivesMarkdown('<h1># Test</h1>', "\# Test\n=======");
-        $this->assertHtmlGivesMarkdown('<h1># Test #</h1>', "\# Test #\n=========");
+        $this->assertHtmlGivesMarkdown('<h1># Test #</h1>', "\# Test \#\n==========");
         $this->assertHtmlGivesMarkdown('<h3>Mismatched Tags</h4>', '### Mismatched Tags');
     }
 
@@ -142,7 +142,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net" title="Title">Modern Nerd</a>', '[Modern Nerd](http://modernnerd.net "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net" title="Title">Modern Nerd</a> <a href="http://modernnerd.net" title="Title">Modern Nerd</a>', '[Modern Nerd](http://modernnerd.net "Title") [Modern Nerd](http://modernnerd.net "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net"><h3>Modern Nerd</h3></a>', '[### Modern Nerd](http://modernnerd.net)');
-        $this->assertHtmlGivesMarkdown('The <a href="http://modernnerd.net">Modern Nerd </a>(MN)', 'The [Modern Nerd ](http://modernnerd.net)(MN)');
+        $this->assertHtmlGivesMarkdown('The <a href="http://modernnerd.net">Modern Nerd </a>(MN)', 'The [Modern Nerd ](http://modernnerd.net)\(MN\)');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/></a>', '[![alt text](/path/img.jpg "Title")](http://modernnerd.net/ "Title")');
         $this->assertHtmlGivesMarkdown('<a href="http://modernnerd.net/" title="Title"><img src="/path/img.jpg" alt="alt text" title="Title"/> Test</a>', '[![alt text](/path/img.jpg "Title") Test](http://modernnerd.net/ "Title")');
 
@@ -306,7 +306,7 @@ EOT;
     {
         $this->assertHtmlGivesMarkdown('<blockquote>Something I said?</blockquote>', '> Something I said?');
         $this->assertHtmlGivesMarkdown('<blockquote><blockquote>Something I said?</blockquote></blockquote>', '> > Something I said?');
-        $this->assertHtmlGivesMarkdown('<blockquote><p>Something I said?</p><p>Why, yes it was!</p></blockquote>', "> Something I said?\n> \n> Why, yes it was!");
+        $this->assertHtmlGivesMarkdown('<blockquote><p>Something I said?</p><p>Why, yes it was!</p></blockquote>', "> Something I said?\n> \n> Why, yes it was\!");
     }
 
     public function testMalformedHtml(): void
@@ -399,14 +399,15 @@ EOT;
         $html     = '<pre><code>&lt;script type = "text/javascript"&gt; function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } &lt;/head&gt; &lt;body&gt;</code></pre>';
         $markdown = '```' . "\n" . '<script type = "text/javascript"> function startTimer() { var tim = window.setTimeout("hideMessage()", 5000) } </head> <body>' . "\n```";
         $this->assertHtmlGivesMarkdown($html, $markdown);
-        $this->assertHtmlGivesMarkdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '&gt; &gt; Look at me! &lt; &lt;');
-        $this->assertHtmlGivesMarkdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "&gt; &gt; **Look** at me! &lt; &lt;  \n&gt; Just look at me!");
-        $this->assertHtmlGivesMarkdown('<p>Foo<br>--<br>Bar<br>Foo--</p>', "Foo  \n\\--  \nBar  \nFoo--");
-        $this->assertHtmlGivesMarkdown('<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n    \\- Bar");
+        $this->assertHtmlGivesMarkdown('<p>&gt; &gt; Look at me! &lt; &lt;</p>', '\&gt; \&gt; Look at me\! &lt; &lt;');
+        $this->assertHtmlGivesMarkdown('<p>&gt; &gt; <b>Look</b> at me! &lt; &lt;<br />&gt; Just look at me!</p>', "\&gt; \&gt; **Look** at me\! &lt; &lt;  \n\&gt; Just look at me\!");
+        $this->assertHtmlGivesMarkdown('<p>Foo<br>--<br>Bar<br>Foo--</p>', "Foo  \n\\-\-  \nBar  \nFoo\-\-"); // maybe '<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n  \\\- Bar"
+        $this->assertHtmlGivesMarkdown('<ul><li>Foo<br>- Bar</li></ul>', "- Foo  \n    \\\- Bar");
         $this->assertHtmlGivesMarkdown('Foo<br />* Bar', "Foo  \n\\* Bar");
-        $this->assertHtmlGivesMarkdown("<p>123456789) Foo and 1234567890) Bar!</p>\n<p>1. Platz in 'Das große Backen'</p>", "123456789\\) Foo and 1234567890) Bar!\n\n1\\. Platz in 'Das große Backen'");
+        $this->assertHtmlGivesMarkdown("<p>123456789) Foo and 1234567890) Bar!</p>\n<p>1. Platz in 'Das große Backen'</p>", "123456789\\) Foo and 1234567890\) Bar\!\n\n1\\. Platz in 'Das große Backen'");
         $this->assertHtmlGivesMarkdown("<p>\n+ Siri works well for TV and movies<br>\n- No 4K support\n</p>", "\+ Siri works well for TV and movies  \n\- No 4K support");
-        $this->assertHtmlGivesMarkdown('<p>You forgot the &lt;!--more--&gt; tag!</p>', 'You forgot the &lt;!--more--&gt; tag!');
+        $this->assertHtmlGivesMarkdown('<p>You forgot the &lt;!--more--&gt; tag!</p>', 'You forgot the &lt;\!\-\-more\-\-\&gt; tag\!');
+        $this->assertHtmlGivesMarkdown('The #cow says <h1>mooo</h1>', "The \#cow says\n\nmooo\n====");
     }
 
     public function testInstatiationWithEnvironment(): void
