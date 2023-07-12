@@ -300,6 +300,7 @@ EOT;
         $this->assertHtmlGivesMarkdown("<pre>\n\n\n</pre>", "```\n\n\n\n```");
         $this->assertHtmlGivesMarkdown("<pre>\n</pre><pre>\n</pre>", "```\n\n```\n\n```\n\n```");
         $this->assertHtmlGivesMarkdown("<pre>one\ntwo\r\nthree</pre>\n<p>line</p>", "```\none\ntwo\nthree\n```\n\nline");
+        $this->assertHtmlGivesMarkdown("<pre class='some-class'>test with attributes</pre>", "```\ntest with attributes\n```");
     }
 
     public function testBlockquotes(): void
