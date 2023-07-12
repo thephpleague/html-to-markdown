@@ -6,6 +6,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Fixed
 
+- Fixed `<pre>` tags with attributes not being parsed (#215, #238)
 - Fixed missing type checks and coercions
 
 ## [5.1.0] - 2022-03-02
