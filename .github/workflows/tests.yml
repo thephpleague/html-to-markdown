@@ -28,11 +28,11 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: ['7.2', '7.3', '7.4']
+                php: ['7.2', '7.3', '7.4', '8.0', '8.1']
                 coverage: [true]
                 composer-flags: ['']
                 include:
-                    - php: '8.0'
+                    - php: '8.2'
                       coverage: false
                       composer-flags: '--ignore-platform-req=php'
                     - php: '7.2'
@@ -53,7 +53,7 @@ jobs:
 
             - name: "Use PHPUnit 9.3+ on PHP 8"
               run: composer require --no-update --dev phpunit/phpunit:^9.3
-              if: "matrix.php == '8.0'"
+              if: "matrix.php >= '8.0'"
 
             - run: composer update --no-progress ${{ matrix.composer-flags }}
 
