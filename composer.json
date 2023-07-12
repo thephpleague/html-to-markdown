@@ -43,6 +43,18 @@
         "vimeo/psalm": "^4.22 || ^5.0"
     },
     "bin": ["bin/html-to-markdown"],
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpstan": "phpstan analyse",
+        "phpunit": "phpunit --no-coverage",
+        "psalm": "psalm --stats",
+        "test": [
+            "@phpcs",
+            "@phpstan",
+            "@psalm",
+            "@phpunit"
+        ]
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "5.2-dev"
