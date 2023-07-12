@@ -144,11 +144,7 @@ class Element implements ElementInterface
             $tagNames = [$tagNames];
         }
 
-        for ($p = $this->node->parentNode; $p !== false; $p = $p->parentNode) {
-            if ($p === null) {
-                return false;
-            }
-
+        for ($p = $this->node->parentNode; $p !== null; $p = $p->parentNode) {
             if (\in_array($p->nodeName, $tagNames, true)) {
                 return true;
             }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
@@ -89,7 +90,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
                 }
 
                 $value = \str_replace("\n", ' ', $value);
-                $value = \str_replace('|', \strval($this->config->getOption('table_pipe_escape') ?? '\|'), $value);
+                $value = \str_replace('|', Coerce::toString($this->config->getOption('table_pipe_escape') ?? '\|'), $value);
 
                 return '| ' . \trim($value) . ' ';
             case 'thead':
