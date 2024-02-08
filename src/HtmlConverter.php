@@ -108,7 +108,7 @@ class HtmlConverter implements HtmlConverterInterface
         return $this->sanitize($markdown);
     }
 
-    private function createDOMDocument(string $html): \DOMDocument
+    protected function createDOMDocument(string $html): \DOMDocument
     {
         $document = new \DOMDocument();
 
@@ -136,7 +136,7 @@ class HtmlConverter implements HtmlConverterInterface
      * @see https://github.com/thephpleague/html-to-markdown/issues/212
      * @see https://3v4l.org/7bC33
      */
-    private function replaceMisplacedComments(\DOMDocument $document): void
+    protected function replaceMisplacedComments(\DOMDocument $document): void
     {
         // Find ny comment nodes at the root of the document.
         $misplacedComments = (new \DOMXPath($document))->query('/comment()');
@@ -168,7 +168,7 @@ class HtmlConverter implements HtmlConverterInterface
      * Finds children of each node and convert those to #text nodes containing their Markdown equivalent,
      * starting with the innermost element and working up to the outermost element.
      */
-    private function convertChildren(ElementInterface $element): void
+    protected function convertChildren(ElementInterface $element): void
     {
         // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
         // except if the current node is a code tag, which needs to be converted by the CodeConverter.
