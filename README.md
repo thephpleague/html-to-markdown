@@ -160,7 +160,7 @@ $converter->getConfig()->setOption('use_autolinks', true);
 $markdown = $converter->convert($html); // $markdown now contains "<https://thephpleague.com>"
 
 $converter->getConfig()->setOption('use_autolinks', false); // default
-$markdown = $converter->convert($html); // $markdown now contains "[https://google.com](https://google.com)"
+$markdown = $converter->convert($html); // $markdown now contains "[https://thephpleague.com](https://thephpleague.com)"
 ```
 
 ### Passing custom Environment object
