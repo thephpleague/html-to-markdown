@@ -61,7 +61,8 @@ The included `demo` directory contains an HTML->Markdown conversion form to try 
 
 ### Conversion options
 
-By default, HTML To Markdown preserves HTML tags without Markdown equivalents, like `<span>` and `<div>`.
+> [!WARNING]  
+> By default, this library preserves HTML tags without Markdown equivalents, like `<span>`, `<div>`, `<iframe>`, `<script>`, etc. If you will be parsing untrusted input from users, **please consider setting the `strip_tags` and/or `remove_nodes` options** documented below, and also using a library (like [HTML Purifier](https://github.com/ezyang/htmlpurifier)) to provide additional HTML filtering.
 
 To strip HTML tags that don't have a Markdown equivalent while preserving the content inside them, set `strip_tags` to true, like this:
 
