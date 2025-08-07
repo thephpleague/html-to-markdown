@@ -233,7 +233,7 @@ class HtmlConverter implements HtmlConverterInterface
          * Removing unwanted tags. Tags should be added to the array in the order they are expected.
          * XML, html and body opening tags should be in that order. Same case with closing tags
          */
-        $unwanted = ['<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '&#xD;'];
+        $unwanted = ['<?xml encoding="UTF-8">', '<!--?xml encoding="UTF-8"-->', '<html>', '</html>', '<body>', '<!--?xml encoding="UTF-8"-->', '</body>', '<head>', '</head>', '&#xD;'];
 
         foreach ($unwanted as $tag) {
             if (\strpos($tag, '/') === false) {
