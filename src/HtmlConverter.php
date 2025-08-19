@@ -36,6 +36,12 @@ class HtmlConverter implements HtmlConverterInterface
                 'strip_placeholder_links' => false, // Set to true to remove <a> that doesn't have href.
                 'bold_style' => '**', // DEPRECATED: Set to '__' if you prefer the underlined style
                 'italic_style' => '*', // DEPRECATED: Set to '_' if you prefer the underlined style
+                'strikethrough_style' => '~~',
+                'superscript_style' => '', // Set to '^' to use the superscript style
+                'subscript_style' => '', // Set to '~' to use the subscript style
+                'keyboard_style' => '\'', 
+                'underline_style' => '', // Set to null to clear this style
+                'undefined_style' => '', // Set to null to clear this style
                 'remove_nodes' => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
                 'hard_break' => false, // Set to true to turn <br> into `\n` instead of `  \n`
                 'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'

@@ -17,15 +17,35 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
     {
         if ($element !== null && ! $element->isText()) {
             $tag = $element->getTagName();
-            if ($tag === 'i' || $tag === 'em') {
-                return 'em';
-            }
-
-            if ($tag === 'b' || $tag === 'strong') {
-                return 'strong';
+            switch($tag) {
+                case 'i':
+                case 'em':
+                case 'cite':
+                case 'dfn':
+                case 'var':
+                    return 'em';
+                case 'b':
+                case 'strong':
+                    return 'strong';
+                case 'strike':
+                case 's':
+                case 'del':
+                    return 'del';
+                case 'sub':
+                    return 'sub';
+                case 'sup':
+                    return 'sup';
+                case 'u':
+                case 'ins':
+                    return 'u';
+                case 'kdb':
+                    return 'kbd';
+                case 'span':
+                case 'small':
+                case 'abbr':
+                    return $tag;
             }
         }
-
         return '';
     }
 
@@ -42,22 +62,38 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         if (! \trim($value)) {
             return $value;
         }
-
-        if ($tag === 'em') {
-            $style = $this->config->getOption('italic_style');
-        } else {
-            $style = $this->config->getOption('bold_style');
+        switch ($tag) {
+            case 'em':
+                $style = $this->config->getOption('italic_style');
+                break;
+            case 'del':
+                $style = $this->config->getOption('strikethrough_style');
+                break;
+            case 'sub':
+                $style = $this->config->getOption('subscript_style');
+                break;
+            case 'sup':
+                $style = $this->config->getOption('superscript_style');
+                break;
+            case 'strong':
+                $style = $this->config->getOption('bold_style');
+                break;
+            case 'u':
+                $style = $this->config->getOption('underline_style');
+                break;
+            case 'kdb':
+                $style = $this->config->getOption('keyboard_style');
+                break;
+            default:
+                $style = $this->config->getOption('undefined_style');
+                break;
         }
 
         $prefix = \ltrim($value) !== $value ? ' ' : '';
         $suffix = \rtrim($value) !== $value ? ' ' : '';
 
-        /* If this node is immediately preceded or followed by one of the same type don't emit
-         * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
-         * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
-         */
-        $preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
-        $postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
+        $preStyle  = $this->makeDelimiter($element, $tag, $style);
+        $postStyle = $this->makeDelimiter($element, $tag, $style, false);
 
         return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
     }
@@ -67,6 +103,29 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
      */
     public function getSupportedTags(): array
     {
-        return ['em', 'i', 'strong', 'b'];
+        return [
+            'em', 'i', 'cite', 'dfn', 'var',
+            'strong', 'b',
+            'del', 'strike', 's',
+            'sub', 'sup',
+            'u', 'ins',
+            'kbd',
+            'span', 'small', 'abbr'
+        ];
+    }
+    
+    protected function makeDelimiter($element, string $tag, $style, bool $prev = true): string
+    {
+        /* If this node is immediately preceded or followed by one of the same type don't emit
+         * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
+         * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
+         */
+        if($prev) {
+            $ignore = $this->getNormTag($element->getPreviousSibling()) === $tag;
+        } else {
+            $ignore = $this->getNormTag($element->getNextSibling()) === $tag;
+        }
+        if (!is_string($style ?? null) || $ignore) return '';
+        return empty($style) ? "<" . ($prev ? "" : "/") ."{$tag}>" : $style;
     }
 }
