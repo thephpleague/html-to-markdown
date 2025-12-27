@@ -12,6 +12,8 @@ interface ElementInterface
 
     public function isWhitespace(): bool;
 
+    public function getNode(): ?\DOMNode;
+
     public function getTagName(): string;
 
     public function getValue(): string;
@@ -47,4 +49,6 @@ interface ElementInterface
     public function getListItemLevel(): int;
 
     public function getAttribute(string $name): string;
+    
+    public function getSelector(): string;
 }

@@ -77,7 +77,7 @@ Or more explicitly, like this:
 
 ```php
 $converter = new HtmlConverter();
-$converter->getConfig()->setOption('strip_tags', true);
+$converter->setOptions(['strip_tags' => true]);
 
 $html = '<span>Turnips!</span>';
 $markdown = $converter->convert($html); // $markdown now contains "Turnips!"
@@ -124,14 +124,20 @@ $markdown = $converter->convert($html); // $markdown now contains "Github"
 ### Style options
 
 By default bold tags are converted using the asterisk syntax, and italic tags are converted using the underlined syntax. Change these by using the `bold_style` and `italic_style` options.
+If you want to clear the format of some of them, set them to `null`.
+If you want their format to remain as HTML tags, set them to the empty string.
 
 ```php
 $converter = new HtmlConverter();
-$converter->getConfig()->setOption('italic_style', '*');
-$converter->getConfig()->setOption('bold_style', '__');
+$converter->setOptions([
+    'italic_style' => '*',
+    'bold_style' => '__',
+    'underline_style' => null,
+    'strikethrough_style' => ''
+);
 
-$html = '<em>Italic</em> and a <strong>bold</strong>';
-$markdown = $converter->convert($html); // $markdown now contains "*Italic* and a __bold__"
+$html = '<u>Underline</u>, <del>Strikethrough</del> and <em>Italic</em> and a <strong>bold</strong>';
+$markdown = $converter->convert($html); // $markdown now contains "Underline and a <del>Strikethrough</del> and *Italic* and a __bold__"
 ```
 
 ### Line break options
@@ -142,11 +148,11 @@ By default, `br` tags are converted to two spaces followed by a newline characte
 $converter = new HtmlConverter();
 $html = '<p>test<br>line break</p>';
 
-$converter->getConfig()->setOption('hard_break', true);
-$markdown = $converter->convert($html); // $markdown now contains "test\nline break"
+$converter->setOptions(['hard_break' => true]);
+$markdown = $converter->convert($html); // $markdown now contains "underline test\nline break"
 
-$converter->getConfig()->setOption('hard_break', false); // default
-$markdown = $converter->convert($html); // $markdown now contains "test  \nline break"
+$converter->setOptions(['hard_break' => false]); // default
+$markdown = $converter->convert($html); // $markdown now contains "underline test  \nline break"
 ```
 
 ### Autolinking options
@@ -157,10 +163,10 @@ By default, `a` tags are converted to the easiest possible link syntax, i.e. if 
 $converter = new HtmlConverter();
 $html = '<p><a href="https://thephpleague.com">https://thephpleague.com</a></p>';
 
-$converter->getConfig()->setOption('use_autolinks', true);
+$converter->setOptions(['use_autolinks' => true]);
 $markdown = $converter->convert($html); // $markdown now contains "<https://thephpleague.com>"
 
-$converter->getConfig()->setOption('use_autolinks', false); // default
+$converter->setOptions(['use_autolinks' => false]); // default
 $markdown = $converter->convert($html); // $markdown now contains "[https://thephpleague.com](https://thephpleague.com)"
 ```
 

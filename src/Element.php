@@ -56,6 +56,11 @@ class Element implements ElementInterface
         return $this->getTagName() === '#text' && \trim($this->getValue()) === '';
     }
 
+    public function getNode(): ?\DOMNode
+    {
+        return $this->node;
+    }
+    
     public function getTagName(): string
     {
         return $this->node->nodeName;
@@ -220,6 +225,24 @@ class Element implements ElementInterface
         }
 
         return '';
+    }
+    
+    public function getSelector(): string {
+        $element = $this;
+        if (!empty($element->getAttribute('id'))) {
+            return '#' . $element->getAttribute('id');
+        }
+        $path = [];
+        while ($element && $element->getTagName() !== 'body') {
+            $part = $element->getTagName();
+            $index = $element->getSiblingPosition();
+            if ($index > 0) {
+                $part .= ':nth-child(' . $index . ')';
+            }
+            array_unshift($path, $part);
+            $element = $element->getParent();
+        }
+        return implode(' > ', $path);
     }
 
     public function equals(ElementInterface $element): bool
