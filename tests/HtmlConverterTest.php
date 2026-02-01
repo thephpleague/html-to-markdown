@@ -316,6 +316,34 @@ EOT;
         $this->assertHtmlGivesMarkdown('<strong><em>Strong italic</strong> Regular text', '***Strong italic*** Regular text'); // Missing closing </em>
     }
 
+    public function testLibxmlInternalErrorsIsRestoredAfterConvert(): void
+    {
+        $previousState = \libxml_use_internal_errors(false);
+
+        try {
+            $converter = new HtmlConverter();
+            $converter->convert('<p>Hello</p>');
+
+            $this->assertFalse(\libxml_use_internal_errors());
+        } finally {
+            \libxml_use_internal_errors($previousState);
+        }
+    }
+
+    public function testLibxmlInternalErrorsIsUnchangedWhenSuppressErrorsDisabled(): void
+    {
+        $previousState = \libxml_use_internal_errors(true);
+
+        try {
+            $converter = new HtmlConverter(['suppress_errors' => false]);
+            $converter->convert('<p>Hello</p>');
+
+            $this->assertTrue(\libxml_use_internal_errors());
+        } finally {
+            \libxml_use_internal_errors($previousState);
+        }
+    }
+
     public function testHtml5TagsArePreserved(): void
     {
         $this->assertHtmlGivesMarkdown('<article>Some stuff</article>', '<article>Some stuff</article>');

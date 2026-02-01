@@ -110,21 +110,25 @@ class HtmlConverter implements HtmlConverterInterface
 
     private function createDOMDocument(string $html): \DOMDocument
     {
-        $document = new \DOMDocument();
+        $document                 = new \DOMDocument();
+        $previousLibxmlErrorState = null;
 
         if ($this->getConfig()->getOption('suppress_errors')) {
             // Suppress conversion errors (from http://bit.ly/pCCRSX)
-            \libxml_use_internal_errors(true);
+            $previousLibxmlErrorState = \libxml_use_internal_errors(true);
         }
 
-        // Hack to load utf-8 HTML (from http://bit.ly/pVDyCt)
-        $document->loadHTML('<?xml encoding="UTF-8">' . $html);
-        $document->encoding = 'UTF-8';
+        try {
+            // Hack to load utf-8 HTML (from http://bit.ly/pVDyCt)
+            $document->loadHTML('<?xml encoding="UTF-8">' . $html);
+            $document->encoding = 'UTF-8';
 
-        $this->replaceMisplacedComments($document);
-
-        if ($this->getConfig()->getOption('suppress_errors')) {
-            \libxml_clear_errors();
+            $this->replaceMisplacedComments($document);
+        } finally {
+            if ($this->getConfig()->getOption('suppress_errors')) {
+                \libxml_clear_errors();
+                \libxml_use_internal_errors($previousLibxmlErrorState);
+            }
         }
 
         return $document;
