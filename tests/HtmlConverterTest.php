@@ -119,6 +119,10 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<em>Foo</em> <em>Bar</em>', '*Foo* *Bar*');
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong> <strong>Bar</strong>', '**Foo** **Bar**');
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong><b>Bar</b><em>Foo</em>', '**FooBar***Foo*');
+        // A whitespace-only neighbour of the same type emits no markers, so the
+        // adjacent span must keep its own instead of merging (issue #252).
+        $this->assertHtmlGivesMarkdown('<strong> </strong><strong>hello</strong>', ' **hello**');
+        $this->assertHtmlGivesMarkdown('<em> </em><em>hello</em>', ' *hello*');
     }
 
     public function testNesting(): void

@@ -56,10 +56,23 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
          * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
          * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
          */
-        $preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
-        $postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
+        $preStyle  = $this->isMergeableSibling($element->getPreviousSibling(), $tag) ? '' : $style;
+        $postStyle = $this->isMergeableSibling($element->getNextSibling(), $tag) ? '' : $style;
 
         return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
+    }
+
+    /**
+     * A same-type sibling only emits emphasis markers when it has non-whitespace
+     * content; a whitespace-only sibling returns its bare value (see the early
+     * return above) and emits none. Suppressing our marker is only correct in
+     * the former case, otherwise the output is left unbalanced (issue #252).
+     */
+    private function isMergeableSibling(?ElementInterface $sibling, string $tag): bool
+    {
+        return $sibling !== null
+            && $this->getNormTag($sibling) === $tag
+            && \trim($sibling->getValue()) !== '';
     }
 
     /**
