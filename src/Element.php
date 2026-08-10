@@ -97,6 +97,13 @@ class Element implements ElementInterface
     public function getChildren(): array
     {
         $ret = [];
+        // PHPStan 1.x, which is what PHP 7.2 resolves to, has no generic type for DOMNodeList
+        // and infers mixed here. Psalm and PHPStan 2.x both know better.
+        /**
+         * @var \DOMNode $node
+         *
+         * @psalm-suppress UnnecessaryVarAnnotation
+         */
         foreach ($this->node->childNodes as $node) {
             $ret[] = new self($node);
         }

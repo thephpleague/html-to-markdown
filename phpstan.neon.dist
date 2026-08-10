@@ -1,4 +1,6 @@
 parameters:
   level: max
+  # Analyse against the oldest supported runtime, independent of the PHP the job runs on
+  phpVersion: 70205
   paths:
     - src
