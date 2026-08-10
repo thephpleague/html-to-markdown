@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
@@ -44,9 +45,9 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         }
 
         if ($tag === 'em') {
-            $style = $this->config->getOption('italic_style');
+            $style = Coerce::toString($this->config->getOption('italic_style'));
         } else {
-            $style = $this->config->getOption('bold_style');
+            $style = Coerce::toString($this->config->getOption('bold_style'));
         }
 
         $prefix = \ltrim($value) !== $value ? ' ' : '';

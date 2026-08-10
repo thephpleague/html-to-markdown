@@ -27,7 +27,7 @@ final class Coerce
             case $val === null:
                 return \strval($val);
             case \is_object($val) && \method_exists($val, '__toString'):
-                return $val->__toString();
+                return (string) $val;
             default:
                 throw new \InvalidArgumentException('Cannot coerce this value to string');
         }
