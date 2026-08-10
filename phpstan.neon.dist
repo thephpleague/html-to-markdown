@@ -1,4 +1,9 @@
 parameters:
   level: max
+  # Analyse against the oldest supported runtime, independent of the PHP the job runs on
+  phpVersion: 70205
+  # PHPDoc types that hold on newer PHP aren't certain on 7.2, where the DOM stubs are
+  # looser and the assert()s the coding standard requires are load-bearing
+  treatPhpDocTypesAsCertain: false
   paths:
     - src

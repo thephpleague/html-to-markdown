@@ -152,10 +152,16 @@ class HtmlConverter implements HtmlConverterInterface
         // Loop over comment nodes in reverse so we put them inside <body> in
         // their original order.
         for ($index = $misplacedComments->length - 1; $index >= 0; $index--) {
+            // DOMNameSpaceNode, which item() can also return, isn't a DOMNode and can't be inserted.
+            $comment = $misplacedComments->item($index);
+            if (! $comment instanceof \DOMNode) {
+                continue;
+            }
+
             if ($body->firstChild === null) {
-                $body->insertBefore($misplacedComments[$index]);
+                $body->insertBefore($comment);
             } else {
-                $body->insertBefore($misplacedComments[$index], $body->firstChild);
+                $body->insertBefore($comment, $body->firstChild);
             }
         }
     }

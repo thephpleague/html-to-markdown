@@ -98,6 +98,8 @@ class Element implements ElementInterface
     {
         $ret = [];
         foreach ($this->node->childNodes as $node) {
+            // PHPStan 1.x, which is what PHP 7.2 resolves to, has no generic type for
+            // DOMNodeList and infers mixed here.
             /** @psalm-suppress RedundantCondition */
             \assert($node instanceof \DOMNode);
             $ret[] = new self($node);

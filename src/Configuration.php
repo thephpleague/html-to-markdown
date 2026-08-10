@@ -25,7 +25,11 @@ class Configuration
     public function merge(array $config = []): void
     {
         $this->checkForDeprecatedOptions($config);
-        $this->config = \array_replace_recursive($this->config, $config);
+
+        /** @var array<string, mixed> $merged */
+        $merged = \array_replace_recursive($this->config, $config);
+
+        $this->config = $merged;
     }
 
     /**
