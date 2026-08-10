@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Coerce;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class CoerceTest extends TestCase
@@ -14,12 +15,13 @@ final class CoerceTest extends TestCase
      *
      * @param mixed $val
      */
+    #[DataProvider('provideStringTestCases')]
     public function testToString($val, string $expected): void
     {
         $this->assertSame($expected, Coerce::toString($val));
     }
 
-    public function provideStringTestCases(): \Generator
+    public static function provideStringTestCases(): \Generator
     {
         yield ['foo', 'foo'];
         yield [1, '1'];
@@ -27,7 +29,7 @@ final class CoerceTest extends TestCase
         yield [true, '1'];
         yield [false, ''];
         yield [null, ''];
-        yield [$this, $this->__toString()];
+        yield [new StringableObject(), 'some object'];
     }
 
     /**
@@ -35,6 +37,7 @@ final class CoerceTest extends TestCase
      *
      * @param mixed $val
      */
+    #[DataProvider('provideInvalidStringTestCases')]
     public function testToStringThrowsOnUncoercableValue($val): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -43,14 +46,9 @@ final class CoerceTest extends TestCase
         Coerce::toString($val);
     }
 
-    public function provideInvalidStringTestCases(): \Generator
+    public static function provideInvalidStringTestCases(): \Generator
     {
         yield [new \stdClass()];
         yield [STDOUT];
-    }
-
-    public function __toString(): string
-    {
-        return 'some object';
     }
 }
