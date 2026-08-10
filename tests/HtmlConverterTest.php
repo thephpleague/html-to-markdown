@@ -123,6 +123,8 @@ class HtmlConverterTest extends TestCase
         // adjacent span must keep its own instead of merging (issue #252).
         $this->assertHtmlGivesMarkdown('<strong> </strong><strong>hello</strong>', ' **hello**');
         $this->assertHtmlGivesMarkdown('<em> </em><em>hello</em>', ' *hello*');
+        $this->assertHtmlGivesMarkdown('<strong>hello</strong><strong> </strong>', '**hello** ');
+        $this->assertHtmlGivesMarkdown('<em>hello</em><em> </em>', '*hello* ');
     }
 
     public function testNesting(): void
