@@ -63,16 +63,18 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
     }
 
     /**
-     * A same-type sibling only emits emphasis markers when it has non-whitespace
-     * content; a whitespace-only sibling returns its bare value (see the early
-     * return above) and emits none. Suppressing our marker is only correct in
-     * the former case, otherwise the output is left unbalanced (issue #252).
+     * A same-type sibling only emits emphasis markers when its trimmed content is
+     * truthy; a sibling whose trimmed value is falsy (whitespace-only, or "0")
+     * returns its bare value (see the early return in convert()) and emits none.
+     * Suppressing our marker is only correct in the former case, otherwise the
+     * output is left unbalanced (issue #252). The truthiness check mirrors
+     * convert()'s `! \trim($value)` guard so the two stay consistent.
      */
     private function isMergeableSibling(?ElementInterface $sibling, string $tag): bool
     {
         return $sibling !== null
             && $this->getNormTag($sibling) === $tag
-            && \trim($sibling->getValue()) !== '';
+            && (bool) \trim($sibling->getValue());
     }
 
     /**
