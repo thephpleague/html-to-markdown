@@ -192,6 +192,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<ol><li>   Item A</li><li>   Item B</li></ol>', "1. Item A\n2. Item B");
         $this->assertHtmlGivesMarkdown('<ol><li>  <h3> Item A</h3><p>Description</p></li><li>   Item B</li></ol>', "1. ###  Item A\n    \n    Description\n2. Item B");
         $this->assertHtmlGivesMarkdown('<ol start="120"><li>Item A</li><li>Item B</li></ol>', "120. Item A\n121. Item B");
+        $this->assertHtmlGivesMarkdown('<ol start="0"><li>Item A</li><li>Item B</li></ol>', "0. Item A\n1. Item B");
         $this->assertHtmlGivesMarkdown('<ul><li>first item of first list</li><li>second item of first list</li></ul><ul><li>first item of second list</li></ul>', "- first item of first list\n- second item of first list\n\n* first item of second list", ['list_item_style_alternate' => '*']);
     }
 
