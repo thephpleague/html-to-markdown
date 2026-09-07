@@ -52,8 +52,8 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
             return $prefix . $this->listItemStyle . ' ' . $value . "\n";
         }
 
-        if ($listType === 'ol' && ($parent = $element->getParent()) && ($start = \intval($parent->getAttribute('start')))) {
-            $number = $start + $element->getSiblingPosition() - 1;
+        if ($listType === 'ol' && ($parent = $element->getParent()) && \is_numeric($start = $parent->getAttribute('start'))) {
+            $number = (int) $start + $element->getSiblingPosition() - 1;
         } else {
             $number = $element->getSiblingPosition();
         }
