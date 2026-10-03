@@ -23,9 +23,10 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
         $href  = $element->getAttribute('href');
         $title = $element->getAttribute('title');
         $text  = \trim($element->getValue(), "\t\n\r\0\x0B");
+        $target = $element->getAttribute('target') and $target = "{:target=\"$target\"}";
 
         if ($title !== '') {
-            $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
+            $markdown = "[$text]($href \"$title\")$target";
         } elseif ($href === $text && $this->isValidAutolink($href)) {
             $markdown = '<' . $href . '>';
         } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text)) {
@@ -35,7 +36,7 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
                 $href = '<' . $href . '>';
             }
 
-            $markdown = '[' . $text . '](' . $href . ')';
+            $markdown = "[$text]($href)$target";
         }
 
         if (! $href) {
