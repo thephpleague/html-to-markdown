@@ -163,6 +163,8 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="google.com">google.com</a>', '[google.com](google.com)');
         $this->assertHtmlGivesMarkdown('<a href="https://www.google.com">https://www.google.com</a>', '<https://www.google.com>');
         $this->assertHtmlGivesMarkdown('<a href="ftp://files.example.com">ftp://files.example.com</a>', '<ftp://files.example.com>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/?a=1&amp;b=2">https://example.com/?a=1&amp;b=2</a>', '<https://example.com/?a=1&b=2>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/&lt;b&gt;">https://example.com/&lt;b&gt;</a>', '[https://example.com/&lt;b&gt;](https://example.com/<b>)');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
 
