@@ -378,6 +378,14 @@ EOT;
         $this->assertHtmlGivesMarkdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
     }
 
+    public function testNonBreakingSpaces(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>This is a test and&nbsp;test</p>', "This is a test and\u{00A0}test");
+        $this->assertHtmlGivesMarkdown("<p>12,50\u{00A0}\u{00A0}€ \n total</p>", "12,50\u{00A0}\u{00A0}€ total");
+        $this->assertHtmlGivesMarkdown('<p><strong>Total:&nbsp;</strong>12,50&nbsp;€</p>', "**Total:** 12,50\u{00A0}€");
+        $this->assertHtmlGivesMarkdown('<p>a<em>&nbsp;</em>b</p>', "a\u{00A0}b");
+    }
+
     public function testSetOption(): void
     {
         $markdown = new HtmlConverter();
