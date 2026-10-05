@@ -15,6 +15,10 @@ class PreformattedConverter implements ConverterInterface
         \assert($preContent !== null);
         $preContent = \str_replace('</pre>', '', $preContent);
 
+        // A newline right after the <pre> start tag is not part of the content (HTML spec), but the parser keeps it
+        $preContent = \preg_replace('/^(?:\r\n|\r|\n)/', '', $preContent);
+        \assert($preContent !== null);
+
         /*
          * Checking for the code tag.
          * Usually pre tags are used along with code tags. This conditional will check for already converted code tags,
