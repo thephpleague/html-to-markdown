@@ -58,7 +58,18 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
             $number = $element->getSiblingPosition();
         }
 
-        return $prefix . $number . '. ' . $value . "\n";
+        // Anything else isn't a list marker, which would leave the item's contents as part of a paragraph
+        if ($number < 0 || $number > 999999999) {
+            $number = $element->getSiblingPosition();
+        }
+
+        // The lines after the first only belong to the item when indented as far as the end of its marker
+        $marker = $number . '. ';
+        if (\strlen($marker) > 4) {
+            $value = \str_replace("\n    ", "\n" . \str_repeat(' ', \strlen($marker)), $value);
+        }
+
+        return $prefix . $marker . $value . "\n";
     }
 
     /**

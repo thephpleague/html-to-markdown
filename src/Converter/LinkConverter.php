@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Backticks;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
@@ -21,8 +22,8 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 
     public function convert(ElementInterface $element): string
     {
-        $href  = $element->getAttribute('href');
-        $title = $element->getAttribute('title');
+        $href  = Backticks::escapeUrl($element->getAttribute('href'));
+        $title = Backticks::escapeText($element->getAttribute('title'));
         $text  = \trim($element->getValue(), "\t\n\r\0\x0B");
 
         if ($title !== '') {

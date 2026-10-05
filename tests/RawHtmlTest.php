@@ -45,6 +45,13 @@ final class RawHtmlTest extends TestCase
         $this->assertSame('<?php echo 1; ?>', RawHtml::fromElement($this->createElement('php', '<?php echo 1; ?>', 'echo 1; ')));
     }
 
+    public function testFromCode(): void
+    {
+        $this->assertSame('<code>&#60;b&#62;a b&#60;&#47;b&#62;</code>', RawHtml::fromCode("<b>a\n b</b>"));
+        $this->assertSame('<pre>&#96;a&#96;&#10;b&#124;c</pre>', RawHtml::fromCode("`a`\nb|c", 'pre'));
+        $this->assertSame('', RawHtml::fromCode(''));
+    }
+
     private function createElement(string $tag, string $html, string $value): ElementInterface
     {
         $element = $this->createStub(ElementInterface::class);

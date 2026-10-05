@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Backticks;
 use League\HTMLToMarkdown\ElementInterface;
 
 class ImageConverter implements ConverterInterface
 {
     public function convert(ElementInterface $element): string
     {
-        $src   = $element->getAttribute('src');
-        $alt   = $element->getAttribute('alt');
-        $title = $element->getAttribute('title');
+        $src   = Backticks::escapeUrl($element->getAttribute('src'));
+        $alt   = Backticks::escapeText($element->getAttribute('alt'));
+        $title = Backticks::escapeText($element->getAttribute('title'));
 
         if ($title !== '') {
             // No newlines added. <img> should be in a block-level element.

@@ -86,6 +86,29 @@ class Element implements ElementInterface
         return $this->previousSiblingCached !== null ? new self($this->previousSiblingCached) : null;
     }
 
+    /**
+     * @internal
+     *
+     * @return iterable<string> The current value of each earlier sibling, nearest first
+     */
+    public function getPrecedingSiblingValues(): iterable
+    {
+        for ($sibling = $this->node->previousSibling; $sibling !== null; $sibling = $sibling->previousSibling) {
+            // Anything else was never converted, such as the declarations before the root element
+            if ($sibling->nodeType === XML_TEXT_NODE) {
+                yield $sibling->textContent;
+            }
+        }
+    }
+
+    /**
+     * @internal
+     */
+    public function hasAttributes(): bool
+    {
+        return $this->node->hasAttributes();
+    }
+
     public function hasChildren(): bool
     {
         return $this->node->hasChildNodes();
