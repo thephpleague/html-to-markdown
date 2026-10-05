@@ -4,6 +4,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Security
+
+- Fixed attribute values of preserved HTML tags being able to break out of their quotes (GHSA-vc6h-86x6-wcjg)
+
+### Changed
+
+- Attribute values of preserved HTML tags are no longer entity-decoded, so they now contain `&amp;`, `&quot;` and `&#xA;` where the decoded characters used to be
+
 ## [5.1.2] - 2026-09-07
 
 ### Fixed

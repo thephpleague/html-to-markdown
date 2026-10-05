@@ -7,6 +7,7 @@ namespace League\HTMLToMarkdown\Converter;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\RawHtml;
 
 class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 {
@@ -42,7 +43,7 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
             if ($this->shouldStrip()) {
                 $markdown = $text;
             } else {
-                $markdown = \html_entity_decode($element->getChildrenAsString());
+                $markdown = RawHtml::fromElement($element);
             }
         }
 

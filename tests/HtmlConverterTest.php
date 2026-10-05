@@ -304,6 +304,13 @@ EOT;
         $this->assertHtmlGivesMarkdown("<pre class='some-class'>test with attributes</pre>", "```\ntest with attributes\n```");
     }
 
+    public function testAttributesOfRawHtmlStayEncoded(): void
+    {
+        $this->assertHtmlGivesMarkdown('<span title="&quot; onmouseover=&quot;alert(1)">x</span>', '<span title="&quot; onmouseover=&quot;alert(1)">x</span>');
+        $this->assertHtmlGivesMarkdown('<a title="&quot; onmouseover=&quot;alert(1)">x</a>', '<a title="&quot; onmouseover=&quot;alert(1)">x</a>');
+        $this->assertHtmlGivesMarkdown('<div title="&quot;"><em>x</em> &amp; &lt;y&gt;</div>', '<div title="&quot;">*x* &amp; &lt;y&gt;</div>');
+    }
+
     public function testBlockquotes(): void
     {
         $this->assertHtmlGivesMarkdown('<blockquote>Something I said?</blockquote>', '> Something I said?');
