@@ -403,6 +403,22 @@ EOT;
         $this->assertHtmlGivesMarkdown('<div title="&quot;`"><em>x</em> &amp; &lt;y&gt;</div>', '<div title="&quot;&#96;">*x* &amp; &lt;y&gt;</div>');
     }
 
+    public function testLinkAndImageAttributesStayInsideOfTheirSyntax(): void
+    {
+        $this->assertHtmlGivesMarkdown('<a href="u" title="t&quot;) &lt;b&gt; [l](v) \">x</a>', '[x](u "t&quot;) &lt;b&gt; &#91;l&#93;(v) &#92;")');
+        $this->assertHtmlGivesMarkdown('<a href="u" title="AT&amp;T &amp;lt; **b** _c_">x</a>', '[x](u "AT&amp;T &amp;lt; &#42;&#42;b&#42;&#42; &#95;c&#95;")');
+        $this->assertHtmlGivesMarkdown('<a href="u) &lt;b&gt;">x</a>', '[x](u%29%20%3Cb%3E)');
+        $this->assertHtmlGivesMarkdown('<a href="u)&quot;[l](v)\**b**">x</a>', '[x](u%29%22%5Bl%5D%28v%29%5C%2A%2Ab%2A%2A)');
+        $this->assertHtmlGivesMarkdown('<a href="u v" title="t">x</a>', '[x](u%20v "t")');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a_(b)?c=d&amp;e=f#g">x</a>', '[x](https://example.com/a_(b)?c=d&e=f#g)');
+        $this->assertHtmlGivesMarkdown('<a href="((((a))))">x</a>', '[x](%28%28%28%28a%29%29%29%29)');
+        $this->assertHtmlGivesMarkdown('<a href="http://[::1]/">http://[::1]/</a>', '[http://\[::1\]/](http://%5B::1%5D/)');
+        $this->assertHtmlGivesMarkdown('<a href="mailto:!--@example.com">!--@example.com</a>', '[!--@example.com](mailto:!--@example.com)');
+        $this->assertHtmlGivesMarkdown('<img src="u v)" alt="a](v) &lt;b&gt;" title="&quot;">', '![a&#93;(v) &lt;b&gt;](u%20v%29 "&quot;")');
+        $this->assertHtmlGivesMarkdown('<img src="a_(b).png" alt="[a]">', '![&#91;a&#93;](a_(b).png)');
+        $this->assertHtmlGivesMarkdown('<img alt="a" title="b c">', '![a](<> "b c")');
+    }
+
     public function testCodeDelimitersCannotBeEscaped(): void
     {
         $this->assertHtmlGivesMarkdown('<ul><li>a<br><code>- b</code></li></ul>', "- a  \n    `- b`");

@@ -8,13 +8,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 - Fixed `<pre>` and `<code>` contents being able to break out of their code block or span (GHSA-8m5h-gv5q-jmp5)
 - Fixed attribute values of preserved HTML tags being able to break out of their quotes (GHSA-vc6h-86x6-wcjg)
+- Fixed the `href`, `src`, `title` and `alt` of links and images being able to break out of the Markdown link or image they are output as (GHSA-r2cp-59h5-vgjj)
 
 ### Changed
 
 These changes to the output are all part of the fixes above.
 
 - Backticks in regular text, and in the `alt` and `title` of links and images, are now output as `&#96;`, and as `%60` in URLs. This is visible wherever the Markdown is read without being rendered.
-- Pipes in regular text are now escaped as `\|`, or as `&#124;` inside a `<div>`
+- In the `alt` and `title` of links and images, `&`, `"`, `<`, `>`, `[`, `]`, `\`, `*` and `_` are now output as entities
+- In the URLs of links and images, spaces, `"`, `<`, `>`, `[`, `]`, `\`, `*` and control characters are now percent-encoded, as are parentheses which aren't balanced or are nested more than three deep. A URL containing a space is no longer put in angle brackets.
+- An image with a `title` but no `src` now has `<>` as its destination
+- An email address starting with `!` or `?` is no longer output as an autolink
 - Code blocks and spans now use delimiters which can't be closed by the backticks they contain, and spans are padded with spaces where needed to keep their contents intact
 - `<pre>`, `<blockquote>`, `<ul>`, `<ol>`, and tables converted by `TableConverter`, are now separated from anything before them by a blank line. A list nested in a list item directly after a preserved block-level tag becomes a loose list as a result.
 - Inline `<code>` is now always converted to a code span instead of sometimes becoming a fenced block

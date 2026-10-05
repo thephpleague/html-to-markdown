@@ -62,11 +62,6 @@ final class Backticks
         return \str_replace(['`', "\r\n", "\r", "\n"], ['&#96;', ' ', ' ', ' '], $text);
     }
 
-    public static function escapeUrl(string $url): string
-    {
-        return \str_replace(['`', "\r", "\n"], ['%60', '%0D', '%0A'], $url);
-    }
-
     /**
      * @return int[]
      */
