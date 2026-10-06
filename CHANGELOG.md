@@ -4,6 +4,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.1.3] - 2026-10-05
+
 ### Security
 
 - Fixed `<pre>` and `<code>` contents being able to break out of their code block or span (GHSA-8m5h-gv5q-jmp5)
@@ -365,7 +367,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...master
+[5.1.3]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/thephpleague/html-to-markdown/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/thephpleague/html-to-markdown/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/thephpleague/html-to-markdown/compare/5.0.2...5.1.0
