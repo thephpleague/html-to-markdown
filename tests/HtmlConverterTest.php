@@ -9,6 +9,7 @@ use League\HTMLToMarkdown\Converter\TableConverter;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\Environment;
 use League\HTMLToMarkdown\HtmlConverter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HtmlConverterTest extends TestCase
@@ -210,6 +211,45 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n    \n    Paragraph Item B\n    \n    \n    * Nested A\n    * Nested B \n        * Subnested A\n        * Subnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
         $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li><h2>Item B</h2>\n<p>Paragraph Item B</p>\n<ul>\n<li>Nested A</li>\n<li><h2>Nested B</h2>\n<p>Paragraph Nested B</p>\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li><h2>Subsubnested B</h2>\n<p>Paragraph Subsubnested B</p>\n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* ## Item B\n    \n    Paragraph Item B\n    \n    \n    * Nested A\n    * ## Nested B\n        \n        Paragraph Nested B\n        \n        \n        * Subnested A\n        * Subnested B \n            * Subsubnested A\n            * ## Subsubnested B\n                \n                Paragraph Subsubnested B\n                \n                \n                * Subsubsubnested A\n                * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
         $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li>Subsubnested B                                            \n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* Item B \n    * Nested A\n    * Nested B \n        * Subnested A\n        * Subnested B \n            * Subsubnested A\n            * Subsubnested B \n                * Subsubsubnested A\n                * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
+    }
+
+    public function testListItemsAreNumberedByWhatWasOutputBeforeThem(): void
+    {
+        $this->assertHtmlGivesMarkdown('<ol><!-- c --><li>A</li><span></span><li>B</li>text<li>C</li></ol>', "1. A\n<span></span>3. B\ntext5. C");
+        $this->assertHtmlGivesMarkdown('<ol><li>A</li><em>x</em><li>B</li><em>y</em><li>C</li></ol>', "1. A\n*x*3. B\n*y*5. C");
+        $this->assertHtmlGivesMarkdown('<ol><li>A</li><em>x</em><li>B</li><em>y</em><li>C</li></ol>', "1. A\n2. B\n3. C", ['remove_nodes' => 'em']);
+        $this->assertHtmlGivesMarkdown("<ol>\n<li>A</li>\n\n<li>B<ol><li>N1</li> <li>N2</li></ol></li>\n<li>C</li></ol>", "1. A\n2. B\n    1. N1\n    2. N2\n3. C");
+        $this->assertHtmlGivesMarkdown('<ul><li>A<ul><li>N1</li><li>N2</li></ul></li><li>B</li></ul><ul><li>C</li><li>D</li></ul>', "- A\n    * N1\n    * N2\n- B\n\n* C\n* D", ['list_item_style_alternate' => '*']);
+    }
+
+    /**
+     * @dataProvider provideManySiblings
+     */
+    #[DataProvider('provideManySiblings')]
+    public function testManySiblingsDoNotTakeDisproportionatelyLong(int $count, string $before, string $repeated, string $after, string $expectedEnd): void
+    {
+        $html = $before . \str_repeat($repeated, $count) . $after;
+
+        $start    = \microtime(true);
+        $markdown = (new HtmlConverter())->convert($html);
+        $elapsed  = \microtime(true) - $start;
+
+        $this->assertStringEndsWith($expectedEnd, $markdown);
+
+        // Each of these took several times longer than this when the time taken grew with the square of the count
+        $this->assertLessThan(10, $elapsed);
+    }
+
+    /**
+     * @return iterable<string, array{int, string, string, string, string}>
+     */
+    public static function provideManySiblings(): iterable
+    {
+        yield 'ordered list items' => [10000, '<ol>', '<li>x</li>', '</ol>', "\n10000. x"];
+        yield 'nested list items' => [10000, '<ul><li><ul>', '<li>x</li>', '</ul></li></ul>', "\n    - x"];
+        yield 'preformatted blocks' => [10000, '', '<pre><code>x</code></pre>', '', "\n\n```\nx\n```"];
+        yield 'preserved tags' => [30000, '<p>', '<span>x</span> ', '</p>', ' <span>x</span>'];
+        yield 'code spans' => [30000, '<p>', '<code>x</code> ', '</p>', ' `x`'];
     }
 
     public function testListLikeThingsWhichArentLists(): void

@@ -15,6 +15,9 @@ class Element implements ElementInterface
     /** @var \DOMNode|null */
     private $previousSiblingCached;
 
+    /** @var SiblingPositionCache|null */
+    private $siblingPositions;
+
     public function __construct(\DOMNode $node)
     {
         $this->node = $node;
@@ -119,13 +122,16 @@ class Element implements ElementInterface
      */
     public function getChildren(): array
     {
-        $ret = [];
+        $ret              = [];
+        $siblingPositions = new SiblingPositionCache();
         foreach ($this->node->childNodes as $node) {
             // PHPStan 1.x, which is what PHP 7.2 resolves to, has no generic type for
             // DOMNodeList and infers mixed here.
             /** @psalm-suppress RedundantCondition */
             \assert($node instanceof \DOMNode);
-            $ret[] = new self($node);
+            $child                   = new self($node);
+            $child->siblingPositions = $siblingPositions;
+            $ret[]                   = $child;
         }
 
         return $ret;
@@ -189,37 +195,73 @@ class Element implements ElementInterface
         }
 
         $markdownNode = $this->node->ownerDocument->createTextNode($markdown);
-        $this->node->parentNode->replaceChild($markdownNode, $this->node);
+        $this->node->parentNode->insertBefore($markdownNode, $this->node);
+
+        // Replacing or removing a child directly takes time proportional to how many siblings come before it,
+        // on older versions of PHP, whereas the only child of a fragment is found straight away
+        $fragment = $this->node->ownerDocument->createDocumentFragment();
+        $fragment->appendChild($this->node);
+        $fragment->removeChild($this->node);
     }
 
     public function getChildrenAsString(): string
     {
-        return $this->node->C14N();
+        if (! $this->node instanceof \DOMElement) {
+            return $this->node->C14N();
+        }
+
+        // Canonicalizing anything less than a whole document takes time proportional to the size of the document
+        // for each node output, so the element is put in a document of its own
+        $document = new \DOMDocument();
+        $document->appendChild($document->importNode($this->node, true));
+
+        return $document->C14N();
     }
 
     public function getSiblingPosition(): int
     {
-        $position = 0;
-
-        $parent = $this->getParent();
-        if ($parent === null) {
-            return $position;
+        if ($this->node->parentNode === null) {
+            return 0;
         }
 
-        // Loop through all nodes and find the given $node
-        foreach ($parent->getChildren() as $currentNode) {
-            if (! $currentNode->isWhitespace()) {
-                $position++;
-            }
+        if ($this->siblingPositions === null) {
+            $this->siblingPositions = new SiblingPositionCache();
+        }
 
-            // TODO: Need a less-buggy way of comparing these
-            // Perhaps we can somehow ensure that we always have the exact same object and use === instead?
-            if ($this->equals($currentNode)) {
+        // Siblings are converted in order, so only those since the last one asked about need counting
+        $cache    = $this->siblingPositions;
+        $own      = self::isWhitespaceNode($this->node) ? 0 : 1;
+        $position = $own;
+        $previous = $this->node->previousSibling;
+
+        // Anything other than text is yet to be replaced by its Markdown, which could change whether it counts
+        $isSettled = true;
+        for ($sibling = $previous; $sibling !== null; $sibling = $sibling->previousSibling) {
+            if ($sibling === $cache->anchor) {
+                $position += $cache->position;
                 break;
             }
+
+            if ($sibling->nodeType !== XML_TEXT_NODE) {
+                $isSettled = false;
+            }
+
+            if (! self::isWhitespaceNode($sibling)) {
+                $position++;
+            }
+        }
+
+        if ($isSettled && $previous !== null) {
+            $cache->anchor   = $previous;
+            $cache->position = $position - $own;
         }
 
         return $position;
+    }
+
+    private static function isWhitespaceNode(\DOMNode $node): bool
+    {
+        return $node->nodeName === '#text' && \trim($node->nodeValue ?? '') === '';
     }
 
     public function getListItemLevel(): int

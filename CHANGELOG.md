@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Security
+
+- Fixed the time taken to convert a document growing with the square of the number of elements sharing a parent, rather than in proportion to it (GHSA-h3wg-gqjr-jjmw). This affected list items, `<pre>`, `<code>`, table rows and cells and preserved HTML tags on every version of PHP, and all other elements on older versions of PHP (seen on 8.0 and below).
+
 ## [5.1.3] - 2026-10-05
 
 ### Security
