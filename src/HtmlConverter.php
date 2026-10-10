@@ -21,6 +21,11 @@ use League\HTMLToMarkdown\Converter\LinkConverter;
  */
 class HtmlConverter implements HtmlConverterInterface
 {
+    /**
+     * Blocks which start a new paragraph when they come right after inline content
+     */
+    private const SEPARATED_BLOCK_TAGS = ['blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'pre'];
+
     /** @var Environment */
     protected $environment;
 
@@ -205,13 +210,17 @@ class HtmlConverter implements HtmlConverterInterface
      *
      * Finds children of each node and convert those to #text nodes containing their Markdown equivalent,
      * starting with the innermost element and working up to the outermost element.
+     *
+     * @param bool $followsInlineContent Whether the element comes right after inline content, like an image, on the same line
+     *
+     * @return string The Markdown the element was replaced with
      */
-    private function convertChildren(ElementInterface $element): void
+    private function convertChildren(ElementInterface $element, bool $followsInlineContent = false): string
     {
         // Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
         // except if the current node is a code tag, which needs to be converted by the CodeConverter.
         if ($element->isDescendantOf(['pre', 'code']) && $element->getTagName() !== 'code') {
-            return;
+            return '';
         }
 
         // Give converter a chance to inspect/modify the DOM before children are converted
@@ -240,8 +249,14 @@ class HtmlConverter implements HtmlConverterInterface
 
         // If the node has children, convert those to Markdown first
         if ($element->hasChildren()) {
+            $childFollowsInlineContent = false;
             foreach ($element->getChildren() as $child) {
-                $this->convertChildren($child);
+                $childMarkdown = $this->convertChildren($child, $childFollowsInlineContent);
+                if ($child->getTagName() === '#comment' || \trim($childMarkdown, ' ') === '') {
+                    continue;
+                }
+
+                $childFollowsInlineContent = ! $child->isBlock() && \substr(\rtrim($childMarkdown, ' '), -1) !== "\n";
             }
         }
 
@@ -282,10 +297,17 @@ class HtmlConverter implements HtmlConverterInterface
             }
         }
 
+        // These blocks only add newlines after themselves, so one that follows inline content, like an image, needs them before it too
+        if ($followsInlineContent && \in_array($element->getTagName(), self::SEPARATED_BLOCK_TAGS, true) && \trim($markdown) !== '') {
+            $markdown = "\n\n" . $markdown;
+        }
+
         // Create a DOM text node containing the Markdown equivalent of the original node
 
         // Replace the old $node e.g. '<h3>Title</h3>' with the new $markdown_node e.g. '### Title'
         $element->setFinalMarkdown($markdown);
+
+        return $markdown;
     }
 
     /**

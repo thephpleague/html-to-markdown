@@ -135,6 +135,10 @@ class HtmlConverterTest extends TestCase
     public function testImage(): void
     {
         $this->assertHtmlGivesMarkdown('<img src="/path/img.jpg" alt="alt text" title="Title" />', '![alt text](/path/img.jpg "Title")');
+        $this->assertHtmlGivesMarkdown("<img src=\"a.png\" />\n<h3>A new header</h3>", "![](a.png)\n\n### A new header");
+        $this->assertHtmlGivesMarkdown('<img src="a.png" /><p>Paragraph</p>', "![](a.png)\n\nParagraph");
+        $this->assertHtmlGivesMarkdown('<a href="b.html"><img src="a.png" /></a><h3>A new header</h3>', "[![](a.png)](b.html)\n\n### A new header");
+        $this->assertHtmlGivesMarkdown('<blockquote><img src="a.png" /><p>Paragraph</p></blockquote>', "> ![](a.png)\n> \n> Paragraph");
     }
 
     public function testAnchor(): void
