@@ -40,7 +40,11 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $tag   = $this->getNormTag($element);
         $value = $element->getValue();
 
-        if (! \trim($value)) {
+        // Unlike trim(), this also strips non-breaking spaces, which would keep the delimiters from flanking the text
+        $content = \preg_replace('~^\s+|\s+$~u', '', $value);
+        \assert(\is_string($content));
+
+        if (! $content) {
             return $value;
         }
 
@@ -50,8 +54,8 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
             $style = Coerce::toString($this->config->getOption('bold_style'));
         }
 
-        $prefix = \ltrim($value) !== $value ? ' ' : '';
-        $suffix = \rtrim($value) !== $value ? ' ' : '';
+        $prefix = \preg_match('~^\s~u', $value) === 1 ? ' ' : '';
+        $suffix = \preg_match('~\s$~u', $value) === 1 ? ' ' : '';
 
         /* If this node is immediately preceded or followed by one of the same type don't emit
          * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
@@ -60,7 +64,7 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
         $postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
 
-        return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
+        return $prefix . $preStyle . $content . $postStyle . $suffix;
     }
 
     /**

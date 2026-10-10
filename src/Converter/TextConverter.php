@@ -16,8 +16,8 @@ class TextConverter implements ConverterInterface
         // Remove leftover \n at the beginning of the line
         $markdown = \ltrim($markdown, "\n");
 
-        // Replace sequences of invisible characters with spaces
-        $markdown = \preg_replace('~\s+~u', ' ', $markdown);
+        // Replace sequences of invisible characters with spaces, keeping non-breaking spaces
+        $markdown = \preg_replace('~[^\S\x{00A0}]+~u', ' ', $markdown);
         \assert(\is_string($markdown));
 
         // Escape the following characters: '*', '_', '[', ']', '|' and '\'
