@@ -4,6 +4,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.1.4] - 2026-10-10
+
 ### Security
 
 - Fixed the time taken to convert a document growing with the square of the number of elements sharing a parent, rather than in proportion to it (GHSA-h3wg-gqjr-jjmw). This affected list items, `<pre>`, `<code>`, table rows and cells and preserved HTML tags on every version of PHP, and all other elements on older versions of PHP (seen on 8.0 and below).
@@ -371,7 +373,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...master
+[5.1.4]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/thephpleague/html-to-markdown/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/thephpleague/html-to-markdown/compare/5.1.0...5.1.1
