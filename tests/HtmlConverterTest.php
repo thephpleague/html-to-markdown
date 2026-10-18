@@ -519,12 +519,20 @@ EOT;
         $converter = new HtmlConverter(['remove_nodes' => 'a']);
         $this->assertSame('', $converter->convert('<a href="https://example.com">https://example.com</a>'));
 
+        $this->assertSame([], $this->getLinkLabels($converter));
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getLinkLabels(HtmlConverter $converter)
+    {
         $labels = new \ReflectionProperty(LinkConverter::class, 'labels');
         if (\PHP_VERSION_ID < 80100) {
             $labels->setAccessible(true);
         }
 
-        $this->assertSame([], $labels->getValue($converter->getEnvironment()->getConverterByTag('a')));
+        return $labels->getValue($converter->getEnvironment()->getConverterByTag('a'));
     }
 
     public function testConverterCanBeReusedAfterAFailedConversion(): void
@@ -553,6 +561,16 @@ EOT;
         }
 
         $this->assertSame('Use `foo()`', $converter->convert('<p>Use <code>foo()</code></p>'));
+
+        try {
+            $converter->convert('<a href="u"><blink>x</blink></a>');
+            $this->fail();
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('Failed', $exception->getMessage());
+        }
+
+        $this->assertSame('<https://example.com>', $converter->convert('<a href="https://example.com">https://example.com</a>'));
+        $this->assertSame([], $this->getLinkLabels($converter));
     }
 
     public function testBlocksContainingCodeStartOnTheirOwnLine(): void

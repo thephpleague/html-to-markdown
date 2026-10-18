@@ -36,6 +36,11 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface, 
             return;
         }
 
+        // Otherwise one which failed to be converted would leave its label behind
+        if (! $element->isDescendantOf('a')) {
+            $this->labels = [];
+        }
+
         foreach ($element->getChildren() as $child) {
             if (! $child->isText()) {
                 $this->labels[] = null;
