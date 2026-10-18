@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Backticks;
 use League\HTMLToMarkdown\ElementInterface;
 
 class TextConverter implements ConverterInterface
@@ -19,9 +20,10 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~\s+~u', ' ', $markdown);
         \assert(\is_string($markdown));
 
-        // Escape the following characters: '*', '_', '[', ']' and '\'
-        if (($parent = $element->getParent()) && $parent->getTagName() !== 'div') {
-            $markdown = \preg_replace('~([*_\\[\\]\\\\])~u', '\\\\$1', $markdown);
+        // Escape the following characters: '*', '_', '[', ']', '|' and '\'
+        $isEscaped = ($parent = $element->getParent()) && $parent->getTagName() !== 'div';
+        if ($isEscaped) {
+            $markdown = \preg_replace('~([*_\\[\\]|\\\\])~u', '\\\\$1', $markdown);
             \assert(\is_string($markdown));
         }
 
@@ -35,7 +37,14 @@ class TextConverter implements ConverterInterface
             }
         }
 
-        return \htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
+        $markdown = \htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
+
+        // A pipe could otherwise make a table out of its line, cutting through any code span on the line above
+        if (! $isEscaped) {
+            $markdown = \str_replace('|', '&#124;', $markdown);
+        }
+
+        return Backticks::escapeText($markdown);
     }
 
     /**

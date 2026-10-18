@@ -23,7 +23,7 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
         $return = $this->config->getOption('hard_break') ? "\n" : "  \n";
 
         $next = $element->getNext();
-        if ($next) {
+        if ($next && ! $this->startsWithCode($next)) {
             $nextValue = $next->getValue();
             if ($nextValue) {
                 if (\in_array(\substr($nextValue, 0, 2), ['- ', '* ', '+ '], true)) {
@@ -44,5 +44,25 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
     public function getSupportedTags(): array
     {
         return ['br'];
+    }
+
+    /**
+     * A backslash before a code span would escape its delimiter
+     */
+    private function startsWithCode(ElementInterface $element): bool
+    {
+        while (true) {
+            if ($element->getTagName() === 'code') {
+                return true;
+            }
+
+            // Text nodes have no child list at all on older versions of PHP
+            $children = $element->hasChildren() ? $element->getChildren() : [];
+            if ($children === []) {
+                return false;
+            }
+
+            $element = $children[0];
+        }
     }
 }

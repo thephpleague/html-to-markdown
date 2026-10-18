@@ -3,7 +3,7 @@ HTML To Markdown for PHP
 
 [![Latest Version](https://img.shields.io/packagist/v/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
 [![Software License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/html-to-markdown/Tests/master.svg?style=flat-square)](https://github.com/thephpleague/html-to-markdown/actions?query=workflow%3ATests+branch%3Amaster)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/thephpleague/html-to-markdown/tests.yml?branch=master&style=flat-square)](https://github.com/thephpleague/html-to-markdown/actions?query=workflow%3ATests+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
