@@ -41,8 +41,9 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $tag   = $this->getNormTag($element);
         $value = $element->getValue();
 
-        // Delimiters next to any Unicode whitespace, including non-breaking spaces, wouldn't be recognized
-        if (\preg_match('~^(\s*)(.*?)(\s*)\z~su', $value, $matches) !== 1) {
+        // Delimiters next to any Unicode whitespace, including non-breaking spaces, wouldn't be recognized.
+        // The lookbehind keeps the trailing whitespace from being tried at every position within a long run of it.
+        if (\preg_match('~^(\s*+)(.*?)((?<!\s)\s*+)\z~su', $value, $matches) !== 1) {
             return $value;
         }
 

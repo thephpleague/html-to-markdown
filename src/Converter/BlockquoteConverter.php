@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 
 class BlockquoteConverter implements ConverterInterface
 {
@@ -15,7 +16,7 @@ class BlockquoteConverter implements ConverterInterface
 
         $markdown = '';
 
-        $quoteContent = \trim($element->getValue());
+        $quoteContent = NoBreakSpaces::trim($element->getValue());
 
         $lines = \preg_split('/\r\n|\r|\n/', $quoteContent);
         \assert(\is_array($lines));

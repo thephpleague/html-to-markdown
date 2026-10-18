@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 
 class ParagraphConverter implements ConverterInterface
 {
@@ -26,7 +27,7 @@ class ParagraphConverter implements ConverterInterface
             $markdown .= "\n";
         }
 
-        return \trim($markdown) !== '' ? \rtrim($markdown) . "\n\n" : '';
+        return NoBreakSpaces::trim($markdown) !== '' ? NoBreakSpaces::rtrim($markdown) . "\n\n" : '';
     }
 
     /**

@@ -31,7 +31,7 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
         \assert(\is_string($markdown));
 
-        if (\preg_match('~^\s+\z~u', $markdown) === 1) {
+        if (\preg_match('~^\s++\z~u', $markdown) === 1) {
             $next = $element->getNext();
             if (! $next || $next->isBlock()) {
                 $markdown = '';

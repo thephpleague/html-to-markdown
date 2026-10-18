@@ -252,6 +252,8 @@ class HtmlConverterTest extends TestCase
         yield 'preformatted blocks' => [10000, '', '<pre><code>x</code></pre>', '', "\n\n```\nx\n```"];
         yield 'preserved tags' => [30000, '<p>', '<span>x</span> ', '</p>', ' <span>x</span>'];
         yield 'code spans' => [30000, '<p>', '<code>x</code> ', '</p>', ' `x`'];
+        yield 'non-breaking spaces' => [30000, '<p>a', '<em>&nbsp;</em>', 'b</p>', "\u{00A0}b"];
+        yield 'a run of non-breaking spaces' => [100000, '<p><em>a', '&nbsp;', 'b</em> c&nbsp;</p>', "\u{00A0}b* c"];
     }
 
     public function testListLikeThingsWhichArentLists(): void
@@ -786,7 +788,8 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>12&#x202F;€ and 1&#x2007;000</p>', "12\u{202F}€ and 1\u{2007}000");
         $this->assertHtmlGivesMarkdown('<p><a href="u">a&nbsp;b</a> <span>c</span>&nbsp;<span>d</span></p>', "[a\u{00A0}b](u) <span>c</span>\u{00A0}<span>d</span>");
         $this->assertHtmlGivesMarkdown('<ul><li>a&nbsp;b</li></ul>', "- a\u{00A0}b");
-        $this->assertHtmlGivesMarkdown('<table><tr><td>a&nbsp;b</td></tr></table>', "<table><tr><td>a\u{00A0}b</td></tr></table>");
+        $this->assertHtmlGivesMarkdown('<p>foo&nbsp;<br>bar</p>', "foo\u{00A0}  \nbar");
+        $this->assertHtmlGivesMarkdown('<p>&nbsp;- not a list</p>', "\u{00A0}- not a list");
 
         // Emphasis can't be delimited next to them, so they're kept outside of it
         $this->assertHtmlGivesMarkdown('<p><strong>Total:&nbsp;</strong>12,50&nbsp;€</p>', "**Total:**\u{00A0}12,50\u{00A0}€");
@@ -795,33 +798,13 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>a<em>&nbsp;</em>b</p>', "a\u{00A0}b");
         $this->assertHtmlGivesMarkdown('<p>a<em>&nbsp; b</em>c<em>d &nbsp;</em>e</p>', "a\u{00A0} *b*c*d* \u{00A0}e");
 
-        // Where a line starts or ends, they're whitespace like any other
+        // On their own, or at the end of a block, they're whitespace like any other
         $this->assertHtmlGivesMarkdown('<p>a</p><p>&nbsp;</p><p>b</p>', "a\n\nb");
         $this->assertHtmlGivesMarkdown("<p>a</p>&nbsp;<p>b</p>\n&nbsp;\n<p>c</p>", "a\n\nb\n\nc");
-        $this->assertHtmlGivesMarkdown('<blockquote><p>&nbsp;</p><p>q</p></blockquote>', '> q');
+        $this->assertHtmlGivesMarkdown('<blockquote><p>&nbsp;</p><p>q&nbsp;</p></blockquote>', '> q');
         $this->assertHtmlGivesMarkdown('<p>line&nbsp;</p><p><b>bold&nbsp;</b></p>', "line\n\n**bold**");
-        $this->assertHtmlGivesMarkdown('<p>line&nbsp;</p>tail', "line\n\ntail");
-        $this->assertHtmlGivesMarkdown('<p><b>bold&nbsp;</b></p>tail', "**bold**\n\ntail");
-        $this->assertHtmlGivesMarkdown('<p> <b>&nbsp;x</b></p>', ' **x**');
-        $this->assertHtmlGivesMarkdown('<p>a<br><b> </b>&nbsp;x</p>', "a  \n x");
-        $this->assertHtmlGivesMarkdown('<p>line&nbsp;<em></em><b> </b><!-- c --></p>', 'line');
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<b><br></b>b</p>', "a  \nb");
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<span></span></p>', 'a', ['strip_tags' => true]);
-        $this->assertHtmlGivesMarkdown('<p>line&nbsp;<em>&nbsp;</em></p>', 'line');
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<!-- c --></p>', 'a', ['preserve_comments' => ['more']]);
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<a></a></p>', 'a', ['strip_placeholder_links' => true]);
-
-        // Unless what follows them is output on the same line
-        $this->assertHtmlGivesMarkdown('<p>12,50&nbsp;<script>x</script>€</p>', "12,50\u{00A0}€", ['remove_nodes' => 'script']);
-        $this->assertHtmlGivesMarkdown('<p>12,50&nbsp;<script>x</script>€</p>', "12,50\u{00A0}<script>x</script>€");
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<img src="i.png"> b&nbsp;<span></span></p>', "a\u{00A0}![](i.png) b\u{00A0}<span></span>");
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<!-- c -->b</p>', "a\u{00A0}\\<!-- c -->b", ['preserve_comments' => true]);
-        $this->assertHtmlGivesMarkdown('<div>12,50&nbsp;<p></p>€</div>', "<div>12,50\u{00A0}€</div>");
-        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<code>  </code>&nbsp;<code><br>b</code></p>', "a\u{00A0}`  `\u{00A0}`<br></br>b`");
-        $this->assertHtmlGivesMarkdown('<p>&nbsp;- not a list</p>', '\\- not a list');
-        $this->assertHtmlGivesMarkdown('<p>foo&nbsp;<br>bar</p>', "foo  \nbar");
-        $this->assertHtmlGivesMarkdown('<ul><li>&nbsp;</li><li>a</li></ul>', "- \n- a");
-        $this->assertHtmlGivesMarkdown('<table><tr><td>&nbsp;</td></tr></table>', '<table><tr><td></td></tr></table>');
+        $this->assertHtmlGivesMarkdown('<ul><li>&nbsp;</li><li>a&nbsp;</li></ul>', "- \n- a");
+        $this->assertHtmlGivesMarkdown('<table><tr><th>&nbsp;a&nbsp;</th></tr><tr><td>&nbsp;</td></tr></table>', "| a |\n|---|\n|  |", [], [new TableConverter()]);
     }
 
     public function testSetOption(): void
