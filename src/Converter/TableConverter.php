@@ -8,6 +8,7 @@ use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 use League\HTMLToMarkdown\PreConverterInterface;
 
 class TableConverter implements ConverterInterface, PreConverterInterface, ConfigurationAwareInterface
@@ -70,7 +71,8 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 
                 return $value . "\n";
             case 'caption':
-                $this->caption = \trim($value);
+                // A leading no-break space is kept, as whatever follows it wasn't escaped as being at the start of the line
+                $this->caption = \ltrim(NoBreakSpaces::rtrim($value));
 
                 return '';
             case 'tr':
@@ -98,7 +100,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
                 }, $value);
                 \assert($value !== null);
 
-                return '| ' . \trim($value) . ' ';
+                return '| ' . NoBreakSpaces::trim($value) . ' ';
             case 'thead':
             case 'tbody':
             case 'tfoot':

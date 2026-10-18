@@ -6,6 +6,7 @@ namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Backticks;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 
 class TextConverter implements ConverterInterface
 {
@@ -16,8 +17,8 @@ class TextConverter implements ConverterInterface
         // Remove leftover \n at the beginning of the line
         $markdown = \ltrim($markdown, "\n");
 
-        // Replace sequences of invisible characters with spaces
-        $markdown = \preg_replace('~\s+~u', ' ', $markdown);
+        // Replace sequences of invisible characters with spaces, other than those which keep text on the same line
+        $markdown = \preg_replace('~[^\S' . NoBreakSpaces::CHARACTERS . ']+~u', ' ', $markdown);
         \assert(\is_string($markdown));
 
         // Escape the following characters: '*', '_', '[', ']', '|' and '\'
@@ -30,9 +31,9 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
         \assert(\is_string($markdown));
 
-        if ($markdown === ' ') {
+        if (\preg_match('~^\s++\z~u', $markdown) === 1) {
             $next = $element->getNext();
-            if (! $next || $next->isBlock()) {
+            if (! $next || $next->isBlock() || \in_array($next->getTagName(), ['pre', 'table'], true)) {
                 $markdown = '';
             }
         }

@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 
 class ParagraphConverter implements ConverterInterface
 {
     public function convert(ElementInterface $element): string
     {
-        $value = $element->getValue();
+        // Trimmed first, so that whatever is then at the end is escaped as being there
+        $value = NoBreakSpaces::rtrim($element->getValue());
 
         $markdown = '';
 
@@ -57,6 +59,11 @@ class ParagraphConverter implements ConverterInterface
             '---',
             '- - -',
         ];
+
+        // On its own, either would be an empty list item
+        if (\in_array(\trim($line), ['-', '+'], true)) {
+            return '\\' . \ltrim($line);
+        }
 
         foreach ($escapable as $i) {
             if (\strpos(\ltrim($line), $i) === 0) {
