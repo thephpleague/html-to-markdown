@@ -51,7 +51,7 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
             return $value;
         }
 
-        $end      = $matches[0][1];
+        $end      = (int) $matches[0][1];
         $leading  = \substr($value, 0, $start);
         $content  = \substr($value, $start, $end - $start);
         $trailing = \substr($value, $end);
