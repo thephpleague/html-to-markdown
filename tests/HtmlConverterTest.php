@@ -533,7 +533,7 @@ EOT;
         $this->assertHtmlGivesMarkdown('<em><pre>' . $script . '</pre></em>', '*' . $encoded . '*');
         $this->assertHtmlGivesMarkdown('<a href="u"><pre><code class="language-php">' . $script . '</code></pre></a>', '[' . $encoded . '](u)');
         $this->assertHtmlGivesMarkdown("<h2><pre>a\nb</pre></h2>", "<pre>a&#10;b</pre>\n------------------");
-        $this->assertHtmlGivesMarkdown("<b><pre>\n\nfoo</pre></b>", "**<pre>&#10;&#10;foo</pre>**");
+        $this->assertHtmlGivesMarkdown("<b><pre>\n\nfoo</pre></b>", '**<pre>&#10;&#10;foo</pre>**');
         $this->assertHtmlGivesMarkdown('<ul><li><ul><li><pre>' . $script . '</pre></li></ul></li></ul>', '- - ' . $encoded);
         $this->assertHtmlGivesMarkdown('<ul><li><ul><li>a</li><li><pre>' . $script . '</pre></li></ul></li></ul>', "- - a\n    - " . $encoded);
         $this->assertHtmlGivesMarkdown('<ul><li><div><ul><li><pre>' . $script . '</pre></li></ul></div></li></ul>', '- - ' . $encoded, ['strip_tags' => true]);
