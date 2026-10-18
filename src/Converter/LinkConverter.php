@@ -81,7 +81,8 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
     {
         $useAutolinks = $this->config->getOption('use_autolinks');
 
-        return $useAutolinks && (\preg_match('/^[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*/i', $href) === 1);
+        // A table could escape a `|` as an entity, which isn't decoded in an autolink
+        return $useAutolinks && \strpos($href, '|') === false && (\preg_match('/^[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*/i', $href) === 1);
     }
 
     private function isValidEmail(string $email): bool

@@ -288,6 +288,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<table><tr><td><a href="http://example.com">link</a></td></tr></table>', "| [link](http://example.com) |\n|---|", $opt, $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a \\| b |", $opt, $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a ][ b |", ['table_pipe_escape' => ']['], $conv);
+        $this->assertHtmlGivesMarkdown('<table><tr><th>A</th></tr><tr><td><a href="https://example.com/a|b">https://example.com/a|b</a></td></tr></table>', "| A |\n|---|\n| [https://example.com/a&#124;b](https://example.com/a&#124;b) |", ['table_pipe_escape' => '&#124;'], $conv);
         $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "Cap\n\n| A |\n|---|", ['table_caption_side' => 'top'], $conv);
         $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|\n\nCap", ['table_caption_side' => 'bottom'], $conv);
         $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|", ['table_caption_side' => null], $conv);
