@@ -804,6 +804,15 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p><b>bold&nbsp;</b></p>tail', "**bold**\n\ntail");
         $this->assertHtmlGivesMarkdown('<p> <b>&nbsp;x</b></p>', '  **x**');
         $this->assertHtmlGivesMarkdown('<p>a<br><b> </b>&nbsp;x</p>', "a  \n  x");
+        $this->assertHtmlGivesMarkdown('<p>line&nbsp;<em></em><b> </b><!-- c --></p>', 'line');
+        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<b><br></b>b</p>', "a   \nb");
+        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<span></span></p>', 'a', ['strip_tags' => true]);
+
+        // Unless what follows them is output on the same line
+        $this->assertHtmlGivesMarkdown('<p>12,50&nbsp;<script>x</script>€</p>', "12,50\u{00A0}€", ['remove_nodes' => 'script']);
+        $this->assertHtmlGivesMarkdown('<p>12,50&nbsp;<script>x</script>€</p>', "12,50\u{00A0}<script>x</script>€");
+        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<img src="i.png"> b&nbsp;<span></span></p>', "a\u{00A0}![](i.png) b\u{00A0}<span></span>");
+        $this->assertHtmlGivesMarkdown('<p>a&nbsp;<!-- c -->b</p>', "a\u{00A0}\\<!-- c -->b", ['preserve_comments' => true]);
         $this->assertHtmlGivesMarkdown('<p>&nbsp;- not a list</p>', '\\- not a list');
         $this->assertHtmlGivesMarkdown('<p>foo&nbsp;<br>bar</p>', "foo   \nbar");
         $this->assertHtmlGivesMarkdown('<ul><li>&nbsp;</li><li>a</li></ul>', "- \n- a");
