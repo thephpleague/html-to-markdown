@@ -500,7 +500,15 @@ class HtmlConverter implements HtmlConverterInterface
     private function getLeadingBlankLine(ElementInterface $element, ConverterInterface $converter): string
     {
         $tag = $element->getTagName();
-        if (! \in_array($tag, ['blockquote', 'ol', 'pre', 'table', 'ul'], true) && ! $this->isOutsideOfItsContainer($element, $converter)) {
+
+        // These would otherwise be run into the inline Markdown before them, such as an image.
+        // On the same line as raw HTML, they can't be parsed as Markdown either way.
+        $isParagraphLike = \in_array($tag, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p'], true);
+        if ($isParagraphLike && $this->isAfterRawHtml) {
+            return '';
+        }
+
+        if (! $isParagraphLike && ! \in_array($tag, ['blockquote', 'ol', 'pre', 'table', 'ul'], true) && ! $this->isOutsideOfItsContainer($element, $converter)) {
             return '';
         }
 
@@ -511,7 +519,7 @@ class HtmlConverter implements HtmlConverterInterface
         // A list inside of another is already put on a line of its own, which is enough to continue the outer one
         $parent   = $element->getParent();
         $isNested = $parent !== null && ($parent->getTagName() === 'li' || (\in_array($parent->getTagName(), ['ol', 'ul'], true) && RawHtml::startsLine($element)));
-        if (! $this->isAfterRawHtml && $tag !== 'pre' && $tag !== 'blockquote' && $tag !== 'table' && $isNested) {
+        if (! $this->isAfterRawHtml && \in_array($tag, ['ol', 'ul', 'li', 'tr'], true) && $isNested) {
             return '';
         }
 
