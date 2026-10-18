@@ -791,6 +791,10 @@ EOT;
         $this->assertHtmlGivesMarkdown('<ul><li>a&nbsp;b</li></ul>', "- a\u{00A0}b");
         $this->assertHtmlGivesMarkdown('<p>foo&nbsp;<br>bar</p>', "foo\u{00A0}  \nbar");
         $this->assertHtmlGivesMarkdown('<p>&nbsp;- not a list</p>', "\u{00A0}- not a list");
+        $this->assertHtmlGivesMarkdown('<blockquote><p>&nbsp;- not a list</p></blockquote>', "> \u{00A0}- not a list");
+        $this->assertHtmlGivesMarkdown('<ul><li><p>&nbsp;- not a list</p></li><li>&nbsp;- nor this</li></ul>', "- \u{00A0}- not a list\n- \u{00A0}- nor this");
+        $this->assertHtmlGivesMarkdown('<table><caption>&nbsp;- not a list</caption><tr><td>a</td></tr></table>', "\u{00A0}- not a list\n\n| a |\n|---|", [], [new TableConverter()]);
+        $this->assertHtmlGivesMarkdown('<p>120.&nbsp;</p><p>-&nbsp;</p><p>a<br>+&nbsp;</p>', "120\\.\n\n\\-\n\na  \n\\+");
 
         // Emphasis can't be delimited next to them, so they're kept outside of it
         $this->assertHtmlGivesMarkdown('<p><strong>Total:&nbsp;</strong>12,50&nbsp;€</p>', "**Total:**\u{00A0}12,50\u{00A0}€");

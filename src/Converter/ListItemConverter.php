@@ -31,7 +31,8 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
         // Add spaces to start for nested list items
         $level = $element->getListItemLevel();
 
-        $value = \trim(\implode("\n" . '    ', \explode("\n", NoBreakSpaces::trim($element->getValue()))));
+        // A leading no-break space is kept, as whatever follows it wasn't escaped as being at the start of the line
+        $value = \trim(\implode("\n" . '    ', \explode("\n", \ltrim(NoBreakSpaces::rtrim($element->getValue())))));
 
         // If list item is the first in a nested list, add a newline before it
         $prefix = '';

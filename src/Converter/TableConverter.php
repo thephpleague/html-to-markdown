@@ -71,7 +71,8 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 
                 return $value . "\n";
             case 'caption':
-                $this->caption = NoBreakSpaces::trim($value);
+                // A leading no-break space is kept, as whatever follows it wasn't escaped as being at the start of the line
+                $this->caption = \ltrim(NoBreakSpaces::rtrim($value));
 
                 return '';
             case 'tr':
