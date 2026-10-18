@@ -177,6 +177,11 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%5C_b">https://example.com/a_b</a>', '[https://example.com/a\\_b](https://example.com/a%5C_b)');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/%26lt;b%26gt;">https://example.com/&lt;b&gt;</a>', '[https://example.com/&lt;b&gt;](https://example.com/%26lt;b%26gt;)');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/%2Afoo%2A">https://example.com/<em>foo</em></a>', '[https://example.com/*foo*](https://example.com/%2Afoo%2A)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%20%20%0Ab">https://example.com/a<br>b</a>', '[https://example.com/a  ' . "\n" . 'b](https://example.com/a%20%20%0Ab)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%0Ab">https://example.com/a<br>b</a>', '[https://example.com/a' . "\n" . 'b](https://example.com/a%0Ab)', ['hard_break' => true]);
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/%60">https://example.com/`</a>', '<https://example.com/%60>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/%26%2396;">https://example.com/`</a>', '[https://example.com/&#96;](https://example.com/%26%2396;)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/&amp;%2396;">https://example.com/&amp;#96;</a>', '<https://example.com/&%2396;>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
 

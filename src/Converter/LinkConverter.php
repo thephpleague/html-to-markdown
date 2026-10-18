@@ -60,15 +60,16 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
      */
     private function getPlainText(string $markdown): ?string
     {
-        // Text has all of these escaped, so any which aren't came from elements inside of the link
-        if (\preg_match('~^(?:\\\\[*_\[\]|\\\\#]|[^*_\[\]|\\\\`<>])*+\z~u', $markdown) !== 1) {
+        // Text has all of these escaped, and its line breaks collapsed, so any others came from elements inside of the link
+        if (\preg_match('~^(?:\\\\[*_\[\]|\\\\#]|[^*_\[\]|\\\\`<>\n])*+\z~u', $markdown) !== 1) {
             return null;
         }
 
         $text = \preg_replace('~\\\\(.)~u', '$1', $markdown);
         \assert(\is_string($text));
 
-        return \htmlspecialchars_decode($text, \ENT_NOQUOTES);
+        // Backticks were escaped last, so are undone first
+        return \htmlspecialchars_decode(\str_replace('&#96;', '`', $text), \ENT_NOQUOTES);
     }
 
     private function isSameUrl(string $href, string $label): bool
