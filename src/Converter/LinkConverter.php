@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
+use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
@@ -30,6 +31,11 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface, 
 
     public function preConvert(ElementInterface $element): void
     {
+        // A removed link isn't converted, so its label would never be taken back off
+        if (\in_array('a', \explode(' ', Coerce::toString($this->config->getOption('remove_nodes') ?? '')), true)) {
+            return;
+        }
+
         foreach ($element->getChildren() as $child) {
             if (! $child->isText()) {
                 $this->labels[] = null;

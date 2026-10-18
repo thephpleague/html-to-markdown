@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Converter\ConverterInterface;
+use League\HTMLToMarkdown\Converter\LinkConverter;
 use League\HTMLToMarkdown\Converter\TableConverter;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\Environment;
@@ -511,6 +512,19 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>a\<br><code>b</code></p>', "a\\\\\n`b`", ['hard_break' => true]);
         $this->assertHtmlGivesMarkdown('<div>\<code>a</code> and <code>b</code></div>', '\ `a` and `b`', ['strip_tags' => true]);
         $this->assertHtmlGivesMarkdown('<p>\<code>a</code></p>', '\\\\`a`');
+    }
+
+    public function testRemovedLinksLeaveNothingBehind(): void
+    {
+        $converter = new HtmlConverter(['remove_nodes' => 'a']);
+        $this->assertSame('', $converter->convert('<a href="https://example.com">https://example.com</a>'));
+
+        $labels = new \ReflectionProperty(LinkConverter::class, 'labels');
+        if (\PHP_VERSION_ID < 80100) {
+            $labels->setAccessible(true);
+        }
+
+        $this->assertSame([], $labels->getValue($converter->getEnvironment()->getConverterByTag('a')));
     }
 
     public function testConverterCanBeReusedAfterAFailedConversion(): void
