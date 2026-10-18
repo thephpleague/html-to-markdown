@@ -68,14 +68,17 @@ class TextConverter implements ConverterInterface
     private function startsLine(ElementInterface $element): bool
     {
         $node = $element;
-        while (($end = PrecedingMarkdown::getEndOfSiblings($node)) === '') {
+        while (true) {
+            $end = PrecedingMarkdown::getEndOfSiblings($node);
+            if ($end !== '') {
+                return \substr($end, -1) === "\n";
+            }
+
             $node = $node->getParent();
             if ($node === null || RawHtml::isBlockTag($node->getTagName())) {
                 return true;
             }
         }
-
-        return \substr($end, -1) === "\n";
     }
 
     private function endsLine(ElementInterface $element): bool
