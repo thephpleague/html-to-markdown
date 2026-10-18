@@ -28,7 +28,7 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 
         if ($title !== '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } elseif ($href === \str_replace('&amp;', '&', $text) && $this->isValidAutolink($href)) {
+        } elseif ($this->isSameUrl($href, $text) && $this->isValidAutolink($href)) {
             $markdown = '<' . $href . '>';
         } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text) && \strpbrk($text[0], '!?') === false) {
             $markdown = '<' . $text . '>';
@@ -53,6 +53,12 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
     public function getSupportedTags(): array
     {
         return ['a'];
+    }
+
+    private function isSameUrl(string $href, string $text): bool
+    {
+        // The text may show characters which are percent-encoded in the href, such as a `/` for `%2F`
+        return \rawurldecode($href) === \rawurldecode(\str_replace('&amp;', '&', $text));
     }
 
     private function isValidAutolink(string $href): bool

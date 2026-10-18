@@ -166,6 +166,11 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="https://www.google.com">https://www.google.com</a>', '<https://www.google.com>');
         $this->assertHtmlGivesMarkdown('<a href="ftp://files.example.com">ftp://files.example.com</a>', '<ftp://files.example.com>');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/?a=1&amp;b=2">https://example.com/?a=1&amp;b=2</a>', '<https://example.com/?a=1&b=2>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/?a=1&b=foo%2Fbar">https://example.com/?a=1&amp;b=foo/bar</a>', '<https://example.com/?a=1&b=foo%2Fbar>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/caf%C3%A9">https://example.com/café</a>', '<https://example.com/caf%C3%A9>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a b">https://example.com/a b</a>', '<https://example.com/a%20b>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%2fb">https://example.com/a%2Fb</a>', '<https://example.com/a%2fb>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/?q=a+b">https://example.com/?q=a b</a>', '[https://example.com/?q=a b](https://example.com/?q=a+b)');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/&lt;b&gt;">https://example.com/&lt;b&gt;</a>', '[https://example.com/&lt;b&gt;](https://example.com/%3Cb%3E)');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
