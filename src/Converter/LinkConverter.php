@@ -4,65 +4,31 @@ declare(strict_types=1);
 
 namespace League\HTMLToMarkdown\Converter;
 
-use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\LinkSyntax;
-use League\HTMLToMarkdown\PreConverterInterface;
 use League\HTMLToMarkdown\RawHtml;
 
-class LinkConverter implements ConverterInterface, ConfigurationAwareInterface, PreConverterInterface
+class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 {
     /** @var Configuration */
     protected $config;
-
-    /**
-     * Each link's text from before its children were converted, or null where it has more than text in it
-     *
-     * @var array<int, string|null>
-     */
-    private $labels = [];
 
     public function setConfig(Configuration $config): void
     {
         $this->config = $config;
     }
 
-    public function preConvert(ElementInterface $element): void
-    {
-        // A removed link isn't converted, so its label would never be taken back off
-        if (\in_array('a', \explode(' ', Coerce::toString($this->config->getOption('remove_nodes') ?? '')), true)) {
-            return;
-        }
-
-        // Otherwise one which failed to be converted would leave its label behind
-        if (! $element->isDescendantOf('a')) {
-            $this->labels = [];
-        }
-
-        foreach ($element->getChildren() as $child) {
-            if (! $child->isText()) {
-                $this->labels[] = null;
-
-                return;
-            }
-        }
-
-        $this->labels[] = \trim($element->getValue(), "\t\n\r\0\x0B");
-    }
-
     public function convert(ElementInterface $element): string
     {
-        $label = \array_pop($this->labels);
-
         $href  = LinkSyntax::escapeDestination($element->getAttribute('href'));
         $title = LinkSyntax::escapeText($element->getAttribute('title'));
         $text  = \trim($element->getValue(), "\t\n\r\0\x0B");
 
         if ($title !== '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } elseif ($label !== null && $this->isSameUrl($href, $label) && $this->isValidAutolink($href)) {
+        } elseif (($label = $this->getPlainText($text)) !== null && $this->isSameUrl($href, $label) && $this->isValidAutolink($href)) {
             $markdown = '<' . $href . '>';
         } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text) && \strpbrk($text[0], '!?') === false) {
             $markdown = '<' . $text . '>';
@@ -87,6 +53,22 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface, 
     public function getSupportedTags(): array
     {
         return ['a'];
+    }
+
+    /**
+     * Undoes the escaping of text, or returns null where the Markdown has more than text in it
+     */
+    private function getPlainText(string $markdown): ?string
+    {
+        // Text has all of these escaped, so any which aren't came from elements inside of the link
+        if (\preg_match('~^(?:\\\\[*_\[\]|\\\\#]|[^*_\[\]|\\\\`<>])*+\z~u', $markdown) !== 1) {
+            return null;
+        }
+
+        $text = \preg_replace('~\\\\(.)~u', '$1', $markdown);
+        \assert(\is_string($text));
+
+        return \htmlspecialchars_decode($text, \ENT_NOQUOTES);
     }
 
     private function isSameUrl(string $href, string $label): bool

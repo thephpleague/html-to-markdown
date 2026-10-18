@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Converter\ConverterInterface;
-use League\HTMLToMarkdown\Converter\LinkConverter;
 use League\HTMLToMarkdown\Converter\TableConverter;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\Environment;
@@ -514,27 +513,6 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>\<code>a</code></p>', '\\\\`a`');
     }
 
-    public function testRemovedLinksLeaveNothingBehind(): void
-    {
-        $converter = new HtmlConverter(['remove_nodes' => 'a']);
-        $this->assertSame('', $converter->convert('<a href="https://example.com">https://example.com</a>'));
-
-        $this->assertSame([], $this->getLinkLabels($converter));
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getLinkLabels(HtmlConverter $converter)
-    {
-        $labels = new \ReflectionProperty(LinkConverter::class, 'labels');
-        if (\PHP_VERSION_ID < 80100) {
-            $labels->setAccessible(true);
-        }
-
-        return $labels->getValue($converter->getEnvironment()->getConverterByTag('a'));
-    }
-
     public function testConverterCanBeReusedAfterAFailedConversion(): void
     {
         $converter = new HtmlConverter();
@@ -561,16 +539,6 @@ EOT;
         }
 
         $this->assertSame('Use `foo()`', $converter->convert('<p>Use <code>foo()</code></p>'));
-
-        try {
-            $converter->convert('<a href="u"><blink>x</blink></a>');
-            $this->fail();
-        } catch (\RuntimeException $exception) {
-            $this->assertSame('Failed', $exception->getMessage());
-        }
-
-        $this->assertSame('<https://example.com>', $converter->convert('<a href="https://example.com">https://example.com</a>'));
-        $this->assertSame([], $this->getLinkLabels($converter));
     }
 
     public function testBlocksContainingCodeStartOnTheirOwnLine(): void
