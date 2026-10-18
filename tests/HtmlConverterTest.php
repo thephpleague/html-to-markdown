@@ -171,7 +171,12 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/a b">https://example.com/a b</a>', '<https://example.com/a%20b>');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%2fb">https://example.com/a%2Fb</a>', '<https://example.com/a%2fb>');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/?q=a+b">https://example.com/?q=a b</a>', '[https://example.com/?q=a b](https://example.com/?q=a+b)');
-        $this->assertHtmlGivesMarkdown('<a href="https://example.com/&lt;b&gt;">https://example.com/&lt;b&gt;</a>', '[https://example.com/&lt;b&gt;](https://example.com/%3Cb%3E)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/&lt;b&gt;">https://example.com/&lt;b&gt;</a>', '<https://example.com/%3Cb%3E>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a_b*c">https://example.com/a_b*c</a>', '<https://example.com/a_b%2Ac>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%5Fb">https://example.com/a_b</a>', '<https://example.com/a%5Fb>');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a%5C_b">https://example.com/a_b</a>', '[https://example.com/a\\_b](https://example.com/a%5C_b)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/%26lt;b%26gt;">https://example.com/&lt;b&gt;</a>', '[https://example.com/&lt;b&gt;](https://example.com/%26lt;b%26gt;)');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/%2Afoo%2A">https://example.com/<em>foo</em></a>', '[https://example.com/*foo*](https://example.com/%2Afoo%2A)');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test@example.com">test@example.com</a>', '<test@example.com>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:test+foo@example.bar-baz.com">test+foo@example.bar-baz.com</a>', '<test+foo@example.bar-baz.com>');
 
@@ -490,7 +495,7 @@ EOT;
         $this->assertHtmlGivesMarkdown('<a href="u v" title="t">x</a>', '[x](u%20v "t")');
         $this->assertHtmlGivesMarkdown('<a href="https://example.com/a_(b)?c=d&amp;e=f#g">x</a>', '[x](https://example.com/a_(b)?c=d&e=f#g)');
         $this->assertHtmlGivesMarkdown('<a href="((((a))))">x</a>', '[x](%28%28%28%28a%29%29%29%29)');
-        $this->assertHtmlGivesMarkdown('<a href="http://[::1]/">http://[::1]/</a>', '[http://\[::1\]/](http://%5B::1%5D/)');
+        $this->assertHtmlGivesMarkdown('<a href="http://[::1]/">http://[::1]/</a>', '<http://%5B::1%5D/>');
         $this->assertHtmlGivesMarkdown('<a href="mailto:!--@example.com">!--@example.com</a>', '[!--@example.com](mailto:!--@example.com)');
         $this->assertHtmlGivesMarkdown('<img src="u v)" alt="a](v) &lt;b&gt;" title="&quot;">', '![a&#93;(v) &lt;b&gt;](u%20v%29 "&quot;")');
         $this->assertHtmlGivesMarkdown('<img src="a_(b).png" alt="[a]">', '![&#91;a&#93;](a_(b).png)');
