@@ -42,12 +42,19 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $value = $element->getValue();
 
         // Delimiters next to any Unicode whitespace, including non-breaking spaces, wouldn't be recognized.
-        // The lookbehind keeps the trailing whitespace from being tried at every position within a long run of it.
-        if (\preg_match('~^(\s*+)(.*?)((?<!\s)\s*+)\z~su', $value, $matches) !== 1) {
+        // Neither match can backtrack through the content, which could otherwise run out of the limit for it.
+        \preg_match('~^\s*+~u', $value, $matches);
+        $start = \strlen($matches[0] ?? '');
+
+        // The lookbehind keeps the trailing whitespace from being tried at every position within a long run of it
+        if ($start === \strlen($value) || \preg_match('~(?<!\s)\s*+\z~u', $value, $matches, \PREG_OFFSET_CAPTURE, $start) !== 1) {
             return $value;
         }
 
-        [, $leading, $content, $trailing] = $matches;
+        $end      = $matches[0][1];
+        $leading  = \substr($value, 0, $start);
+        $content  = \substr($value, $start, $end - $start);
+        $trailing = \substr($value, $end);
         if (! $content) {
             return $value;
         }

@@ -254,6 +254,7 @@ class HtmlConverterTest extends TestCase
         yield 'code spans' => [30000, '<p>', '<code>x</code> ', '</p>', ' `x`'];
         yield 'non-breaking spaces' => [30000, '<p>a', '<em>&nbsp;</em>', 'b</p>', "\u{00A0}b"];
         yield 'a run of non-breaking spaces' => [100000, '<p><em>a', '&nbsp;', 'b</em> c&nbsp;</p>', "\u{00A0}b* c"];
+        yield 'long emphasis' => [1000000, '<p><em>&nbsp;', 'a', '&nbsp;</em> b</p>', "a*\u{00A0} b"];
     }
 
     public function testListLikeThingsWhichArentLists(): void
