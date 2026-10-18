@@ -33,7 +33,7 @@ class TextConverter implements ConverterInterface
 
         if (\preg_match('~^\s++\z~u', $markdown) === 1) {
             $next = $element->getNext();
-            if (! $next || $next->isBlock()) {
+            if (! $next || $next->isBlock() || \in_array($next->getTagName(), ['pre', 'table'], true)) {
                 $markdown = '';
             }
         }

@@ -806,6 +806,7 @@ EOT;
         // On their own, or at the end of a block, they're whitespace like any other
         $this->assertHtmlGivesMarkdown('<p>a</p><p>&nbsp;</p><p>b</p>', "a\n\nb");
         $this->assertHtmlGivesMarkdown("<p>a</p>&nbsp;<p>b</p>\n&nbsp;\n<p>c</p>", "a\n\nb\n\nc");
+        $this->assertHtmlGivesMarkdown('<p>a</p>&nbsp;<pre>b</pre> <table><tr><td>c</td></tr></table>', "a\n\n```\nb\n```\n\n<table><tr><td>c</td></tr></table>");
         $this->assertHtmlGivesMarkdown('<blockquote><p>&nbsp;</p><p>q&nbsp;</p></blockquote>', '> q');
         $this->assertHtmlGivesMarkdown('<p>line&nbsp;</p><p><b>bold&nbsp;</b></p>', "line\n\n**bold**");
         $this->assertHtmlGivesMarkdown('<ul><li>&nbsp;</li><li>a&nbsp;</li></ul>', "- \n- a");
