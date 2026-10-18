@@ -11,6 +11,8 @@ use League\HTMLToMarkdown\ElementInterface;
 
 class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
 {
+    private const NO_BREAK_SPACES = '\x{00A0}\x{2007}\x{202F}';
+
     /** @var Configuration */
     protected $config;
 
@@ -40,7 +42,13 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $tag   = $this->getNormTag($element);
         $value = $element->getValue();
 
-        if (! \trim($value)) {
+        // Delimiters next to any Unicode whitespace, including non-breaking spaces, wouldn't be recognized
+        if (\preg_match('~^(\s*)(.*?)(\s*)\z~su', $value, $matches) !== 1) {
+            return $value;
+        }
+
+        [, $leading, $content, $trailing] = $matches;
+        if (! $content) {
             return $value;
         }
 
@@ -50,8 +58,8 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
             $style = Coerce::toString($this->config->getOption('bold_style'));
         }
 
-        $prefix = \ltrim($value) !== $value ? ' ' : '';
-        $suffix = \rtrim($value) !== $value ? ' ' : '';
+        $prefix = $this->getOuterWhitespace($leading);
+        $suffix = $this->getOuterWhitespace($trailing);
 
         /* If this node is immediately preceded or followed by one of the same type don't emit
          * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
@@ -60,7 +68,19 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
         $postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
 
-        return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
+        return $prefix . $preStyle . $content . $postStyle . $suffix;
+    }
+
+    private function getOuterWhitespace(string $whitespace): string
+    {
+        if ($whitespace === '') {
+            return '';
+        }
+
+        $noBreakSpaces = \preg_replace('~[^' . self::NO_BREAK_SPACES . ']~u', '', $whitespace);
+        \assert(\is_string($noBreakSpaces));
+
+        return $noBreakSpaces !== '' ? $noBreakSpaces : ' ';
     }
 
     /**
