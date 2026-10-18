@@ -8,11 +8,10 @@ use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\NoBreakSpaces;
 
 class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
 {
-    private const NO_BREAK_SPACES = '\x{00A0}\x{2007}\x{202F}';
-
     /** @var Configuration */
     protected $config;
 
@@ -73,7 +72,7 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
 
     private function getOuterWhitespace(string $whitespace): string
     {
-        $whitespace = \preg_replace('~[^\S' . self::NO_BREAK_SPACES . ']+~u', ' ', $whitespace);
+        $whitespace = \preg_replace('~[^\S' . NoBreakSpaces::CHARACTERS . ']+~u', ' ', $whitespace);
         \assert(\is_string($whitespace));
 
         return $whitespace;

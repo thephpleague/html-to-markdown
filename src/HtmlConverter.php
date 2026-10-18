@@ -249,6 +249,10 @@ class HtmlConverter implements HtmlConverterInterface
             $this->isInsideCleanTable = false;
         }
 
+        if ($element->hasChildren() && ($element->isBlock() || \in_array($tag, ['caption', 'td', 'th'], true))) {
+            NoBreakSpaces::removeFromEndsOfLines($element);
+        }
+
         // Now that child nodes have been converted, convert the original node.
         // Whatever converter it has, inline code can't be left as Markdown where that might not get parsed.
         if ($tag === 'code' && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {

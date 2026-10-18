@@ -55,28 +55,6 @@ final class PrecedingMarkdown
     }
 
     /**
-     * Whether only spaces have been output on the current line by the earlier siblings of the given element
-     *
-     * @return bool|null Null when they output nothing but spaces, so it depends on what came before them
-     */
-    public static function isAtStartOfLine(ElementInterface $element): ?bool
-    {
-        $siblings = 0;
-        foreach (self::getSiblingValues($element) as $value) {
-            $value = \rtrim($value, " \t");
-            if ($value !== '') {
-                return \substr($value, -1) === "\n";
-            }
-
-            if (++$siblings > 100) {
-                return false;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Whether a code span output next would have its delimiter merged with a backtick, or escaped by a backslash
      */
     public static function endsInDelimiterHazard(ElementInterface $element): bool
