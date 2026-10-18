@@ -6,8 +6,10 @@ namespace League\HTMLToMarkdown\Test;
 
 use League\HTMLToMarkdown\Converter\ConverterInterface;
 use League\HTMLToMarkdown\Converter\TableConverter;
+use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\Environment;
 use League\HTMLToMarkdown\HtmlConverter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HtmlConverterTest extends TestCase
@@ -48,7 +50,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<div>_test_</div>', '<div>_test_</div>');
         $this->assertHtmlGivesMarkdown('<div>*test*</div>', '<div>*test*</div>');
 
-        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ ` \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
+        $this->assertHtmlGivesMarkdown('<p>\ ` * _ { } [ ] ( ) &gt; > # + - . !</p>', '\\\\ &#96; \* \_ { } \[ \] ( ) &gt; &gt; # + - . !');
     }
 
     public function testLineBreaks(): void
@@ -213,6 +215,45 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown("<ul>\n<li>Item A</li>\n<li>Item B\n<ul>\n<li>Nested A</li>\n<li>Nested B\n<ul>\n<li>Subnested A</li>\n<li>Subnested B\n<ul>\n<li>Subsubnested A</li>\n<li>Subsubnested B                                            \n<ul>\n<li>Subsubsubnested A</li>\n<li>Subsubsubnested B</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>Item C</li>\n</ul>", "* Item A\n* Item B \n    * Nested A\n    * Nested B \n        * Subnested A\n        * Subnested B \n            * Subsubnested A\n            * Subsubnested B \n                * Subsubsubnested A\n                * Subsubsubnested B\n* Item C", ['list_item_style' => '*', 'header_style' => 'atx']);
     }
 
+    public function testListItemsAreNumberedByWhatWasOutputBeforeThem(): void
+    {
+        $this->assertHtmlGivesMarkdown('<ol><!-- c --><li>A</li><span></span><li>B</li>text<li>C</li></ol>', "1. A\n<span></span>3. B\ntext5. C");
+        $this->assertHtmlGivesMarkdown('<ol><li>A</li><em>x</em><li>B</li><em>y</em><li>C</li></ol>', "1. A\n*x*3. B\n*y*5. C");
+        $this->assertHtmlGivesMarkdown('<ol><li>A</li><em>x</em><li>B</li><em>y</em><li>C</li></ol>', "1. A\n2. B\n3. C", ['remove_nodes' => 'em']);
+        $this->assertHtmlGivesMarkdown("<ol>\n<li>A</li>\n\n<li>B<ol><li>N1</li> <li>N2</li></ol></li>\n<li>C</li></ol>", "1. A\n2. B\n    1. N1\n    2. N2\n3. C");
+        $this->assertHtmlGivesMarkdown('<ul><li>A<ul><li>N1</li><li>N2</li></ul></li><li>B</li></ul><ul><li>C</li><li>D</li></ul>', "- A\n    * N1\n    * N2\n- B\n\n* C\n* D", ['list_item_style_alternate' => '*']);
+    }
+
+    /**
+     * @dataProvider provideManySiblings
+     */
+    #[DataProvider('provideManySiblings')]
+    public function testManySiblingsDoNotTakeDisproportionatelyLong(int $count, string $before, string $repeated, string $after, string $expectedEnd): void
+    {
+        $html = $before . \str_repeat($repeated, $count) . $after;
+
+        $start    = \microtime(true);
+        $markdown = (new HtmlConverter())->convert($html);
+        $elapsed  = \microtime(true) - $start;
+
+        $this->assertStringEndsWith($expectedEnd, $markdown);
+
+        // Each of these took several times longer than this when the time taken grew with the square of the count
+        $this->assertLessThan(10, $elapsed);
+    }
+
+    /**
+     * @return iterable<string, array{int, string, string, string, string}>
+     */
+    public static function provideManySiblings(): iterable
+    {
+        yield 'ordered list items' => [10000, '<ol>', '<li>x</li>', '</ol>', "\n10000. x"];
+        yield 'nested list items' => [10000, '<ul><li><ul>', '<li>x</li>', '</ul></li></ul>', "\n    - x"];
+        yield 'preformatted blocks' => [10000, '', '<pre><code>x</code></pre>', '', "\n\n```\nx\n```"];
+        yield 'preserved tags' => [30000, '<p>', '<span>x</span> ', '</p>', ' <span>x</span>'];
+        yield 'code spans' => [30000, '<p>', '<code>x</code> ', '</p>', ' `x`'];
+    }
+
     public function testListLikeThingsWhichArentLists(): void
     {
         $this->assertHtmlGivesMarkdown('<p>120.<p>', '120\.');
@@ -234,8 +275,8 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<table><tr><td><a href="http://example.com">link</a></td></tr></table>', "| [link](http://example.com) |\n|---|", $opt, $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a \\| b |", $opt, $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th>A</th></tr><tr><td>a | b</td></tr></table>', "| A |\n|---|\n| a ][ b |", ['table_pipe_escape' => ']['], $conv);
-        $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "Cap\n| A |\n|---|", ['table_caption_side' => 'top'], $conv);
-        $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|\nCap", ['table_caption_side' => 'bottom'], $conv);
+        $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "Cap\n\n| A |\n|---|", ['table_caption_side' => 'top'], $conv);
+        $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|\n\nCap", ['table_caption_side' => 'bottom'], $conv);
         $this->assertHtmlGivesMarkdown('<table><caption>Cap</caption><tr><th>A</th></tr></table>', "| A |\n|---|", ['table_caption_side' => null], $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th align="left">A</th></tr></table>', "| A |\n|:--|", $opt, $conv);
         $this->assertHtmlGivesMarkdown('<table><tr><th align="right">A</th></tr></table>', "| A |\n|--:|", $opt, $conv);
@@ -273,10 +314,10 @@ EOT;
     {
         $this->assertHtmlGivesMarkdown('<code>&lt;p&gt;Some sample HTML&lt;/p&gt;</code>', '`<p>Some sample HTML</p>`');
         $this->assertHtmlGivesMarkdown("<code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code>", '`<p>Some sample HTML</p><p>And another line</p>`');
-        $this->assertHtmlGivesMarkdown('<code>`</code>', '```');
+        $this->assertHtmlGivesMarkdown('<code>`</code>', '`` ` ``');
         $this->assertHtmlGivesMarkdown('<code>test</code>', '`test`');
         $this->assertHtmlGivesMarkdown('<code>test `` test</code>', '`test `` test`');
-        $this->assertHtmlGivesMarkdown('<code>test` `test</code>', "```\ntest` `test\n```");
+        $this->assertHtmlGivesMarkdown('<code>test` `test</code>', '``test` `test``');
         $this->assertHtmlGivesMarkdown("<p><code>\n&lt;p&gt;Some sample HTML&lt;/p&gt;\n&lt;p&gt;And another line&lt;/p&gt;\n</code></p><p>Paragraph after code.</p>", "`<p>Some sample HTML</p><p>And another line</p>`\n\nParagraph after code.");
         $this->assertHtmlGivesMarkdown("<p><code>\n#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", '`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`');
         $this->assertHtmlGivesMarkdown("<p><code>#sidebar h1 {\n    font-size: 1.5em;\n    font-weight: bold;\n}\n</code></p>", '`#sidebar h1 {    font-size: 1.5em;    font-weight: bold;}`');
@@ -304,6 +345,335 @@ EOT;
         $this->assertHtmlGivesMarkdown("<pre>\n</pre><pre>\n</pre>", "```\n\n```\n\n```\n\n```");
         $this->assertHtmlGivesMarkdown("<pre>one\ntwo\r\nthree</pre>\n<p>line</p>", "```\none\ntwo\nthree\n```\n\nline");
         $this->assertHtmlGivesMarkdown("<pre class='some-class'>test with attributes</pre>", "```\ntest with attributes\n```");
+    }
+
+    public function testCodeSpanContainingBackticks(): void
+    {
+        $this->assertHtmlGivesMarkdown('<code>a` &lt;script&gt;alert(1)&lt;/script&gt; `b</code>', '``a` <script>alert(1)</script> `b``');
+        $this->assertHtmlGivesMarkdown('<code>a` &lt;script&gt;alert(1)&lt;/script&gt; ``b</code>', '```a` <script>alert(1)</script> ``b```');
+        $this->assertHtmlGivesMarkdown('<code>`a</code>', '`` `a ``');
+        $this->assertHtmlGivesMarkdown('<code>a`</code>', '`` a` ``');
+        $this->assertHtmlGivesMarkdown('<code>``</code>', '` `` `');
+        $this->assertHtmlGivesMarkdown('<code> a </code>', '`  a  `');
+        $this->assertHtmlGivesMarkdown('<code>  </code>', '`  `');
+        $this->assertHtmlGivesMarkdown('<code>a<code>b</code></code>', '`` a`b` ``');
+        $this->assertHtmlGivesMarkdown("<p>x <code>a` `\n```\n**b**</code> y</p>", 'x ``a` ````**b**`` y');
+    }
+
+    public function testCodeBlockContainingFences(): void
+    {
+        $script = '&lt;script&gt;alert(1)&lt;/script&gt;';
+
+        $this->assertHtmlGivesMarkdown("<pre>a\n```\n" . $script . '</pre>', "````\na\n```\n<script>alert(1)</script>\n````");
+        $this->assertHtmlGivesMarkdown("<pre>a\n   `````\n" . $script . '</pre>', "``````\na\n   `````\n<script>alert(1)</script>\n``````");
+        $this->assertHtmlGivesMarkdown("<pre><code>a\n```\n" . $script . '</code></pre>', "````\na\n```\n<script>alert(1)</script>\n````");
+        $this->assertHtmlGivesMarkdown("<pre><code class=\"language-php\">a\n```\n" . $script . '</code></pre>', "````php\na\n```\n<script>alert(1)</script>\n````");
+    }
+
+    public function testPreformatContainingBackticksIsAlwaysFenced(): void
+    {
+        $script = '&lt;script&gt;alert(1)&lt;/script&gt;';
+
+        $this->assertHtmlGivesMarkdown('<pre>`a` ' . $script . ' `b`</pre>', "```\n`a` <script>alert(1)</script> `b`\n```");
+        $this->assertHtmlGivesMarkdown("<pre>`a`\n\n" . $script . "\n\n`b`</pre>", "```\n`a`\n\n<script>alert(1)</script>\n\n`b`\n```");
+        $this->assertHtmlGivesMarkdown("<pre>```\na\n```\n" . $script . "\n```\nb\n```</pre>", "````\n```\na\n```\n<script>alert(1)</script>\n```\nb\n```\n````");
+        $this->assertHtmlGivesMarkdown('<pre><code>a</code>' . $script . '<code>b</code></pre>', "```\na<script>alert(1)</script>b\n```");
+        $this->assertHtmlGivesMarkdown("<pre><code>a = 1</code>\n<code>b = 2</code></pre>", "```\na = 1\nb = 2\n```");
+        $this->assertHtmlGivesMarkdown('<pre><span>1</span><code class="language-php">a</code></pre>', "```\n<span>1</span>a\n```");
+        $this->assertHtmlGivesMarkdown('<pre>     <code>' . $script . '</code></pre>', "```\n<script>alert(1)</script>\n```");
+    }
+
+    public function testPreformatAlwaysStartsOnItsOwnLine(): void
+    {
+        $script = '&lt;script&gt;alert(1)&lt;/script&gt;';
+        $fenced = "```\n<script>alert(1)</script>\n```";
+
+        $this->assertHtmlGivesMarkdown('<span>x</span><pre>' . $script . '</pre>', "<span>x</span>\n\n" . $fenced);
+        $this->assertHtmlGivesMarkdown('<span>x</span><pre>' . $script . '</pre>', "x\n\n" . $fenced, ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<span>x</span><pre><code>' . $script . '</code></pre>', "x\n\n" . $fenced, ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<ul><li>x<pre>' . $script . '</pre></li></ul>', "- x\n    \n    ```\n    <script>alert(1)</script>\n    ```");
+        $this->assertHtmlGivesMarkdown('<div><pre>' . $script . '</pre></div>', "<div>\n\n" . $fenced . "\n\n</div>");
+        $this->assertHtmlGivesMarkdown('<p>x</p><pre>' . $script . '</pre>', "x\n\n" . $fenced);
+        $this->assertHtmlGivesMarkdown('<html><head><title>T</title></head><body><pre>' . $script . '</pre></body></html>', "T\n\n" . $fenced, ['strip_tags' => true]);
+    }
+
+    public function testBackticksOutsideOfCodeCannotDelimitIt(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>` <code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>', '&#96; `<script>alert(1)</script>`');
+        $this->assertHtmlGivesMarkdown('<div>\` and <code>a</code></div>', '\&#96; and `a`', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<code>a</code><code>b</code>', '`a` `b`');
+        $this->assertHtmlGivesMarkdown('<code>a</code><span><code>b</code></span>', '`a` `b`', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p>x<code></code> y <code>a</code></p>', 'x y `a`');
+        $this->assertHtmlGivesMarkdown('<p><img src="x`" alt="`" title="`"> and <code>a</code></p>', '![&#96;](x%60 "&#96;") and `a`');
+        $this->assertHtmlGivesMarkdown('<p><a href="x`" title="`">`</a> and <code>a</code></p>', '[&#96;](x%60 "&#96;") and `a`');
+    }
+
+    public function testCodeInsideOfRawHtmlStaysAsHtml(): void
+    {
+        $script  = '&lt;script&gt;alert(1)&lt;/script&gt;';
+        $encoded = '<code>&#60;script&#62;alert&#40;1&#41;&#60;&#47;script&#62;</code>';
+
+        $this->assertHtmlGivesMarkdown('<div><code>' . $script . '</code></div>', '<div>' . $encoded . '</div>');
+        $this->assertHtmlGivesMarkdown('<div><p>Use <code>foo()</code> here</p></div>', "<div>Use <code>foo&#40;&#41;</code> here\n\n</div>");
+        $this->assertHtmlGivesMarkdown('<table><tr><td><code>' . $script . '</code></td></tr></table>', '<table><tr><td>' . $encoded . '</td></tr></table>');
+        $this->assertHtmlGivesMarkdown('<address>x</address><code>' . $script . '</code>', '<address>x</address>' . $encoded);
+        $this->assertHtmlGivesMarkdown('<a id="x"><br><code>' . $script . '</code></a>', "<a id=\"x\">  \n" . $encoded . '</a>', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<!-- ` --><p><code>' . $script . '</code></p>', '<!-- ` -->' . $encoded, ['preserve_comments' => true]);
+
+        $this->assertHtmlGivesMarkdown('<body class="home"><p>Use <code>' . $script . '</code></p></body>', '<body class="home">Use ' . $encoded);
+        $this->assertHtmlGivesMarkdown('<html lang="en"><body><p>Use <code>' . $script . '</code></p></body></html>', '<html lang="en"><body>Use ' . $encoded);
+        $this->assertHtmlGivesMarkdown('<p>a</p><p><source src="x"><code>' . $script . '</code></p>', "a\n\n<source src=\"x\">" . $encoded . '</source>');
+
+        // These blocks aren't ended by a blank line
+        $this->assertHtmlGivesMarkdown("<p>a</p><style>b{}\n\nc{}</style><code>" . $script . '</code>', "a\n\n<style>b{}\n\nc{}</style>" . $encoded);
+        $this->assertHtmlGivesMarkdown("<!-- a\n\nb --><p><code>" . $script . '</code></p>', "<!-- a\n\nb -->" . $encoded, ['preserve_comments' => true]);
+
+        // Markdown is parsed again after a blank line
+        $this->assertHtmlGivesMarkdown('<div><p>a</p><p>Use <code>foo()</code></p></div>', "<div>a\n\nUse `foo()`\n\n</div>");
+        $this->assertHtmlGivesMarkdown('<div><p>a</p><div>Use <code>foo()</code></div></div>', "<div>a\n\n<div>Use <code>foo&#40;&#41;</code></div></div>");
+
+        // Markdown is still parsed here
+        $this->assertHtmlGivesMarkdown('<div><code>' . $script . '</code></div>', '`<script>alert(1)</script>`', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p><span>x</span> y <code>' . $script . '</code></p>', '<span>x</span> y `<script>alert(1)</script>`');
+        $this->assertHtmlGivesMarkdown('<div><pre>' . $script . '</pre></div>', "<div>\n\n```\n<script>alert(1)</script>\n```\n\n</div>");
+    }
+
+    public function testAttributesOfRawHtmlStayEncoded(): void
+    {
+        $this->assertHtmlGivesMarkdown('<span title="&quot; onmouseover=&quot;alert(1)">x</span>', '<span title="&quot; onmouseover=&quot;alert(1)">x</span>');
+        $this->assertHtmlGivesMarkdown('<a title="&quot; onmouseover=&quot;alert(1)">x</a>', '<a title="&quot; onmouseover=&quot;alert(1)">x</a>');
+        $this->assertHtmlGivesMarkdown('<div title="&quot;`"><em>x</em> &amp; &lt;y&gt;</div>', '<div title="&quot;&#96;">*x* &amp; &lt;y&gt;</div>');
+    }
+
+    public function testLinkAndImageAttributesStayInsideOfTheirSyntax(): void
+    {
+        $this->assertHtmlGivesMarkdown('<a href="u" title="t&quot;) &lt;b&gt; [l](v) \">x</a>', '[x](u "t&quot;) &lt;b&gt; &#91;l&#93;(v) &#92;")');
+        $this->assertHtmlGivesMarkdown('<a href="u" title="AT&amp;T &amp;lt; **b** _c_">x</a>', '[x](u "AT&amp;T &amp;lt; &#42;&#42;b&#42;&#42; &#95;c&#95;")');
+        $this->assertHtmlGivesMarkdown('<a href="u) &lt;b&gt;">x</a>', '[x](u%29%20%3Cb%3E)');
+        $this->assertHtmlGivesMarkdown('<a href="u)&quot;[l](v)\**b**">x</a>', '[x](u%29%22%5Bl%5D%28v%29%5C%2A%2Ab%2A%2A)');
+        $this->assertHtmlGivesMarkdown('<a href="u v" title="t">x</a>', '[x](u%20v "t")');
+        $this->assertHtmlGivesMarkdown('<a href="https://example.com/a_(b)?c=d&amp;e=f#g">x</a>', '[x](https://example.com/a_(b)?c=d&e=f#g)');
+        $this->assertHtmlGivesMarkdown('<a href="((((a))))">x</a>', '[x](%28%28%28%28a%29%29%29%29)');
+        $this->assertHtmlGivesMarkdown('<a href="http://[::1]/">http://[::1]/</a>', '[http://\[::1\]/](http://%5B::1%5D/)');
+        $this->assertHtmlGivesMarkdown('<a href="mailto:!--@example.com">!--@example.com</a>', '[!--@example.com](mailto:!--@example.com)');
+        $this->assertHtmlGivesMarkdown('<img src="u v)" alt="a](v) &lt;b&gt;" title="&quot;">', '![a&#93;(v) &lt;b&gt;](u%20v%29 "&quot;")');
+        $this->assertHtmlGivesMarkdown('<img src="a_(b).png" alt="[a]">', '![&#91;a&#93;](a_(b).png)');
+        $this->assertHtmlGivesMarkdown('<img alt="a" title="b c">', '![a](<> "b c")');
+    }
+
+    public function testCodeDelimitersCannotBeEscaped(): void
+    {
+        $this->assertHtmlGivesMarkdown('<ul><li>a<br><code>- b</code></li></ul>', "- a  \n    `- b`");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<br>- b</li></ul>', "- a  \n    \\- b");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<br><span>- b</span></li></ul>', "- a  \n    \\- b", ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<ul><li>a<br><span><code>- b</code></span></li></ul>', "- a  \n    `- b`", ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a\<br><code>b</code></p>', "a\\\\\n`b`", ['hard_break' => true]);
+        $this->assertHtmlGivesMarkdown('<div>\<code>a</code> and <code>b</code></div>', '\ `a` and `b`', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p>\<code>a</code></p>', '\\\\`a`');
+    }
+
+    public function testConverterCanBeReusedAfterAFailedConversion(): void
+    {
+        $converter = new HtmlConverter();
+        $converter->getEnvironment()->addConverter(new class implements ConverterInterface {
+            public function convert(ElementInterface $element): string
+            {
+                throw new \RuntimeException('Failed');
+            }
+
+            /**
+             * @return string[]
+             */
+            public function getSupportedTags(): array
+            {
+                return ['blink'];
+            }
+        });
+
+        try {
+            $converter->convert('<div><blink>x</blink></div>');
+            $this->fail();
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('Failed', $exception->getMessage());
+        }
+
+        $this->assertSame('Use `foo()`', $converter->convert('<p>Use <code>foo()</code></p>'));
+    }
+
+    public function testBlocksContainingCodeStartOnTheirOwnLine(): void
+    {
+        $script = '&lt;script&gt;alert(1)&lt;/script&gt;';
+        $fenced = "```\n> <script>alert(1)</script>\n> ```";
+
+        $this->assertHtmlGivesMarkdown('<span>x</span><blockquote><pre>' . $script . '</pre></blockquote>', "<span>x</span>\n\n> " . $fenced);
+        $this->assertHtmlGivesMarkdown('<a href="u">x</a><blockquote><pre>' . $script . '</pre></blockquote>', "[x](u)\n\n> " . $fenced, ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<address>x</address><ul><li><code>' . $script . '</code></li></ul>', "<address>x</address>\n\n- `<script>alert(1)</script>`");
+        $this->assertHtmlGivesMarkdown('<div><ul><li><h2></h2><h2></h2><code>' . $script . '</code></li></ul></div>', "<div>\n\n- `<script>alert(1)</script>`\n\n</div>");
+        $this->assertHtmlGivesMarkdown('<ul><li><address>x</address><ul><li><code>a</code></li></ul></li></ul>', "- <address>x</address>\n    \n    \n    - `a`");
+
+        $this->assertHtmlGivesMarkdown('<ul><li>a<br><pre>b</pre></li></ul>', "- a  \n    \n    ```\n    b\n    ```");
+        $this->assertHtmlGivesMarkdown(
+            '<table><caption><div>x</div></caption><tr><th>h</th></tr><tr><td><code>' . $script . '</code></td></tr></table>',
+            "<div>x</div>\n\n| h |\n|---|\n| <code>&#60;script&#62;alert&#40;1&#41;&#60;&#47;script&#62;</code> |",
+            [],
+            [new TableConverter()]
+        );
+
+        // Nothing changes where they already did
+        $this->assertHtmlGivesMarkdown('<ol><li>a</li><ol><li>b</li></ol></ol>', "1. a\n1. b");
+        $this->assertHtmlGivesMarkdown('<p>x</p><ul><li>a</li></ul><blockquote>q</blockquote><pre>p</pre>', "x\n\n- a\n\n> q\n\n```\np\n```");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<ul><li>b <code>c</code></li></ul></li></ul>', "- a\n    - b `c`");
+    }
+
+    public function testPreformatWhichCannotBeFencedStaysAsHtml(): void
+    {
+        $script  = '&lt;script&gt;alert(1)&lt;/script&gt;';
+        $encoded = '<pre>&#60;script&#62;alert&#40;1&#41;&#60;&#47;script&#62;</pre>';
+
+        $this->assertHtmlGivesMarkdown('<em><pre>' . $script . '</pre></em>', '*' . $encoded . '*');
+        $this->assertHtmlGivesMarkdown('<a href="u"><pre><code class="language-php">' . $script . '</code></pre></a>', '[' . $encoded . '](u)');
+        $this->assertHtmlGivesMarkdown("<h2><pre>a\nb</pre></h2>", "<pre>a&#10;b</pre>\n------------------");
+        $this->assertHtmlGivesMarkdown('<ul><li><ul><li><pre>' . $script . '</pre></li></ul></li></ul>', '- - ' . $encoded);
+        $this->assertHtmlGivesMarkdown('<ul><li><ul><li>a</li><li><pre>' . $script . '</pre></li></ul></li></ul>', "- - a\n    - " . $encoded);
+        $this->assertHtmlGivesMarkdown('<ul><li><div><ul><li><pre>' . $script . '</pre></li></ul></div></li></ul>', '- - ' . $encoded, ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown(
+            '<ul><li><ul><li><details>a</details></li><li><code>' . $script . '</code></li></ul></li></ul>',
+            "- - <details>a</details>\n    - <code>&#60;script&#62;alert&#40;1&#41;&#60;&#47;script&#62;</code>"
+        );
+        $this->assertHtmlGivesMarkdown('<menu><li><pre>' . $script . '</pre></li></menu>', "<menu>\n\n1. " . $encoded . "\n\n</menu>");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<ul><li><pre>a</pre></li></ul></li></ul>', "- a\n    - ```\n        a\n        ```");
+
+        $this->assertHtmlGivesMarkdown(
+            "<table><tr><th>h</th></tr><tr><td><pre>a\nb</pre> and <code>c|d</code></td></tr></table>",
+            "| h |\n|---|\n| <pre>a&#10;b</pre> and <code>c&#124;d</code> |",
+            [],
+            [new TableConverter()]
+        );
+    }
+
+    public function testCodeInOrdinaryContentIsNotKeptAsHtml(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>Wrap it in <code>&lt;?php</code> and <code>?&gt;</code>, then call <code>echo</code>.</p>', 'Wrap it in `<?php` and `?>`, then call `echo`.');
+        $this->assertHtmlGivesMarkdown('<p>a<br><code>foo()</code></p>', "a  \n`foo()`");
+        $this->assertHtmlGivesMarkdown('<p><span class="label">Note:</span> run <code>cmd</code></p>', '<span class="label">Note:</span> run `cmd`');
+        $this->assertHtmlGivesMarkdown('<div><p>a <code>b</code></p></div>', 'a `b`', ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<table><tr><td><pre>a = 1</pre></td></tr></table>', "```\na = 1\n```", ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<html><head><title>T</title></head><body>Use <code>x()</code></body></html>', 'Use `x()`', ['remove_nodes' => 'head']);
+        $this->assertStringContainsString('`c`', (new HtmlConverter())->convert('<p>a <code>c</code> <?php echo 1; ?> b</p>'));
+        $this->assertHtmlGivesMarkdown(
+            '<p>x</p><table><tr><th>h</th></tr><tr><td><em>s</em> and <code>c</code></td></tr></table>',
+            "x\n\n| h |\n|---|\n| *s* and `c` |",
+            [],
+            [new TableConverter()]
+        );
+    }
+
+    public function testCustomCodeConverterIsOverriddenInsideOfRawHtml(): void
+    {
+        $converter = new class implements ConverterInterface {
+            public function convert(ElementInterface $element): string
+            {
+                return '`' . $element->getValue() . '`';
+            }
+
+            /**
+             * @return string[]
+             */
+            public function getSupportedTags(): array
+            {
+                return ['code'];
+            }
+        };
+
+        $this->assertHtmlGivesMarkdown('<p><code>&lt;b&gt;</code></p>', '`<b>`', [], [$converter]);
+        $this->assertHtmlGivesMarkdown('<div><code>&lt;b&gt;</code></div>', '<div><code>&#60;b&#62;</code></div>', [], [$converter]);
+        $this->assertHtmlGivesMarkdown('<div>a<br><code>&lt;b&gt;</code></div>', "<div>a  \n<code>&#60;b&#62;</code></div>", [], [$converter]);
+        $this->assertHtmlGivesMarkdown('<div><span>a</span> and <code>&lt;b&gt;</code></div>', '<div><span>a</span> and <code>&#60;b&#62;</code></div>', [], [$converter]);
+    }
+
+    public function testCodeSpanCannotBeSplitIntoTableCells(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p><code>a|**b**</code><br>-|-</p>', "`a|**b**`  \n-\\|-");
+        $this->assertHtmlGivesMarkdown('<div><code>a|**b**</code><br>-|-</div>', "`a|**b**`  \n-&#124;-", ['strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a | b \\| c</p>', 'a \\| b \\\\\\| c');
+        $this->assertHtmlGivesMarkdown(
+            '<table><tr><th>a | b \\| c</th></tr><tr><td><code>d|e</code></td></tr></table>',
+            "| a \\| b \\\\\\| c |\n|---|\n| `d\\|e` |",
+            [],
+            [new TableConverter()]
+        );
+    }
+
+    public function testCodeBlockStaysInsideOfItsListItem(): void
+    {
+        $this->assertHtmlGivesMarkdown("<ul><li><pre><code>a\r**b**</code></pre></li></ul>", "- ```\n    a\n    **b**\n    ```");
+        $this->assertHtmlGivesMarkdown('<ol start="1000000000"><li><pre>a</pre></li></ol>', "1. ```\n    a\n    ```");
+        $this->assertHtmlGivesMarkdown('<ol start="999999999"><li>a</li></ol>', '999999999. a');
+        $this->assertHtmlGivesMarkdown('<ol start="-5"><li>a</li></ol>', '1. a');
+        $this->assertHtmlGivesMarkdown('<ol start="100"><li>a<pre>b</pre></li></ol>', "100. a\n     \n     ```\n     b\n     ```");
+        $this->assertHtmlGivesMarkdown('<ol start="99"><li>a<pre>b</pre></li></ol>', "99. a\n    \n    ```\n    b\n    ```");
+
+        // A list directly inside of another has to start on its own line
+        $this->assertHtmlGivesMarkdown('<ul><li>y</li>t<ol><li><pre>a</pre></li></ol></ul>', "- y\nt\n\n1. ```\n    a\n    ```");
+    }
+
+    public function testLineBreaksInAttributesDoNotStartNewLines(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>a <img src="i&#10;.png" alt="b&#10;c" title="d&#13;&#10;e"></p>', 'a ![b c](i%0A.png "d e")');
+        $this->assertHtmlGivesMarkdown('<p><a href="u" title="d&#10;e">t</a></p>', '[t](u "d e")');
+    }
+
+    public function testCodeInATableContainingHtmlStaysAsHtml(): void
+    {
+        $converters = [new TableConverter()];
+
+        $this->assertHtmlGivesMarkdown(
+            '<table><tr><th>h</th></tr><tr><td><span>s</span> and <code>c</code></td></tr></table>',
+            "| h |\n|---|\n| <span>s</span> and <code>c</code> |",
+            [],
+            $converters
+        );
+        $this->assertHtmlGivesMarkdown(
+            '<table><tr><th>h</th></tr><tr><td><span>s</span> and <code>c</code></td></tr></table>',
+            "| h |\n|---|\n| s and `c` |",
+            ['strip_tags' => true],
+            $converters
+        );
+        $this->assertHtmlGivesMarkdown(
+            '<table><!-- a --><tr><th>h</th></tr><tr><td><code>c</code></td></tr></table>',
+            "| h |\n|---|\n| <code>c</code> |",
+            [],
+            $converters
+        );
+        $this->assertHtmlGivesMarkdown('<blockquote><td><code>c</code></td></blockquote>', '> | <code>c</code>', [], $converters);
+
+        // With any part of a table out of place, nothing in the document is left as Markdown
+        $this->assertHtmlGivesMarkdown(
+            '<p><code>a</code></p><pre>b</pre><blockquote><td>c</td></blockquote>',
+            "<code>a</code>\n\n<pre>b</pre>\n\n> | c",
+            [],
+            [new TableConverter()]
+        );
+        $this->assertHtmlGivesMarkdown('<p><code>a</code></p><blockquote><td>c</td></blockquote>', "`a`\n\n> <td>c</td>");
+        $this->assertHtmlGivesMarkdown(
+            '<p><code>a</code></p><table><!-- x --><tr><td>c</td></tr></table>',
+            "<code>a</code>\n\n<!-- x -->| c |\n|---|",
+            ['preserve_comments' => true],
+            [new TableConverter()]
+        );
+        $this->assertHtmlGivesMarkdown(
+            '<blockquote>a<tr><td>b</td></tr><code>c|d</code></blockquote>',
+            "> a\n> \n> | b |\n> |---|\n> \n> <code>c&#124;d</code>",
+            [],
+            [new TableConverter()]
+        );
+    }
+
+    public function testCodeLanguageCannotEndTheInfoString(): void
+    {
+        $this->assertHtmlGivesMarkdown("<pre><code class=\"language-x\n```\n**b**\">a</code></pre>", "```x\na\n```");
+        $this->assertHtmlGivesMarkdown("<pre><code class=\"foo\tlanguage-php\">a</code></pre>", "```php\na\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code class="language-a`b">a</code></pre>', "```ab\na\n```");
     }
 
     public function testBlockquotes(): void

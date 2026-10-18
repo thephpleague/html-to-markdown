@@ -4,6 +4,51 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.1.4] - 2026-10-10
+
+### Security
+
+- Fixed the time taken to convert a document growing with the square of the number of elements sharing a parent, rather than in proportion to it (GHSA-h3wg-gqjr-jjmw). This affected list items, `<pre>`, `<code>`, table rows and cells and preserved HTML tags on every version of PHP, and all other elements on older versions of PHP (seen on 8.0 and below).
+
+## [5.1.3] - 2026-10-05
+
+### Security
+
+- Fixed `<pre>` and `<code>` contents being able to break out of their code block or span (GHSA-8m5h-gv5q-jmp5)
+- Fixed attribute values of preserved HTML tags being able to break out of their quotes (GHSA-vc6h-86x6-wcjg)
+- Fixed the `href`, `src`, `title` and `alt` of links and images being able to break out of the Markdown link or image they are output as (GHSA-r2cp-59h5-vgjj)
+
+### Changed
+
+These changes to the output are all part of the fixes above.
+
+- Backticks in regular text, and in the `alt` and `title` of links and images, are now output as `&#96;`, and as `%60` in URLs. This is visible wherever the Markdown is read without being rendered.
+- In the `alt` and `title` of links and images, `&`, `"`, `<`, `>`, `[`, `]`, `\`, `*` and `_` are now output as entities
+- In the URLs of links and images, spaces, `"`, `<`, `>`, `[`, `]`, `\`, `*` and control characters are now percent-encoded, as are parentheses which aren't balanced or are nested more than three deep. A URL containing a space is no longer put in angle brackets.
+- An image with a `title` but no `src` now has `<>` as its destination
+- An email address starting with `!` or `?` is no longer output as an autolink
+- Code blocks and spans now use delimiters which can't be closed by the backticks they contain, and spans are padded with spaces where needed to keep their contents intact
+- `<pre>`, `<blockquote>`, `<ul>`, `<ol>`, and tables converted by `TableConverter`, are now separated from anything before them by a blank line. A list nested in a list item directly after a preserved block-level tag becomes a loose list as a result.
+- Inline `<code>` is now always converted to a code span instead of sometimes becoming a fenced block
+- Where Markdown might not be parsed, code is now kept as a `<code>` or `<pre>` element with its punctuation encoded as entities, which shows as such if the Markdown is rendered with HTML escaped. This applies to:
+    - inline `<code>` on the same lines as a preserved block-level tag, such as the first paragraph inside a `<div>` when `strip_tags` is disabled, or after a preserved comment
+    - `<pre>` inside of emphasis, a link, a heading or a paragraph, or inside of a list which is the first thing in a list item
+    - code inside of a list item which isn't in a list, or which follows something other than a list item
+- A `<pre>` containing several `<code>` elements, or other content alongside one, now becomes a single code block without a language
+- Adjacent code spans, and a code span following an unescaped backslash, are now separated by a space, and empty `<code>` elements are omitted
+- The `language-*` class of a code block is now found among classes separated by any whitespace, and has backticks removed
+- Attribute values of preserved HTML tags are no longer entity-decoded, so they now contain `&amp;`, `&quot;` and `&#xA;` where the decoded characters used to be, and `&#96;` in place of a backtick
+- Line breaks in the `alt` and `title` of links and images are now replaced by a space, and percent-encoded in URLs
+- A list marker at the start of a `<code>` following a `<br>` in a list item is no longer escaped
+- The contents of a list item numbered 100 or higher are now indented far enough to stay part of it, and an `<ol>` with a `start` which isn't a valid list number is numbered from 1
+- Processing instructions before the root element are now output at the start of the body, like comments
+- With `TableConverter`:
+    - a table's caption is now separated from its rows by a blank line, as is a row which isn't in a table from whatever is around it
+    - code inside of a table is kept as HTML, as above, when the table also contains a caption, a `<pre>`, or anything else which is kept as HTML
+    - all code in a document is kept as HTML when any part of a table in it is out of place, such as a cell outside of a row, or one table inside of another
+
+Custom converters aren't covered by these protections, with two exceptions: a blank line is still put before `<pre>`, `<blockquote>`, `<ul>`, `<ol>` and `<table>` when they have one, and inline `<code>` is still kept as HTML where Markdown might not be parsed. A custom converter which outputs block-level HTML of its own around its contents has to protect any code inside of it itself.
+
 ## [5.1.2] - 2026-09-07
 
 ### Fixed
@@ -328,7 +373,9 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...master
+[5.1.4]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...5.1.4
+[5.1.3]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/thephpleague/html-to-markdown/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/thephpleague/html-to-markdown/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/thephpleague/html-to-markdown/compare/5.0.2...5.1.0

@@ -7,6 +7,7 @@ namespace League\HTMLToMarkdown\Converter;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\RawHtml;
 
 class DivConverter implements ConverterInterface, ConfigurationAwareInterface
 {
@@ -24,7 +25,7 @@ class DivConverter implements ConverterInterface, ConfigurationAwareInterface
             return $element->getValue() . "\n\n";
         }
 
-        return \html_entity_decode($element->getChildrenAsString());
+        return RawHtml::fromElement($element);
     }
 
     /**
