@@ -28,7 +28,7 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
 
         if ($title !== '') {
             $markdown = '[' . $text . '](' . $href . ' "' . $title . '")';
-        } elseif ($href === $text && $this->isValidAutolink($href)) {
+        } elseif ($href === \str_replace('&amp;', '&', $text) && $this->isValidAutolink($href)) {
             $markdown = '<' . $href . '>';
         } elseif ($href === 'mailto:' . $text && $this->isValidEmail($text) && \strpbrk($text[0], '!?') === false) {
             $markdown = '<' . $text . '>';
