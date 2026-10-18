@@ -4,6 +4,22 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.2.0] - 2026-10-18
+
+### Changed
+
+- Non-breaking spaces, as well as narrow no-break and figure spaces, are now kept as they are rather than being converted to regular spaces, so that text such as `12,50&nbsp;€` stays on one line (#258, #283). They're output as the characters themselves, not as `&nbsp;`. Where whitespace is dropped or trimmed, as in text consisting only of whitespace before a block and at the ends of paragraphs, list items, blockquotes and table cells, they now are too, so those used only for spacing still leave nothing behind.
+- Emphasis next to a non-breaking space now has it moved outside of its delimiters, which couldn't otherwise be recognized
+
+### Fixed
+
+- Fixed headings, paragraphs and horizontal rules being output on the same line as inline content directly before them, such as an image, including inside list items (#259, #282)
+- Fixed an extra blank line at the start of a code block converted from a `<pre>` whose content starts with a newline (#244, #278)
+- Fixed links whose text is a URL containing `&` not being output as autolinks (#248, #281)
+- Fixed a line consisting of only `-` or `+` not being escaped, which made it an empty list item
+- Fixed a non-breaking space being removed from the start of a blockquote, list item or table caption, which could leave text starting with `- ` to be taken as a list
+- Fixed whitespace between a block and a following `<pre>` or `<table>` being output on a line of its own
+
 ## [5.1.4] - 2026-10-10
 
 ### Security
@@ -373,7 +389,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.2.0...master
+[5.2.0]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...5.2.0
 [5.1.4]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/thephpleague/html-to-markdown/compare/5.1.1...5.1.2
