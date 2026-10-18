@@ -4,6 +4,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.2.1] - 2026-10-18
+
+### Fixed
+
+- Fixed links whose text is a URL with percent-encoded characters shown decoded, such as `/` for `%2F`, not being output as autolinks (#248, #284). The autolink keeps the encoded URL.
+- Fixed links whose text is a URL containing `_` or `*` not being output as autolinks
+
 ## [5.2.0] - 2026-10-18
 
 ### Changed
@@ -389,7 +396,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.2.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.2.1...master
+[5.2.1]: https://github.com/thephpleague/html-to-markdown/compare/5.2.0...5.2.1
 [5.2.0]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...5.2.0
 [5.1.4]: https://github.com/thephpleague/html-to-markdown/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/thephpleague/html-to-markdown/compare/5.1.2...5.1.3
