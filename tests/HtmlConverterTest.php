@@ -399,6 +399,32 @@ EOT;
         $this->assertHtmlGivesMarkdown('<html><head><title>T</title></head><body><pre>' . $script . '</pre></body></html>', "T\n\n" . $fenced, ['strip_tags' => true]);
     }
 
+    public function testBlocksAfterInlineContentStartOnTheirOwnLine(): void
+    {
+        $this->assertHtmlGivesMarkdown("<img src=\"a.png\" />\n<h3>A new header</h3>", "![](a.png)\n\n### A new header");
+        $this->assertHtmlGivesMarkdown('<img src="a.png" /><p>Paragraph</p>', "![](a.png)\n\nParagraph");
+        $this->assertHtmlGivesMarkdown('<a href="b.html"><img src="a.png" /></a><h3>A new header</h3>', "[![](a.png)](b.html)\n\n### A new header");
+        $this->assertHtmlGivesMarkdown('<blockquote><img src="a.png" /><p>Paragraph</p></blockquote>', "> ![](a.png)\n> \n> Paragraph");
+        $this->assertHtmlGivesMarkdown('<img src="a.png"><hr>', "![](a.png)\n\n---");
+        $this->assertHtmlGivesMarkdown('<b>bold</b><p>P</p>', "**bold**\n\nP");
+        $this->assertHtmlGivesMarkdown('<span>x</span><h1>H</h1>', "<span>x</span>\n\nH\n=");
+        $this->assertHtmlGivesMarkdown('<img src="a.png"><!-- c --><p>P</p>', "![](a.png)\n\nP");
+        $this->assertHtmlGivesMarkdown('<img src="a.png"><p></p><p>P</p>', "![](a.png)\n\nP");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<p>b</p></li><li>c</li></ul>', "- a\n    \n    b\n- c");
+        $this->assertHtmlGivesMarkdown('<ol><li>item<h3>H</h3></li></ol>', "1. item\n    \n    ### H");
+        $this->assertHtmlGivesMarkdown('<ol><li>a<hr></li></ol>', "1. a\n    \n    ---");
+        $this->assertHtmlGivesMarkdown('<ul><li>a<ul><li>b</li></ul></li></ul>', "- a\n    - b");
+
+        // Only one blank line where one was already put before the block
+        $this->assertHtmlGivesMarkdown('<img src="a.png"><pre>code</pre>', "![](a.png)\n\n```\ncode\n```");
+        $this->assertHtmlGivesMarkdown('<img src="a.png"><blockquote>q</blockquote>', "![](a.png)\n\n> q");
+        $this->assertHtmlGivesMarkdown('a<br><h1>H</h1>', "a\n\nH\n=");
+
+        // Markdown isn't parsed on the same line as raw HTML, and link text can't contain blocks
+        $this->assertHtmlGivesMarkdown('<div>a<p>b</p></div>', "<div>ab\n\n</div>");
+        $this->assertHtmlGivesMarkdown('<a href="u">a<p>b</p></a>', '[ab](u)');
+    }
+
     public function testBackticksOutsideOfCodeCannotDelimitIt(): void
     {
         $this->assertHtmlGivesMarkdown('<p>` <code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>', '&#96; `<script>alert(1)</script>`');
