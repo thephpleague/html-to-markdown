@@ -793,12 +793,17 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>a<b>&nbsp;x</b>b</p>', "a\u{00A0}**x**b");
         $this->assertHtmlGivesMarkdown('<p>a<b>b&nbsp;</b><b>c</b>d</p>', "a**b\u{00A0}c**d");
         $this->assertHtmlGivesMarkdown('<p>a<em>&nbsp;</em>b</p>', "a\u{00A0}b");
+        $this->assertHtmlGivesMarkdown('<p>a<em>&nbsp; b</em>c<em>d &nbsp;</em>e</p>', "a\u{00A0} *b*c*d* \u{00A0}e");
 
         // Where a line starts or ends, they're whitespace like any other
         $this->assertHtmlGivesMarkdown('<p>a</p><p>&nbsp;</p><p>b</p>', "a\n\nb");
         $this->assertHtmlGivesMarkdown("<p>a</p>&nbsp;<p>b</p>\n&nbsp;\n<p>c</p>", "a\n\nb\n\nc");
         $this->assertHtmlGivesMarkdown('<blockquote><p>&nbsp;</p><p>q</p></blockquote>', '> q');
         $this->assertHtmlGivesMarkdown('<p>line&nbsp;</p><p><b>bold&nbsp;</b></p>', "line\n\n**bold**");
+        $this->assertHtmlGivesMarkdown('<p>line&nbsp;</p>tail', "line\n\ntail");
+        $this->assertHtmlGivesMarkdown('<p><b>bold&nbsp;</b></p>tail', "**bold**\n\ntail");
+        $this->assertHtmlGivesMarkdown('<p> <b>&nbsp;x</b></p>', '  **x**');
+        $this->assertHtmlGivesMarkdown('<p>a<br><b> </b>&nbsp;x</p>', "a  \n  x");
         $this->assertHtmlGivesMarkdown('<p>&nbsp;- not a list</p>', '\\- not a list');
         $this->assertHtmlGivesMarkdown('<p>foo&nbsp;<br>bar</p>', "foo   \nbar");
         $this->assertHtmlGivesMarkdown('<ul><li>&nbsp;</li><li>a</li></ul>', "- \n- a");

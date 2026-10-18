@@ -73,14 +73,10 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
 
     private function getOuterWhitespace(string $whitespace): string
     {
-        if ($whitespace === '') {
-            return '';
-        }
+        $whitespace = \preg_replace('~[^\S' . self::NO_BREAK_SPACES . ']+~u', ' ', $whitespace);
+        \assert(\is_string($whitespace));
 
-        $noBreakSpaces = \preg_replace('~[^' . self::NO_BREAK_SPACES . ']~u', '', $whitespace);
-        \assert(\is_string($noBreakSpaces));
-
-        return $noBreakSpaces !== '' ? $noBreakSpaces : ' ';
+        return $whitespace;
     }
 
     /**

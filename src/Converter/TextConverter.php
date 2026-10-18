@@ -67,26 +67,40 @@ class TextConverter implements ConverterInterface
 
     private function startsLine(ElementInterface $element): bool
     {
-        $node = $element;
-        while (($end = PrecedingMarkdown::getEndOfSiblings($node)) === '') {
-            $node = $node->getParent();
-            if ($node === null || RawHtml::isBlockTag($node->getTagName())) {
+        for ($node = $element; $node !== null; $node = $node->getParent()) {
+            if (RawHtml::isBlockTag($node->getTagName())) {
                 return true;
+            }
+
+            $startsLine = PrecedingMarkdown::isAtStartOfLine($node);
+            if ($startsLine !== null) {
+                return $startsLine;
             }
         }
 
-        /** @psalm-suppress PossiblyUndefinedVariable The loop condition always assigns it */
-        return \substr($end, -1) === "\n";
+        return true;
     }
 
     private function endsLine(ElementInterface $element): bool
     {
-        $next = $element->getNext();
-        while ($next !== null && $next->isText() && \trim($next->getValue()) === '') {
-            $next = $next->getNext();
+        for ($node = $element; $node !== null; $node = $node->getParent()) {
+            // Whatever follows the block it's in is on another line
+            if (RawHtml::isBlockTag($node->getTagName())) {
+                return true;
+            }
+
+            for ($next = $node->getNextSibling(); $next !== null; $next = $next->getNextSibling()) {
+                if (! $next->isText()) {
+                    return $next->getTagName() === 'br' || RawHtml::isBlockTag($next->getTagName());
+                }
+
+                if (\trim($next->getValue()) !== '') {
+                    return false;
+                }
+            }
         }
 
-        return $next === null || $next->getTagName() === 'br' || RawHtml::isBlockTag($next->getTagName());
+        return true;
     }
 
     /**
