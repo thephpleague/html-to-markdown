@@ -206,12 +206,8 @@ class Element implements ElementInterface
 
     public function getChildrenAsString(): string
     {
-        if (! $this->node instanceof \DOMElement) {
-            return $this->node->C14N();
-        }
-
         // Canonicalizing anything less than a whole document takes time proportional to the size of the document
-        // for each node output, so the element is put in a document of its own
+        // for each node output, so the node is put in a document of its own
         $document = new \DOMDocument();
         $document->appendChild($document->importNode($this->node, true));
 
