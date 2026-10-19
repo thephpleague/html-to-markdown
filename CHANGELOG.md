@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Fixed
+
+- Fixed a line of only `=` or `-` after a line break not being escaped, which made a heading out of the line before it, such as in `<p>Foo<br>=</p>` (#226). Lines of `-` were already escaped inside of paragraphs, but not inside of list items, blockquotes or headings.
+
 ## [5.2.3] - 2026-10-19
 
 ### Security

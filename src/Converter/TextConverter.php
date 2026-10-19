@@ -31,6 +31,12 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
         \assert(\is_string($markdown));
 
+        if ($isEscaped && $this->isOwnLineAfterBreak($element)) {
+            // It would otherwise underline the line before it as a setext heading
+            $markdown = \preg_replace('~^( *+)(?=(?:=++|-++)\s*+\z)~u', '$1\\\\', $markdown);
+            \assert(\is_string($markdown));
+        }
+
         if (\preg_match('~^\s++\z~u', $markdown) === 1) {
             $next = $element->getNext();
             if (! $next || $next->isBlock() || \in_array($next->getTagName(), ['pre', 'table'], true)) {
@@ -54,5 +60,17 @@ class TextConverter implements ConverterInterface
     public function getSupportedTags(): array
     {
         return ['#text'];
+    }
+
+    private function isOwnLineAfterBreak(ElementInterface $element): bool
+    {
+        $previous = $element->getPreviousSibling();
+        if ($previous === null || $previous->getTagName() !== 'br') {
+            return false;
+        }
+
+        $next = $element->getNextSibling();
+
+        return $next === null || $next->isBlock() || \in_array($next->getTagName(), ['br', 'pre', 'table'], true);
     }
 }
