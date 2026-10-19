@@ -39,6 +39,7 @@
         "phpstan/phpstan": "^1.8.8 || ^2.0",
         "phpunit/phpunit": "^8.5 || ^9.2 || ^10.5 || ^11.0 || ^12.0 || ^13.0",
         "scrutinizer/ocular": "^1.6",
+        "symfony/process": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "unleashedtech/php-coding-standard": "^2.7 || ^3.0",
         "vimeo/psalm": "^4.22 || ^5.0 || ^6.0"
     },
@@ -48,11 +49,13 @@
         "phpstan": "phpstan analyse",
         "phpunit": "phpunit --no-coverage",
         "psalm": "psalm --stats",
+        "pathological": "@php tests/pathological/test.php",
         "test": [
             "@phpcs",
             "@phpstan",
             "@psalm",
-            "@phpunit"
+            "@phpunit",
+            "@pathological"
         ]
     },
     "extra": {
