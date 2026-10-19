@@ -55,6 +55,13 @@ $cases = [
             return '<p>' . str_repeat('<strong>a</strong><b>b</b><strong></strong>', $n) . '</p>';
         },
     ],
+    'Code in emphasis removed from a run' => [
+        'options' => ['remove_nodes' => 'b'],
+        'sizes' => [5000, 20000, 80000],
+        'input' => static function (int $n): string {
+            return '<p>' . str_repeat('<strong>a</strong><b><code>x</code></b>', $n) . '</p>';
+        },
+    ],
     'Backslashes before a pipe in a table cell, without the PCRE JIT' => [
         // Without the pipe, PCRE gives up on the cell straight away
         'extension' => 'table',

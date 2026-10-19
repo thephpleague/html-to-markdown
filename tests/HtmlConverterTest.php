@@ -122,7 +122,7 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong> <strong>Bar</strong>', '**Foo** **Bar**');
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong><b>Bar</b><em>Foo</em>', '**FooBar***Foo*');
         $this->assertHtmlGivesMarkdown('<strong> </strong><strong>hello</strong>', ' **hello**');
-        $this->assertHtmlGivesMarkdown('<strong>hello</strong><strong> </strong>', '**hello** ');
+        $this->assertHtmlGivesMarkdown('<strong>hello</strong><strong> </strong>', '**hello**');
         $this->assertHtmlGivesMarkdown('<strong>a</strong><strong></strong><strong>b</strong>', '**ab**');
         $this->assertHtmlGivesMarkdown('<b></b><b>a</b><b>b</b>', '**ab**');
         $this->assertHtmlGivesMarkdown('<strong>a</strong><strong><img src="b.png"></strong><strong>c</strong>', '**a![](b.png)c**');

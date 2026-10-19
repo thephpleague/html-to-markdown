@@ -44,23 +44,30 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
      */
     public function preConvert(ElementInterface $element): void
     {
-        // The first of the run has already taken in the rest, which are left where they are, empty
+        // The first of the run has already taken in the rest
         $tag = $this->getNormTag($element);
         if (! $element instanceof Element || $this->getNormTag($element->getPreviousSibling()) === $tag) {
             return;
         }
 
         $target = null;
-        for ($sibling = $element; $sibling instanceof Element && $this->getNormTag($sibling) === $tag; $sibling = $sibling->getNextSibling()) {
-            // Whatever is in a removed one stays out of the output, while the rest of the run carries on around it
+        for ($sibling = $element; $sibling instanceof Element && $this->getNormTag($sibling) === $tag; $sibling = $next) {
+            $next = $sibling->getNextSibling();
+
+            // Whatever is in a removed one stays out of the output, while the rest of the run carries on around it.
+            // It's moved along with the rest, so that what's output before anything inside of it is as close as ever.
             if ($this->isRemoved($sibling)) {
+                if ($target !== null) {
+                    $target->appendElement($sibling);
+                }
+
                 continue;
             }
 
             if ($target === null) {
                 $target = $sibling;
             } else {
-                $target->appendChildrenOf($sibling);
+                $target->absorb($sibling);
             }
         }
     }

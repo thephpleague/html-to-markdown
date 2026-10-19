@@ -115,11 +115,23 @@ class Element implements ElementInterface
     /**
      * @internal
      */
-    public function appendChildrenOf(self $element): void
+    public function appendElement(self $element): void
+    {
+        $this->node->appendChild($element->node);
+    }
+
+    /**
+     * Moves the children of the given element to the end of this one, and takes it out of the document
+     *
+     * @internal
+     */
+    public function absorb(self $element): void
     {
         while ($element->node->firstChild !== null) {
             $this->node->appendChild($element->node->firstChild);
         }
+
+        $element->detach();
     }
 
     public function hasChildren(): bool
@@ -206,6 +218,13 @@ class Element implements ElementInterface
 
         $markdownNode = $this->node->ownerDocument->createTextNode($markdown);
         $this->node->parentNode->insertBefore($markdownNode, $this->node);
+
+        $this->detach();
+    }
+
+    private function detach(): void
+    {
+        \assert($this->node->ownerDocument !== null);
 
         // Replacing or removing a child directly takes time proportional to how many siblings come before it,
         // on older versions of PHP, whereas the only child of a fragment is found straight away
