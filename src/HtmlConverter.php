@@ -651,7 +651,8 @@ class HtmlConverter implements HtmlConverterInterface
     protected function sanitize(string $markdown): string
     {
         $markdown = \html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-        $markdown = \preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
+        // Only the declaration itself, which comes first, as code could contain the same text once decoded
+        $markdown = \preg_replace('/^<!DOCTYPE [^>]+>/', '', $markdown);
         \assert($markdown !== null);
         $markdown = \trim($markdown); // Remove blank spaces at the beggining of the html
 
@@ -668,8 +669,8 @@ class HtmlConverter implements HtmlConverterInterface
                     $markdown = \substr($markdown, \strlen($tag));
                 }
             } else {
-                // Closing tags
-                if (\strpos($markdown, $tag) === \strlen($markdown) - \strlen($tag)) {
+                // Closing tags, which code before them could also contain once decoded
+                if (\substr($markdown, -\strlen($tag)) === $tag) {
                     $markdown = \substr($markdown, 0, -\strlen($tag));
                 }
             }
