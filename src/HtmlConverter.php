@@ -43,6 +43,14 @@ class HtmlConverter implements HtmlConverterInterface
     private $isInsideCleanTable = false;
 
     /**
+     * Whether the element being converted is inside of inline Markdown, which is worked out once for each element
+     * since it can take time proportional to the size of what came before an ancestor
+     *
+     * @var bool
+     */
+    private $isInsideInlineMarkdown = false;
+
+    /**
      * Constructor
      *
      * @param Environment|array<string, mixed> $options Environment object or configuration options
@@ -118,15 +126,23 @@ class HtmlConverter implements HtmlConverterInterface
             throw new \InvalidArgumentException('Invalid HTML was provided');
         }
 
-        $this->isAfterRawHtml     = false;
-        $this->isInsideCleanTable = false;
+        // A converter could convert other HTML with this same instance partway through an element
+        $wasInsideInlineMarkdown = $this->isInsideInlineMarkdown;
+
+        $this->isAfterRawHtml         = false;
+        $this->isInsideCleanTable     = false;
+        $this->isInsideInlineMarkdown = false;
 
         $flattensTableCells = ! $this->environment->getConverterByTag('td') instanceof DefaultConverter;
         $this->getConfig()->setOption(RawHtml::FLATTENS_TABLE_CELLS, $flattensTableCells);
         $this->getConfig()->setOption(RawHtml::KEEPS_ALL_CODE_AS_HTML, $flattensTableCells && $this->hasMalformedTable($document));
 
         $rootElement = new Element($root);
-        $this->convertChildren($rootElement);
+        try {
+            $this->convertChildren($rootElement);
+        } finally {
+            $this->isInsideInlineMarkdown = $wasInsideInlineMarkdown;
+        }
 
         // Store the now-modified DOMDocument as a string
         $markdown = $document->saveHTML();
@@ -244,10 +260,14 @@ class HtmlConverter implements HtmlConverterInterface
         }
 
         // If the node has children, convert those to Markdown first
+        $isInsideInlineMarkdown = $this->isInsideInlineMarkdown;
         if ($element->hasChildren()) {
+            $this->isInsideInlineMarkdown = $isInsideInlineMarkdown || RawHtml::putsContentsInline($element, $this->getConfig()->getOption(RawHtml::FLATTENS_TABLE_CELLS) === true);
             foreach ($element->getChildren() as $child) {
                 $this->convertChildren($child);
             }
+
+            $this->isInsideInlineMarkdown = $isInsideInlineMarkdown;
         }
 
         if ($isCleanTable) {
@@ -259,7 +279,12 @@ class HtmlConverter implements HtmlConverterInterface
         if ($tag === 'code' && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {
             $markdown = $this->isRemoved($tag) ? '' : RawHtml::fromCode(RawHtml::getCode($element));
         } else {
-            $markdown = $this->convertToMarkdown($element);
+            $this->getConfig()->setOption(RawHtml::IS_INSIDE_INLINE_MARKDOWN, $isInsideInlineMarkdown);
+            try {
+                $markdown = $this->convertToMarkdown($element);
+            } finally {
+                $this->getConfig()->setOption(RawHtml::IS_INSIDE_INLINE_MARKDOWN, null);
+            }
         }
 
         if ($startsHtmlBlock) {
@@ -366,7 +391,7 @@ class HtmlConverter implements HtmlConverterInterface
     private function isCleanTable(ElementInterface $element, ConverterInterface $converter): bool
     {
         return ! $converter instanceof DefaultConverter
-            && ! $this->isInsideInlineMarkdown($element)
+            && ! $this->isInsideInlineMarkdown()
             && ! $this->containsHtml($element);
     }
 
@@ -395,9 +420,9 @@ class HtmlConverter implements HtmlConverterInterface
         return false;
     }
 
-    private function isInsideInlineMarkdown(ElementInterface $element): bool
+    private function isInsideInlineMarkdown(): bool
     {
-        return RawHtml::isInsideInlineMarkdown($element, $this->getConfig()->getOption(RawHtml::FLATTENS_TABLE_CELLS) === true);
+        return $this->isInsideInlineMarkdown;
     }
 
     private function isKeptAsHtml(ElementInterface $element, ConverterInterface $converter): bool
@@ -469,7 +494,7 @@ class HtmlConverter implements HtmlConverterInterface
      */
     private function startsOnOwnLine(ElementInterface $element, ConverterInterface $converter): bool
     {
-        if ($converter instanceof DefaultConverter || $this->isInsideInlineMarkdown($element)) {
+        if ($converter instanceof DefaultConverter || $this->isInsideInlineMarkdown()) {
             return false;
         }
 
@@ -517,7 +542,7 @@ class HtmlConverter implements HtmlConverterInterface
             return '';
         }
 
-        if ($converter instanceof DefaultConverter || $this->isInsideInlineMarkdown($element) || $this->followsBlankLine($element)) {
+        if ($converter instanceof DefaultConverter || $this->isInsideInlineMarkdown() || $this->followsBlankLine($element)) {
             return '';
         }
 
@@ -589,7 +614,7 @@ class HtmlConverter implements HtmlConverterInterface
 
         return \in_array($element->getTagName(), $tags, true)
             && ! $converter instanceof DefaultConverter
-            && ! $this->isInsideInlineMarkdown($element)
+            && ! $this->isInsideInlineMarkdown()
             && \substr($markdown, -2) === "\n\n";
     }
 
