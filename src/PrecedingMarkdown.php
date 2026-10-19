@@ -59,19 +59,19 @@ final class PrecedingMarkdown
      */
     public static function endsInDelimiterHazard(ElementInterface $element): bool
     {
-        $markdown = '';
+        // Only a whole run of backslashes says whether the last one is itself escaped
+        $backslashes = 0;
         for ($node = $element; $node !== null; $node = $node->getParent()) {
             foreach (self::getSiblingValues($node) as $value) {
-                $markdown = $value . $markdown;
-
-                // Only a whole run of backslashes says whether the last one is itself escaped
-                if (\rtrim($markdown, '\\') !== '') {
-                    break 2;
+                $trimmed      = \rtrim($value, '\\');
+                $backslashes += \strlen($value) - \strlen($trimmed);
+                if ($trimmed !== '') {
+                    return $backslashes % 2 === 1 || ($backslashes === 0 && \substr($trimmed, -1) === '`');
                 }
             }
         }
 
-        return \preg_match('/(?:`|(?<!\\\\)(?:\\\\\\\\)*+\\\\)\z/', $markdown) === 1;
+        return $backslashes % 2 === 1;
     }
 
     /**
