@@ -121,6 +121,19 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<em>Foo</em> <em>Bar</em>', '*Foo* *Bar*');
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong> <strong>Bar</strong>', '**Foo** **Bar**');
         $this->assertHtmlGivesMarkdown('<strong>Foo</strong><b>Bar</b><em>Foo</em>', '**FooBar***Foo*');
+        $this->assertHtmlGivesMarkdown('<strong> </strong><strong>hello</strong>', ' **hello**');
+        $this->assertHtmlGivesMarkdown('<strong>hello</strong><strong> </strong>', '**hello**');
+        $this->assertHtmlGivesMarkdown('<strong>a</strong><strong></strong><strong>b</strong>', '**ab**');
+        $this->assertHtmlGivesMarkdown('<b></b><b>a</b><b>b</b>', '**ab**');
+        $this->assertHtmlGivesMarkdown('<strong>a</strong><strong><img src="b.png"></strong><strong>c</strong>', '**a![](b.png)c**');
+        $this->assertHtmlGivesMarkdown('<em>Foo</em><em><br></em><em>Bar</em>', "*Foo  \nBar*");
+        $this->assertHtmlGivesMarkdown('<b>a</b><b><i>b</i></b><b>c</b>', '**a*b*c**');
+        $this->assertHtmlGivesMarkdown('<b><i>a</i></b><b><i>b</i></b>', '***ab***');
+        $this->assertHtmlGivesMarkdown('<em> </em><i>a</i> <b></b><b>b</b>', ' _a_ __b__', ['italic_style' => '_', 'bold_style' => '__']);
+        $this->assertHtmlGivesMarkdown('<ul><li><b>a</b><b></b><b>b</b></li></ul>', '- **ab**');
+        $this->assertHtmlGivesMarkdown('<strong>a</strong><b>b</b><strong>c</strong>', '**ac**', ['remove_nodes' => 'b']);
+        $this->assertHtmlGivesMarkdown('<b>a</b><strong>b</strong><strong>c</strong>', '**bc**', ['remove_nodes' => 'b']);
+        $this->assertHtmlGivesMarkdown('<p><code><b>a</b><b>b</b></code></p>', '`<b>a</b><b>b</b>`');
     }
 
     public function testNesting(): void
