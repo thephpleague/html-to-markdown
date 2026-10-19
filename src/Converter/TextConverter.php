@@ -7,6 +7,7 @@ namespace League\HTMLToMarkdown\Converter;
 use League\HTMLToMarkdown\Backticks;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\NoBreakSpaces;
+use League\HTMLToMarkdown\RawHtml;
 
 class TextConverter implements ConverterInterface
 {
@@ -31,7 +32,7 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
         \assert(\is_string($markdown));
 
-        if ($isEscaped && $this->isOwnLineAfterBreak($element)) {
+        if ($this->isOwnLineAfterBreak($element) && ! $this->isInsideRawHtmlBlock($parent) && ! HardBreakConverter::escapesListMarker($parent, $element->getValue())) {
             // It would otherwise underline the line before it as a setext heading
             $markdown = \preg_replace('~^( *+)(?=(?:=++|-++)\s*+\z)~u', '$1\\\\', $markdown);
             \assert(\is_string($markdown));
@@ -60,6 +61,20 @@ class TextConverter implements ConverterInterface
     public function getSupportedTags(): array
     {
         return ['#text'];
+    }
+
+    /**
+     * Whether the text is directly inside of a block which isn't converted to Markdown, where a backslash would show
+     */
+    private function isInsideRawHtmlBlock(?ElementInterface $parent): bool
+    {
+        if ($parent === null) {
+            return false;
+        }
+
+        $tag = $parent->getTagName();
+
+        return RawHtml::isBlockTag($tag) && ! \in_array($tag, ['blockquote', 'body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'html', 'li', 'p'], true);
     }
 
     private function isOwnLineAfterBreak(ElementInterface $element): bool

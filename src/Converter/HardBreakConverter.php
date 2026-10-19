@@ -24,14 +24,8 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
 
         $next = $element->getNext();
         if ($next && ! $this->startsWithCode($next)) {
-            $nextValue = $next->getValue();
-            if ($nextValue) {
-                if (\in_array(\substr($nextValue, 0, 2), ['- ', '* ', '+ '], true)) {
-                    $parent = $element->getParent();
-                    if ($parent && $parent->getTagName() === 'li') {
-                        $return .= '\\';
-                    }
-                }
+            if (self::escapesListMarker($element->getParent(), $next->getValue())) {
+                $return .= '\\';
             }
         }
 
@@ -44,6 +38,16 @@ class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterf
     public function getSupportedTags(): array
     {
         return ['br'];
+    }
+
+    /**
+     * Whether a break inside of the parent escapes what follows it, as that would start a list item
+     *
+     * @internal
+     */
+    public static function escapesListMarker(?ElementInterface $parent, string $nextValue): bool
+    {
+        return $parent !== null && $parent->getTagName() === 'li' && \in_array(\substr($nextValue, 0, 2), ['- ', '* ', '+ '], true);
     }
 
     /**
