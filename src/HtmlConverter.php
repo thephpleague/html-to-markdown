@@ -191,30 +191,29 @@ class HtmlConverter implements HtmlConverterInterface
      */
     private function replaceMisplacedComments(\DOMDocument $document): void
     {
-        // Find ny comment nodes at the root of the document.
-        $misplacedComments = (new \DOMXPath($document))->query('/comment() | /processing-instruction()[name() != "xml"]');
-        if ($misplacedComments === false) {
-            return;
-        }
-
         $body = $document->getElementsByTagName('body')->item(0);
         if ($body === null) {
             return;
         }
 
-        // Loop over comment nodes in reverse so we put them inside <body> in
-        // their original order.
-        for ($index = $misplacedComments->length - 1; $index >= 0; $index--) {
-            // DOMNameSpaceNode, which item() can also return, isn't a DOMNode and can't be inserted.
-            $comment = $misplacedComments->item($index);
-            if (! $comment instanceof \DOMNode) {
-                continue;
+        // Collected first, since moving them changes the list
+        $misplaced = [];
+        foreach ($document->childNodes as $node) {
+            // PHPStan 1.x, which is what PHP 7.2 resolves to, has no generic type for
+            // DOMNodeList and infers mixed here.
+            /** @psalm-suppress RedundantCondition */
+            \assert($node instanceof \DOMNode);
+            if ($node->nodeType === XML_COMMENT_NODE || ($node->nodeType === XML_PI_NODE && $node->nodeName !== 'xml')) {
+                $misplaced[] = $node;
             }
+        }
 
-            if ($body->firstChild === null) {
-                $body->insertBefore($comment);
+        $firstChild = $body->firstChild;
+        foreach ($misplaced as $node) {
+            if ($firstChild === null) {
+                $body->appendChild($node);
             } else {
-                $body->insertBefore($comment, $body->firstChild);
+                $body->insertBefore($node, $firstChild);
             }
         }
     }
@@ -359,19 +358,40 @@ class HtmlConverter implements HtmlConverterInterface
         $notSection = 'not(self::caption or self::colgroup or self::thead or self::tbody or self::tfoot or self::tr)';
         $other      = $this->getConfig()->getOption('preserve_comments') ? 'node()[self::processing-instruction() or self::comment()]' : 'processing-instruction()';
 
-        $query = \implode(' | ', [
+        $paths = [
             '//table//table',
-            '//tr[not(ancestor::table)] | //td[not(parent::tr)] | //th[not(parent::tr)] | //col[not(ancestor::table)]',
-            '//caption[not(parent::table)] | //colgroup[not(parent::table)]',
-            '//thead[not(parent::table)] | //tbody[not(parent::table)] | //tfoot[not(parent::table)]',
-            '//table/*[' . $notSection . '] | //thead/*[' . $notRow . '] | //tbody/*[' . $notRow . '] | //tfoot/*[' . $notRow . ']',
+            '//tr[not(ancestor::table)]',
+            '//td[not(parent::tr)]',
+            '//th[not(parent::tr)]',
+            '//col[not(ancestor::table)]',
+            '//caption[not(parent::table)]',
+            '//colgroup[not(parent::table)]',
+            '//thead[not(parent::table)]',
+            '//tbody[not(parent::table)]',
+            '//tfoot[not(parent::table)]',
+            '//table/*[' . $notSection . ']',
+            '//thead/*[' . $notRow . ']',
+            '//tbody/*[' . $notRow . ']',
+            '//tfoot/*[' . $notRow . ']',
             '//tr/*[not(self::td or self::th)]',
-            \str_replace('X', $other, '//table/X | //thead/X | //tbody/X | //tfoot/X | //tr/X'),
-        ]);
+            '//table/' . $other,
+            '//thead/' . $other,
+            '//tbody/' . $other,
+            '//tfoot/' . $other,
+            '//tr/' . $other,
+        ];
 
-        $nodes = (new \DOMXPath($document))->query($query);
+        // Unlike a query, counting doesn't put the nodes in document order, which can take time
+        // proportional to the square of how many there are, as can combining them in a union
+        $xpath = new \DOMXPath($document);
+        foreach ($paths as $path) {
+            $count = $xpath->evaluate('count(' . $path . ')');
+            if (! \is_float($count) || $count > 0) {
+                return true;
+            }
+        }
 
-        return $nodes === false || $nodes->length > 0;
+        return false;
     }
 
     private function isWhereMarkdownMightNotBeParsed(ElementInterface $element): bool
