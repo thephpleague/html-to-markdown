@@ -4,6 +4,18 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.2.3] - 2026-10-19
+
+### Security
+
+- Fixed the time taken to convert certain documents growing with the square of their size, rather than in proportion to it (GHSA-4xjf-2r66-5r28). This affected a long run of backslashes before inline code, content after a large list item, many comments or processing instructions outside of `<html>`, and processing instructions anywhere, as well as misplaced table parts and long runs of backslashes in table cells when `TableConverter` is used.
+
+### Fixed
+
+- Fixed text inside of `<pre>` and `<code>` which looked like those tags, such as `&lt;/pre&gt;`, being removed
+- Fixed attribute values of `<pre>` and `<code>` containing `>` being output as part of their content
+- Fixed code nested inside of other code which is kept as HTML being encoded twice
+
 ## [5.2.2] - 2026-10-18
 
 ### Fixed
@@ -402,7 +414,8 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.2.2...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.2.3...master
+[5.2.3]: https://github.com/thephpleague/html-to-markdown/compare/5.2.2...5.2.3
 [5.2.2]: https://github.com/thephpleague/html-to-markdown/compare/5.2.1...5.2.2
 [5.2.1]: https://github.com/thephpleague/html-to-markdown/compare/5.2.0...5.2.1
 [5.2.0]: https://github.com/thephpleague/html-to-markdown/compare/5.1.4...5.2.0
