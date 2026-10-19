@@ -112,6 +112,16 @@ class Element implements ElementInterface
         return $this->node->hasAttributes();
     }
 
+    /**
+     * @internal
+     */
+    public function appendChildrenOf(self $element): void
+    {
+        while ($element->node->firstChild !== null) {
+            $this->node->appendChild($element->node->firstChild);
+        }
+    }
+
     public function hasChildren(): bool
     {
         return $this->node->hasChildNodes();

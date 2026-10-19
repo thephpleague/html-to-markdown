@@ -7,10 +7,12 @@ namespace League\HTMLToMarkdown\Converter;
 use League\HTMLToMarkdown\Coerce;
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
+use League\HTMLToMarkdown\Element;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\NoBreakSpaces;
+use League\HTMLToMarkdown\PreConverterInterface;
 
-class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
+class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface, PreConverterInterface
 {
     /** @var Configuration */
     protected $config;
@@ -34,6 +36,33 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
     public function setConfig(Configuration $config): void
     {
         $this->config = $config;
+    }
+
+    /**
+     * Puts the contents of a run of the same kind into one of them, so that <em>foo</em><em>bar</em> becomes *foobar*
+     * rather than *foo**bar*, whatever is in each of them
+     */
+    public function preConvert(ElementInterface $element): void
+    {
+        // The first of the run has already taken in the rest, which are left where they are, empty
+        $tag = $this->getNormTag($element);
+        if (! $element instanceof Element || $this->getNormTag($element->getPreviousSibling()) === $tag) {
+            return;
+        }
+
+        $target = null;
+        for ($sibling = $element; $sibling instanceof Element && $this->getNormTag($sibling) === $tag; $sibling = $sibling->getNextSibling()) {
+            // Whatever is in a removed one stays out of the output, while the rest of the run carries on around it
+            if ($this->isRemoved($sibling)) {
+                continue;
+            }
+
+            if ($target === null) {
+                $target = $sibling;
+            } else {
+                $target->appendChildrenOf($sibling);
+            }
+        }
     }
 
     public function convert(ElementInterface $element): string
@@ -68,14 +97,14 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
         $prefix = $this->getOuterWhitespace($leading);
         $suffix = $this->getOuterWhitespace($trailing);
 
-        /* If this node is immediately preceded or followed by one of the same type don't emit
-         * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
-         * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
-         */
-        $preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
-        $postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
+        return $prefix . $style . $content . $style . $suffix;
+    }
 
-        return $prefix . $preStyle . $content . $postStyle . $suffix;
+    private function isRemoved(ElementInterface $element): bool
+    {
+        $tagsToRemove = \explode(' ', Coerce::toString($this->config->getOption('remove_nodes') ?? ''));
+
+        return \in_array($element->getTagName(), $tagsToRemove, true);
     }
 
     private function getOuterWhitespace(string $whitespace): string
