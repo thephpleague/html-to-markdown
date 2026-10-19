@@ -141,9 +141,10 @@ class HtmlConverter implements HtmlConverterInterface
     private function createDOMDocument(string $html): \DOMDocument
     {
         $document                 = new \DOMDocument();
-        $previousLibxmlErrorState = null;
+        $suppressErrors           = (bool) $this->getConfig()->getOption('suppress_errors');
+        $previousLibxmlErrorState = false;
 
-        if ($this->getConfig()->getOption('suppress_errors')) {
+        if ($suppressErrors) {
             // Suppress conversion errors (from http://bit.ly/pCCRSX)
             $previousLibxmlErrorState = \libxml_use_internal_errors(true);
         }
@@ -155,7 +156,7 @@ class HtmlConverter implements HtmlConverterInterface
 
             $this->replaceMisplacedComments($document);
         } finally {
-            if ($this->getConfig()->getOption('suppress_errors')) {
+            if ($suppressErrors) {
                 \libxml_clear_errors();
                 \libxml_use_internal_errors($previousLibxmlErrorState);
             }
