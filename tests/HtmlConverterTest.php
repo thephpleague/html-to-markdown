@@ -751,6 +751,21 @@ EOT;
         }
     }
 
+    public function testLibxmlInternalErrorsIsKeptEnabledAfterConvert(): void
+    {
+        $previousState = \libxml_use_internal_errors(true);
+
+        try {
+            $converter = new HtmlConverter();
+            $converter->convert('<p>Unclosed <b>tags</p>');
+
+            $this->assertTrue(\libxml_use_internal_errors());
+            $this->assertSame([], \libxml_get_errors());
+        } finally {
+            \libxml_use_internal_errors($previousState);
+        }
+    }
+
     public function testLibxmlInternalErrorsIsUnchangedWhenSuppressErrorsDisabled(): void
     {
         $previousState = \libxml_use_internal_errors(true);

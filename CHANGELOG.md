@@ -4,6 +4,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+### Fixed
+
+- Fixed the `suppress_errors` option leaving libxml's internal error handling enabled after conversion, which affected later XML handling elsewhere in the application (#268, #269)
+
 ## [5.2.1] - 2026-10-18
 
 ### Fixed
