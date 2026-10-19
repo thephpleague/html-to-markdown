@@ -393,6 +393,22 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p><code class="a>b">x</code></p>', '`x`');
     }
 
+    /**
+     * @see https://github.com/thephpleague/html-to-markdown/issues/254
+     */
+    public function testCodeContainingTextWhichLooksLikeDocumentTags(): void
+    {
+        $this->assertHtmlGivesMarkdown('<pre><code>&lt;/body&gt;</code></pre>', "```\n</body>\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>&lt;/html&gt;</code></pre>', "```\n</html>\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>&lt;/head&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>', "```\n</head></body></html>\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>&lt;html&gt;&lt;body&gt;</code></pre>', "```\n<html><body>\n```");
+        $this->assertHtmlGivesMarkdown('<p>a <code>&lt;/body&gt;&lt;/html&gt;</code></p>', 'a `</body></html>`');
+        $this->assertHtmlGivesMarkdown('<pre><code>&lt;!DOCTYPE html&gt;</code></pre>', "```\n<!DOCTYPE html>\n```");
+        $this->assertHtmlGivesMarkdown('<!DOCTYPE html><pre><code>&lt;!DOCTYPE html&gt;&lt;/html&gt;</code></pre>', "```\n<!DOCTYPE html></html>\n```");
+        $this->assertHtmlGivesMarkdown('<p>Use <code>&lt;!DOCTYPE html</code> first.</p><p>a &gt; b</p>', "Use `<!DOCTYPE html` first.\n\na &gt; b");
+        $this->assertHtmlGivesMarkdown('<p>x</p><!-- </body> -->', "x\n\n<!-- </body> -->", ['preserve_comments' => true]);
+    }
+
     public function testNestedCode(): void
     {
         $this->assertHtmlGivesMarkdown('<pre><pre>a</pre></pre>', "```\na\n```");

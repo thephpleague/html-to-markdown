@@ -8,6 +8,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 - Fixed a line of only `=` or `-` after a line break not being escaped, which made a heading out of the line before it, such as in `<p>Foo<br>=</p>` (#226). Lines of `-` were already escaped inside of paragraphs, but not inside of list items, blockquotes or headings.
 - Fixed emphasis next to an empty one of the same kind losing one of its delimiters, such as `<strong> </strong><strong>hello</strong>` becoming ` hello**` (#252). Emphasis next to one of the same kind which is removed with `remove_nodes` also lost one.
+- Fixed `&lt;/body&gt;` or `&lt;/html&gt;` in code or comments causing the document's own closing tags to be output after it, and everything from `&lt;!DOCTYPE ` in code up to the next `>` being removed, which could be the rest of the document (#254)
 
 ## [5.2.3] - 2026-10-19
 
