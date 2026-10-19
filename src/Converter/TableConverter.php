@@ -94,7 +94,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 
                 $value  = \str_replace("\n", ' ', $value);
                 $escape = Coerce::toString($this->config->getOption('table_pipe_escape') ?? '\|');
-                $value  = \preg_replace_callback('/(\\\\*)\|/', static function (array $matches) use ($escape): string {
+                $value  = \preg_replace_callback('/(?<!\\\\)(\\\\*)\|/', static function (array $matches) use ($escape): string {
                     // Those in regular text have already been escaped with a backslash
                     return (string) \substr($matches[1], 0, \strlen($matches[1]) - \strlen($matches[1]) % 2) . $escape;
                 }, $value);

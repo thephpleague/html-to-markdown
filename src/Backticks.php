@@ -44,7 +44,7 @@ final class Backticks
 
         // Keep backticks at the edges of the content from merging into the delimiters,
         // and spaces at both edges from being taken as this same padding
-        if ($content[0] === '`' || \substr($content, -1) === '`' || \preg_match('/^ .*[^ ].* $/s', $content) === 1) {
+        if ($content[0] === '`' || \substr($content, -1) === '`' || ($content[0] === ' ' && \substr($content, -1) === ' ' && \trim($content, ' ') !== '')) {
             $content = ' ' . $content . ' ';
         }
 
