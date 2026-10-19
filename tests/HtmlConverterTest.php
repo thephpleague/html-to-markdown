@@ -368,6 +368,31 @@ EOT;
         $this->assertHtmlGivesMarkdown("<pre class='some-class'>test with attributes</pre>", "```\ntest with attributes\n```");
     }
 
+    public function testCodeContainingTextWhichLooksLikeItsOwnTags(): void
+    {
+        $this->assertHtmlGivesMarkdown('<pre>a &lt;/pre&gt; b</pre>', "```\na </pre> b\n```");
+        $this->assertHtmlGivesMarkdown('<pre>x &lt;pre foo y</pre>', "```\nx <pre foo y\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>a &lt;/code&gt; b</code></pre>', "```\na </code> b\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>a &lt;/pre&gt; b</code></pre>', "```\na </pre> b\n```");
+        $this->assertHtmlGivesMarkdown('<p><code>a &lt;code x&gt; b</code></p>', '`a <code x> b`');
+        $this->assertHtmlGivesMarkdown('<div><code>a &lt;/code&gt; b</code></div>', '<div><code>a &#60;&#47;code&#62; b</code></div>');
+        $this->assertHtmlGivesMarkdown('<pre class="a>b">x</pre>', "```\nx\n```");
+        $this->assertHtmlGivesMarkdown('<p><code class="a>b">x</code></p>', '`x`');
+    }
+
+    public function testNestedCode(): void
+    {
+        $this->assertHtmlGivesMarkdown('<pre><pre>a</pre></pre>', "```\na\n```");
+        $this->assertHtmlGivesMarkdown('<pre><pre></pre></pre>', "```\n```");
+        $this->assertHtmlGivesMarkdown('<pre>a<pre class="x">b</pre>c</pre>', "```\nabc\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code><pre>a</pre></code></pre>', "```\na\n```");
+        $this->assertHtmlGivesMarkdown('<pre><code>a<code>b</code></code></pre>', "```\na`b`\n```");
+        $this->assertHtmlGivesMarkdown('<code><code>a</code></code>', '`` `a` ``');
+        $this->assertHtmlGivesMarkdown('<p><code>a<li><code>b</code></li></code></p>', '`a<li>b</li>`');
+        $this->assertHtmlGivesMarkdown('<div><code>a<code>b</code></code></div>', '<div><code>ab</code></div>');
+        $this->assertHtmlGivesMarkdown('<div><code>a<code>&lt;b&gt;</code></code></div>', '<div><code>a&#60;b&#62;</code></div>');
+    }
+
     public function testCodeSpanContainingBackticks(): void
     {
         $this->assertHtmlGivesMarkdown('<code>a` &lt;script&gt;alert(1)&lt;/script&gt; `b</code>', '``a` <script>alert(1)</script> `b``');

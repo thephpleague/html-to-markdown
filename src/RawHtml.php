@@ -175,16 +175,32 @@ final class RawHtml
 
     public static function getCode(ElementInterface $element): string
     {
-        $code = \html_entity_decode($element->getChildrenAsString());
-
-        $code = \preg_replace('/<code\b[^>]*>/', '', $code);
-        \assert($code !== null);
+        // Inside a <pre>, the code ends up as part of its content, which leaves out any nested <pre> tags as well
+        $code = self::getContentWithoutTags($element, $element->isDescendantOf('pre') ? ['code', 'pre'] : ['code']);
 
         // A carriage return alone also ends a line, and would be left out of any indentation added later
         $code = \preg_replace('/\r\n?/', "\n", $code);
         \assert($code !== null);
 
-        return \str_replace('</code>', '', $code);
+        return $code;
+    }
+
+    /**
+     * Returns the element's contents as text, without the tags of any elements with the given names, its own included
+     *
+     * @param string[] $tagNames
+     */
+    public static function getContentWithoutTags(ElementInterface $element, array $tagNames): string
+    {
+        // Text is still escaped here, so only actual tags match, whose attributes are always written as name="value"
+        $html = \preg_replace(
+            '~</?(?:' . \implode('|', $tagNames) . ')(?:\s++[^\s=>]++="[^"]*+")*+\s*+>~',
+            '',
+            $element->getChildrenAsString()
+        );
+        \assert($html !== null);
+
+        return \html_entity_decode($html);
     }
 
     /**

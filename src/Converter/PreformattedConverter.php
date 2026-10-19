@@ -31,11 +31,7 @@ class PreformattedConverter implements ConverterInterface, ConfigurationAwareInt
 
     private function getContent(ElementInterface $element): string
     {
-        $preContent = \html_entity_decode($element->getChildrenAsString());
-        $preContent = \preg_replace('/<pre\b[^>]*>/', '', $preContent);
-        \assert($preContent !== null);
-
-        return \str_replace('</pre>', '', $preContent);
+        return RawHtml::getContentWithoutTags($element, ['pre']);
     }
 
     private function convertToFencedCodeBlock(ElementInterface $element): string
