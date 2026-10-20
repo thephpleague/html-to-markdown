@@ -36,7 +36,7 @@ class CommentConverter implements ConverterInterface, ConfigurationAwareInterfac
         }
 
         // A backslash before it would make the whole of it text
-        return (PrecedingMarkdown::endsInDelimiterHazard($element) ? ' ' : '') . '<!--' . $text . '-->';
+        return (PrecedingMarkdown::endsInEscape($element) ? ' ' : '') . '<!--' . $text . '-->';
     }
 
     /**

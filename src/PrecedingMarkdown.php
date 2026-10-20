@@ -59,6 +59,24 @@ final class PrecedingMarkdown
      */
     public static function endsInDelimiterHazard(ElementInterface $element): bool
     {
+        [$backslashes, $last] = self::getEnd($element);
+
+        return $backslashes % 2 === 1 || ($backslashes === 0 && $last === '`');
+    }
+
+    /**
+     * Whether whatever is output next would be escaped by a backslash
+     */
+    public static function endsInEscape(ElementInterface $element): bool
+    {
+        return self::getEnd($element)[0] % 2 === 1;
+    }
+
+    /**
+     * @return array{int, string} The number of backslashes output at the end, and the last character before them
+     */
+    private static function getEnd(ElementInterface $element): array
+    {
         // Only a whole run of backslashes says whether the last one is itself escaped
         $backslashes = 0;
         for ($node = $element; $node !== null; $node = $node->getParent()) {
@@ -66,12 +84,12 @@ final class PrecedingMarkdown
                 $trimmed      = \rtrim($value, '\\');
                 $backslashes += \strlen($value) - \strlen($trimmed);
                 if ($trimmed !== '') {
-                    return $backslashes % 2 === 1 || ($backslashes === 0 && \substr($trimmed, -1) === '`');
+                    return [$backslashes, \substr($trimmed, -1)];
                 }
             }
         }
 
-        return $backslashes % 2 === 1;
+        return [$backslashes, ''];
     }
 
     /**
