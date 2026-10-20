@@ -869,7 +869,7 @@ EOT;
         $this->assertHtmlGivesMarkdown('<div>a\\<!-- b --></div>', 'a\\ <!-- b -->', ['preserve_comments' => true, 'strip_tags' => true]);
 
         // Before, the paragraph would have ended in the middle of it, leaving the rest as HTML of its own
-        $this->assertHtmlGivesMarkdown("<p>a<!-- <img src=\"x\"> --></p>", 'a<!-- <img src="x"> -->', ['preserve_comments' => true, 'strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a<!-- <img src="x"> --></p>', 'a<!-- <img src="x"> -->', ['preserve_comments' => true, 'strip_tags' => true]);
         $this->assertHtmlGivesMarkdown("<p>a<!--\n\n<img src=\"x\">\n\n--></p>", 'a<!-- <img src="x"> -->', ['preserve_comments' => true]);
         $this->assertHtmlGivesMarkdown("<h3><!--\r<img src=\"x\">\r--></h3>", '### <!-- <img src="x"> -->', ['preserve_comments' => true]);
         $this->assertHtmlGivesMarkdown("<ul><li>a<!-- b\n  c --></li></ul>", '- a<!-- b c -->', ['preserve_comments' => true]);
