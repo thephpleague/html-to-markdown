@@ -42,7 +42,6 @@ class ParagraphConverter implements ConverterInterface
     private function escapeSpecialCharacters(string $line): string
     {
         $line = $this->escapeFirstCharacters($line);
-        $line = $this->escapeOtherCharacters($line);
         $line = $this->escapeOtherCharactersRegex($line);
 
         return $line;
@@ -70,24 +69,6 @@ class ParagraphConverter implements ConverterInterface
                 // Found a character that must be escaped, adding a backslash before
                 return '\\' . \ltrim($line);
             }
-        }
-
-        return $line;
-    }
-
-    private function escapeOtherCharacters(string $line): string
-    {
-        $escapable = [
-            '<!--',
-        ];
-
-        foreach ($escapable as $i) {
-            if (($pos = \strpos($line, $i)) === false) {
-                continue;
-            }
-
-            // Found an escapable character, escaping it
-            $line = \substr_replace($line, '\\', $pos, 0);
         }
 
         return $line;
