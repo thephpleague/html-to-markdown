@@ -62,6 +62,13 @@ $cases = [
             return '<p>' . str_repeat('<strong>a</strong><b><code>x</code></b>', $n) . '</p>';
         },
     ],
+    'Whitespace in a preserved comment' => [
+        'options' => ['preserve_comments' => true],
+        'sizes' => [100000, 400000, 1600000],
+        'input' => static function (int $n): string {
+            return '<p>a<!--' . str_repeat(' ', $n) . 'x--></p>';
+        },
+    ],
     'Backslashes before a pipe in a table cell, without the PCRE JIT' => [
         // Without the pipe, PCRE gives up on the cell straight away
         'extension' => 'table',

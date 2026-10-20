@@ -527,7 +527,7 @@ EOT;
 
         // These blocks aren't ended by a blank line
         $this->assertHtmlGivesMarkdown("<p>a</p><style>b{}\n\nc{}</style><code>" . $script . '</code>', "a\n\n<style>b{}\n\nc{}</style>" . $encoded);
-        $this->assertHtmlGivesMarkdown("<!-- a\n\nb --><p><code>" . $script . '</code></p>', "<!-- a\n\nb -->" . $encoded, ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown("<!-- a\n\nb --><p><code>" . $script . '</code></p>', '<!-- a b -->' . $encoded, ['preserve_comments' => true]);
 
         // Markdown is parsed again after a blank line
         $this->assertHtmlGivesMarkdown('<div><p>a</p><p>Use <code>foo()</code></p></div>', "<div>a\n\nUse `foo()`\n\n</div>");
@@ -857,6 +857,32 @@ EOT;
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- more -->', "Test\n\n<!-- more -->", ['preserve_comments' => ['more']]);
         $this->assertHtmlGivesMarkdown('<p>Test</p><!-- Test comment --><!-- more -->', "Test\n\n<!-- more -->", ['preserve_comments' => ['more']]);
         $this->assertHtmlGivesMarkdown('<!-- Test comment --><p>Test</p><!-- Test comment -->', "<!-- Test comment -->Test\n\n<!-- Test comment -->", ['preserve_comments' => true]);
+    }
+
+    public function testCommentsWhichBrowsersWouldEndEarlyAreNotPreserved(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>a<!-- b <!-- c --></p>', 'a', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a<!-- b <!---></p>', 'a', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a<!-- b- --></p>', 'a<!-- b- -->', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a<!-- b --->c</p>', 'ac', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown('<p>a<!-- -- b --></p>', 'a', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown('<div>a\\<!-- b --></div>', 'a\\ <!-- b -->', ['preserve_comments' => true, 'strip_tags' => true]);
+
+        // Before, the paragraph would have ended in the middle of it, leaving the rest as HTML of its own
+        $this->assertHtmlGivesMarkdown("<p>a<!-- <img src=\"x\"> --></p>", 'a<!-- <img src="x"> -->', ['preserve_comments' => true, 'strip_tags' => true]);
+        $this->assertHtmlGivesMarkdown("<p>a<!--\n\n<img src=\"x\">\n\n--></p>", 'a<!-- <img src="x"> -->', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown("<h3><!--\r<img src=\"x\">\r--></h3>", '### <!-- <img src="x"> -->', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown("<ul><li>a<!-- b\n  c --></li></ul>", '- a<!-- b c -->', ['preserve_comments' => true]);
+        $this->assertHtmlGivesMarkdown("<p>a<!-- b \t c --></p>", "a<!-- b \t c -->", ['preserve_comments' => true]);
+
+        // Which of these older versions of libxml end the comment at as well differs
+        foreach (['<!-->', '<!--->', '<!-- --!>'] as $start) {
+            foreach ([['preserve_comments' => true], ['preserve_comments' => true, 'strip_tags' => true]] as $options) {
+                $markdown = (new HtmlConverter($options))->convert('<p>a' . $start . '<img src="x"> --></p>');
+                $this->assertStringNotContainsString($start, $markdown);
+                $this->assertStringNotContainsString('--!>', $markdown);
+            }
+        }
     }
 
     public function testPreserveCommentOrder(): void
