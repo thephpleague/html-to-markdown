@@ -32,6 +32,11 @@ class TextConverter implements ConverterInterface
         $markdown = \preg_replace('~^#~u', '\\\\#', $markdown);
         \assert(\is_string($markdown));
 
+        // A `!` right before a link would turn the link into an image
+        if ($isEscaped && \substr($markdown, -1) === '!' && ($next = $element->getNext()) !== null && $next->getTagName() === 'a') {
+            $markdown = \substr($markdown, 0, -1) . '\\!';
+        }
+
         if ($this->isOwnLineAfterBreak($element) && ! $this->isInsideRawHtmlBlock($parent) && ! HardBreakConverter::escapesListMarker($parent, $element->getValue())) {
             // It would otherwise underline the line before it as a setext heading
             $markdown = \preg_replace('~^( *+)(?=(?:=++|-++)\s*+\z)~u', '$1\\\\', $markdown);

@@ -6,6 +6,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Fixed
 
+- Fixed a `!` at the end of text directly before a link not being escaped, which made an image out of the link, such as in `<p>Hello!<a href="u">x</a></p>`
 - Fixed comments kept with `preserve_comments` letting HTML in them through. A comment after other text in a paragraph was escaped, so that it was output as text, along with anything inside of it. A comment could also be ended early by a blank line or the end of a heading, or by text which browsers or Markdown parsers end comments at, such as `<!-->` or `--`. Comments are no longer escaped, are kept apart from a backslash before them, are put on one line, and are left out if they would end early (#289)
 - Fixed a line of only `=` or `-` after a line break not being escaped, which made a heading out of the line before it, such as in `<p>Foo<br>=</p>` (#226). Lines of `-` were already escaped inside of paragraphs, but not inside of list items, blockquotes or headings.
 - Fixed emphasis next to an empty one of the same kind losing one of its delimiters, such as `<strong> </strong><strong>hello</strong>` becoming ` hello**` (#252). Emphasis next to one of the same kind which is removed with `remove_nodes` also lost one.

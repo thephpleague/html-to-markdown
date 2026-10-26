@@ -562,6 +562,14 @@ EOT;
         $this->assertHtmlGivesMarkdown('<img alt="a" title="b c">', '![a](<> "b c")');
     }
 
+    public function testExclamationMarkBeforeALinkDoesNotMakeItAnImage(): void
+    {
+        $this->assertHtmlGivesMarkdown('<p>Hello!<a href="u">x</a></p>', 'Hello\\![x](u)');
+        $this->assertHtmlGivesMarkdown('<p>a\\!<a href="u">x</a></p>', 'a\\\\\\![x](u)');
+        $this->assertHtmlGivesMarkdown('<p><em>Hello!</em><a href="u">x</a></p>', '*Hello\\!*[x](u)');
+        $this->assertHtmlGivesMarkdown('<p>Hello! <a href="u">x</a> !</p>', 'Hello! [x](u) !');
+    }
+
     public function testCodeDelimitersCannotBeEscaped(): void
     {
         $this->assertHtmlGivesMarkdown('<ul><li>a<br><code>- b</code></li></ul>', "- a  \n    `- b`");
