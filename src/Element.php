@@ -243,6 +243,19 @@ class Element implements ElementInterface
         return $document->C14N();
     }
 
+    /**
+     * @internal
+     *
+     * Returns the same as getChildrenAsString() for anything other than an element, and an element without its children
+     */
+    public function getWithoutChildrenAsString(): string
+    {
+        $document = new \DOMDocument();
+        $document->appendChild($document->importNode($this->node, ! $this->node instanceof \DOMElement));
+
+        return $document->C14N();
+    }
+
     public function getSiblingPosition(): int
     {
         if ($this->node->parentNode === null) {

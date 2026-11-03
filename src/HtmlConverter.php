@@ -239,8 +239,9 @@ class HtmlConverter implements HtmlConverterInterface
             return;
         }
 
-        // Code kept as HTML takes the text of any code inside of it as it is
-        if ($element->isDescendantOf('code') && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {
+        // Code kept as HTML takes the text of any code inside of it as it is.
+        // Anything else inside of code returned above, so only code itself can still be inside of code.
+        if ($element->getTagName() === 'code' && $element->isDescendantOf('code') && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {
             return;
         }
 
@@ -352,9 +353,10 @@ class HtmlConverter implements HtmlConverterInterface
 
     private function isRemoved(string $tag): bool
     {
-        $tagsToRemove = \explode(' ', Coerce::toString($this->getConfig()->getOption('remove_nodes') ?? ''));
+        $tagsToRemove = Coerce::toString($this->getConfig()->getOption('remove_nodes') ?? '');
 
-        return \in_array($tag, $tagsToRemove, true);
+        // No tag name is empty, and this is asked several times for every node
+        return $tagsToRemove !== '' && \in_array($tag, \explode(' ', $tagsToRemove), true);
     }
 
     /**
@@ -528,8 +530,6 @@ class HtmlConverter implements HtmlConverterInterface
             return false;
         }
 
-        $parent = $element->getParent();
-
         switch ($element->getTagName()) {
             case 'blockquote':
             case 'ol':
@@ -539,6 +539,8 @@ class HtmlConverter implements HtmlConverterInterface
                 // These get a blank line put before them
                 return true;
             case 'li':
+                $parent = $element->getParent();
+
                 return $parent !== null && \in_array($parent->getTagName(), ['ol', 'ul'], true) && RawHtml::startsLine($element);
             case 'h1':
             case 'h2':
@@ -600,9 +602,13 @@ class HtmlConverter implements HtmlConverterInterface
             return ! $element->isDescendantOf('table');
         }
 
+        if ($tag !== 'li') {
+            return false;
+        }
+
         $parent = $element->getParent();
 
-        return $tag === 'li' && ($parent === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true));
+        return $parent === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true);
     }
 
     private function isTableRows(ElementInterface $element, ConverterInterface $converter): bool
