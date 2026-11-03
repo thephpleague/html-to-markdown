@@ -239,8 +239,9 @@ class HtmlConverter implements HtmlConverterInterface
             return;
         }
 
-        // Code kept as HTML takes the text of any code inside of it as it is
-        if ($element->isDescendantOf('code') && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {
+        // Code kept as HTML takes the text of any code inside of it as it is.
+        // Anything else inside of code returned above, so only code itself can still be inside of code.
+        if ($element->getTagName() === 'code' && $element->isDescendantOf('code') && ! $element->isDescendantOf('pre') && $this->isWhereMarkdownMightNotBeParsed($element)) {
             return;
         }
 
