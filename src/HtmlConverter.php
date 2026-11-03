@@ -353,9 +353,10 @@ class HtmlConverter implements HtmlConverterInterface
 
     private function isRemoved(string $tag): bool
     {
-        $tagsToRemove = \explode(' ', Coerce::toString($this->getConfig()->getOption('remove_nodes') ?? ''));
+        $tagsToRemove = Coerce::toString($this->getConfig()->getOption('remove_nodes') ?? '');
 
-        return \in_array($tag, $tagsToRemove, true);
+        // No tag name is empty, and this is asked several times for every node
+        return $tagsToRemove !== '' && \in_array($tag, \explode(' ', $tagsToRemove), true);
     }
 
     /**
