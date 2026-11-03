@@ -156,7 +156,8 @@ final class RawHtml
      */
     public static function fromElement(ElementInterface $element): string
     {
-        $html = $element->getChildrenAsString();
+        // Only an element's own tag is taken from this, and copying its children would take time proportional to their size
+        $html = $element instanceof Element ? $element->getWithoutChildrenAsString() : $element->getChildrenAsString();
 
         // The attributes must stay encoded, otherwise their values could break out of their quotes
         if (\preg_match('/^<([^\s>\/!?=]++)(?:\s++[^\s=>]++="[^"]*+")*+\s*+>/', $html, $matches) === 1) {
