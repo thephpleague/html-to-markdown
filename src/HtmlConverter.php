@@ -530,8 +530,6 @@ class HtmlConverter implements HtmlConverterInterface
             return false;
         }
 
-        $parent = $element->getParent();
-
         switch ($element->getTagName()) {
             case 'blockquote':
             case 'ol':
@@ -541,6 +539,8 @@ class HtmlConverter implements HtmlConverterInterface
                 // These get a blank line put before them
                 return true;
             case 'li':
+                $parent = $element->getParent();
+
                 return $parent !== null && \in_array($parent->getTagName(), ['ol', 'ul'], true) && RawHtml::startsLine($element);
             case 'h1':
             case 'h2':
@@ -602,9 +602,13 @@ class HtmlConverter implements HtmlConverterInterface
             return ! $element->isDescendantOf('table');
         }
 
+        if ($tag !== 'li') {
+            return false;
+        }
+
         $parent = $element->getParent();
 
-        return $tag === 'li' && ($parent === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true));
+        return $parent === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true);
     }
 
     private function isTableRows(ElementInterface $element, ConverterInterface $converter): bool

@@ -96,8 +96,7 @@ final class RawHtml
      */
     public static function putsContentsInline(ElementInterface $node, bool $flattensTableCells): bool
     {
-        $parent = $node->getParent();
-        $tag    = $node->getTagName();
+        $tag = $node->getTagName();
 
         if (\in_array($tag, ['a', 'b', 'em', 'i', 'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'], true)) {
             return true;
@@ -113,7 +112,7 @@ final class RawHtml
         }
 
         // A list item anywhere else isn't output as part of a list which starts on its own line
-        if ($tag === 'li' && ($parent === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true))) {
+        if ($tag === 'li' && (($parent = $node->getParent()) === null || ! \in_array($parent->getTagName(), ['ol', 'ul'], true))) {
             return true;
         }
 
