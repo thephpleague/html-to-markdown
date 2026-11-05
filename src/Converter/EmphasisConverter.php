@@ -95,6 +95,12 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
             return $value;
         }
 
+        // A blank line would end the paragraph before the closing emphasis delimiter.
+        $content = \preg_replace_callback('~(?<![ \t])[ \t]*+\n(?:[ \t]*+\n)++~', static function (array $matches): string {
+            return \str_repeat('<br>', \substr_count($matches[0], "\n"));
+        }, $content);
+        \assert($content !== null);
+
         if ($tag === 'em') {
             $style = Coerce::toString($this->config->getOption('italic_style'));
         } else {

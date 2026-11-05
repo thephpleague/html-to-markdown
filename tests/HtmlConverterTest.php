@@ -110,6 +110,36 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('Emphasis preserves<em><br/></em>HTML breaks', "Emphasis preserves  \nHTML breaks");
     }
 
+    /**
+     * @dataProvider provideEmphasisWithConsecutiveBreaks
+     */
+    #[DataProvider('provideEmphasisWithConsecutiveBreaks')]
+    public function testEmphasisWithConsecutiveBreaks(string $html, string $expected): void
+    {
+        $this->assertHtmlGivesMarkdown($html, $expected);
+        $this->assertHtmlGivesMarkdown($html, $expected, ['hard_break' => true]);
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function provideEmphasisWithConsecutiveBreaks(): iterable
+    {
+        yield 'bold' => ['<b>Hello<br><br>World</b>', '**Hello<br><br>World**'];
+        yield 'strong' => ['<strong>Hello<br><br>World</strong>', '**Hello<br><br>World**'];
+        yield 'italic' => ['<i>Hello<br><br>World</i>', '*Hello<br><br>World*'];
+        yield 'emphasis' => ['<em>Hello<br><br>World</em>', '*Hello<br><br>World*'];
+        yield 'three breaks' => ['<b>Hello<br><br><br>World</b>', '**Hello<br><br><br>World**'];
+        yield 'whitespace between breaks' => ["<b>Hello<br> \t\n<br>World</b>", '**Hello<br><br>World**'];
+        yield 'nested emphasis' => ['<b>Hello<br><br><em>World</em></b>', '**Hello<br><br>*World***'];
+        yield 'merged emphasis' => ['<b>Hello<br></b><strong><br>World</strong>', '**Hello<br><br>World**'];
+        yield 'list item' => ['<ul><li><b>Hello<br><br>World</b></li></ul>', '- **Hello<br><br>World**'];
+        yield 'blockquote' => ['<blockquote><b>Hello<br><br>World</b></blockquote>', '> **Hello<br><br>World**'];
+        yield 'link and code' => ['<b><a href="x">Hello</a><br><br><code>World</code></b>', '**[Hello](x)<br><br>`World`**'];
+        yield 'outer whitespace' => ['before<b> Hello<br><br>World </b>after', 'before **Hello<br><br>World** after'];
+        yield 'escaped tags' => ['<b>Hello&lt;br&gt;&lt;br&gt;World</b>', '**Hello&lt;br&gt;&lt;br&gt;World**'];
+    }
+
     public function testConsecutiveSpans(): void
     {
         $this->assertHtmlGivesMarkdown('<em>Foo</em><em>Bar</em>', '*FooBar*');
