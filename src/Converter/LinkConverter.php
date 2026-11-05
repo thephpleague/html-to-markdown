@@ -36,7 +36,7 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface
             $markdown = '[' . $text . '](' . $href . ')';
         }
 
-        if (! $href) {
+        if ($href === '') {
             if ($this->shouldStrip()) {
                 $markdown = $text;
             } else {

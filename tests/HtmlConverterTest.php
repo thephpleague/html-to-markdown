@@ -204,6 +204,14 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<a href="google.com">google.com</a>', '[google.com](google.com)', ['use_autolinks' => false]);
     }
 
+    public function testZeroLinkDestination(): void
+    {
+        $this->assertHtmlGivesMarkdown('<a href="0">Test</a>', '[Test](0)');
+        $this->assertHtmlGivesMarkdown('<a href="0" title="Title">Test</a>', '[Test](0 "Title")');
+        $this->assertHtmlGivesMarkdown('<a href="0">Test</a>', '[Test](0)', ['strip_placeholder_links' => true]);
+        $this->assertHtmlGivesMarkdown('<a href="0" title="Title">Test</a>', '[Test](0 "Title")', ['strip_placeholder_links' => true]);
+    }
+
     public function testHorizontalRule(): void
     {
         $this->assertHtmlGivesMarkdown('<hr>', '---');
