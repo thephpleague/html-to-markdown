@@ -293,6 +293,26 @@ class HtmlConverterTest extends TestCase
         $this->assertHtmlGivesMarkdown('<p>120.00 USD<p>', '120.00 USD');
     }
 
+    public function testZeroTableCaptionAtTop(): void
+    {
+        $this->assertHtmlGivesMarkdown(
+            '<table><caption>0</caption><tr><th>A</th></tr></table><table><tr><th>B</th></tr></table>',
+            "0\n\n| A |\n|---|\n\n| B |\n|---|",
+            ['table_caption_side' => 'top'],
+            [new TableConverter()]
+        );
+    }
+
+    public function testZeroTableCaptionAtBottom(): void
+    {
+        $this->assertHtmlGivesMarkdown(
+            '<table><caption>0</caption><tr><th>A</th></tr></table><table><tr><th>B</th></tr></table>',
+            "| A |\n|---|\n\n0\n\n| B |\n|---|",
+            ['table_caption_side' => 'bottom'],
+            [new TableConverter()]
+        );
+    }
+
     public function testTables(): void
     {
         $opt  = [];
