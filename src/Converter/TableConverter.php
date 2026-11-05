@@ -57,7 +57,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
         switch ($element->getTagName()) {
             case 'table':
                 $this->columnAlignments = [];
-                if ($this->caption) {
+                if ($this->caption !== null && $this->caption !== '') {
                     $side = $this->config->getOption('table_caption_side');
                     // Kept apart from the rows, since it can contain a block of HTML which would take them in
                     if ($side === 'top') {
