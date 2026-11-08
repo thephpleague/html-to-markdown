@@ -41,7 +41,7 @@
         "scrutinizer/ocular": "^1.6",
         "symfony/process": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "unleashedtech/php-coding-standard": "^2.7 || ^3.0",
-        "vimeo/psalm": "^4.22 || ^5.0 || ^6.0"
+        "vimeo/psalm": "^4.22 || ^5.0 || ^6.0 || ^7.0"
     },
     "bin": ["bin/html-to-markdown"],
     "scripts": {
